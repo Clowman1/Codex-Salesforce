@@ -1,0 +1,62 @@
+.submission-shell {
+    background: #f2f6fb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.submission-hero {
+    align-items: center;
+    background: #17233f;
+    border-bottom: 4px solid #f5aa45;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    min-height: 104px;
+    padding: 24px 28px;
+}
+
+.submission-eyebrow {
+    color: #f5aa45;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+}
+
+.submission-hero h1 {
+    color: #fff;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin: 0;
+}
+
+.submission-hero p {
+    color: #d8e5f6;
+    font-size: 14px;
+    margin: 7px 0 0;
+}
+
+.submission-body {
+    padding: 20px 22px 22px;
+}
+
+.submission-body lightning-flow {
+    background: #fff;
+    border: 1px solid #d5e2f2;
+    border-radius: 8px;
+    box-shadow: 0 10px 26px rgba(23, 35, 63, 0.08);
+    display: block;
+    padding: 14px 16px 10px;
+}
+
+.submission-loading {
+    background: #fff;
+    border: 1px solid #d5e2f2;
+    border-radius: 8px;
+    color: #30415f;
+    font-weight: 700;
+    padding: 24px;
+    text-align: center;
+}

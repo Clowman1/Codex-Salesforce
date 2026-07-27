@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Generic event fired by ConditionRow to notify its parent">
+  <aura:attribute name="action" type="String" />
+  <aura:attribute name="data" type="Object" />
+</aura:event>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Mortgage_Form_Insurance__c</fullName>
+    <formula>IF(
+    AND(
+        BEGINS(TEXT(Loan_Type_1st_TD__c), &quot;Conventional&quot;),
+        BEGINS(TEXT(MI_Type__c), &quot;Borrower Paid&quot;)
+    ),
+    Mortgage_Ins_1st_TD__c,
+    NULL
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Mortgage Form Insurance</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

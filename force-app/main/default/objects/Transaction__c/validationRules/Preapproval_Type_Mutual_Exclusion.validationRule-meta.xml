@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Preapproval_Type_Mutual_Exclusion</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(Zoom_Preapproval__c, In_Person_Preapproval__c)</errorConditionFormula>
+    <errorMessage>Only one preapproval type can be selected.</errorMessage>
+</ValidationRule>

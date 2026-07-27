@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Lead$Name</field>
+    </columns>
+    <columns>
+        <field>Lead$CreatedDate</field>
+    </columns>
+    <columns>
+        <field>Lead$LeadSource</field>
+    </columns>
+    <columns>
+        <field>Lead$Status</field>
+    </columns>
+    <columns>
+        <field>Lead$Owner</field>
+    </columns>
+    <columns>
+        <field>Lead$Realtor_Buying_Agent__c</field>
+    </columns>
+    <columns>
+        <field>Lead$Realtor_Group_New__c</field>
+    </columns>
+    <columns>
+        <field>Lead$Loan_Purpose__c</field>
+    </columns>
+    <columns>
+        <field>Lead$Loan_Amount__c</field>
+    </columns>
+    <columns>
+        <field>Lead$Converted_Transaction_ID__c</field>
+    </columns>
+    <columns>
+        <field>Lead$Phone</field>
+    </columns>
+    <columns>
+        <field>Lead$Email</field>
+    </columns>
+    <description>Source report for CEO Hub Nickley Group 2026 YTD lead intelligence metrics.</description>
+    <filter>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <criteriaItems>
+            <column>Lead$Realtor_Group_New__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>The Nickley Group,Nickley ISA&apos;s</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Lead$CreatedDate</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterOrEqual</operator>
+            <value>THIS YEAR</value>
+        </criteriaItems>
+    </filter>
+    <format>Tabular</format>
+    <name>CEO Nickley Group Leads 2026 YTD Review</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Leads_with_without_Transactions__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>Lead$CreatedDate</sortColumn>
+    <sortOrder>Desc</sortOrder>
+</Report>

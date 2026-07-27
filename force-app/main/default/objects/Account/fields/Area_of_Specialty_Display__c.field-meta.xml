@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Area_of_Specialty_Display__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(INCLUDES(Area_of_Specialty__c, &quot;All-In-One Loan&quot;), &quot;All-In-One Loan, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;ARM&quot;), &quot;ARM, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Asset Depletion&quot;), &quot;Asset Depletion, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Bank Statement&quot;), &quot;Bank Statement, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Bridge Loans&quot;), &quot;Bridge Loans, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Community Mortgage/No Income&quot;), &quot;Community Mortgage/No Income, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Condotel&quot;), &quot;Condotel, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Conventional&quot;), &quot;Conventional, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;DPA&quot;), &quot;DPA, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;DSCR&quot;), &quot;DSCR, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;FHA&quot;), &quot;FHA, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;FHA 100% Financing&quot;), &quot;FHA 100% Financing, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;FHA 203K&quot;), &quot;FHA 203K, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Fannie Homestyle Reno&quot;), &quot;Fannie Homestyle Reno, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Foreign National&quot;), &quot;Foreign National, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Hard Money&quot;), &quot;Hard Money, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;HELOC&quot;), &quot;HELOC, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;ITIN&quot;), &quot;ITIN, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Jumbo&quot;), &quot;Jumbo, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Non-QM&quot;), &quot;Non-QM, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Non-Warrantable Condo&quot;), &quot;Non-Warrantable Condo, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;P&amp;L&quot;), &quot;P&amp;L, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Second Home&quot;), &quot;Second Home, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Investment&quot;), &quot;Investment, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Reverse Mortgage&quot;), &quot;Reverse Mortgage, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;USDA&quot;), &quot;USDA, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;VA&quot;), &quot;VA, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;Vacant Land&quot;), &quot;Vacant Land, &quot;, &quot;&quot;) +
+    IF(INCLUDES(Area_of_Specialty__c, &quot;1099&quot;), &quot;1099, &quot;, &quot;&quot;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Area of Specialty</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

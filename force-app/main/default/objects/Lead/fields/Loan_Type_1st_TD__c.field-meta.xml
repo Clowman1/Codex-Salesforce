@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loan_Type_1st_TD__c</fullName>
+    <label>Loan Type 1st TD</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Conventional</fullName>
+                <default>false</default>
+                <label>Conventional</label>
+            </value>
+            <value>
+                <fullName>FHA</fullName>
+                <default>false</default>
+                <label>FHA</label>
+            </value>
+            <value>
+                <fullName>Jumbo</fullName>
+                <default>false</default>
+                <label>Jumbo</label>
+            </value>
+            <value>
+                <fullName>VA</fullName>
+                <default>false</default>
+                <label>VA</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>FarmersHomeAdministration</fullName>
+                <default>false</default>
+                <label>FarmersHomeAdministration</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

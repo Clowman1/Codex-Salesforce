@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Original Home page tools and recreated activity widgets.</description>
+    <flexiPage>Home_Tools</flexiPage>
+    <label>Home Tools</label>
+    <motif>Custom27: Laptop</motif>
+</CustomTab>

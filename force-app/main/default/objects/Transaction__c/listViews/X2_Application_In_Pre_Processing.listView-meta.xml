@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>X2_Application_In_Pre_Processing</fullName>
+    <columns>NAME</columns>
+    <columns>Borrower_Name__c</columns>
+    <columns>Loan_Type_1st_TD__c</columns>
+    <columns>Status__c</columns>
+    <columns>Disclosures_Received_Date__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>OWNER.FIRST_NAME</columns>
+    <columns>Loan_Amount_1st__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>Rate_1st_TD__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Application In,Pre-Processing</value>
+    </filters>
+    <label>2. Application In / Pre-Processing</label>
+    <sharedTo>
+        <group>Management</group>
+    </sharedTo>
+</ListView>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Broker_Check_Outstanding</fullName>
+    <booleanFilter>1 AND 2 AND 3 AND 4 AND (5 OR 6)</booleanFilter>
+    <columns>NAME</columns>
+    <columns>Funding_Date__c</columns>
+    <columns>Broker_Compensation__c</columns>
+    <columns>Broker_Check_Recieved__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Channel__c</field>
+        <operation>equals</operation>
+        <value>Broker</value>
+    </filters>
+    <filters>
+        <field>Broker_Check_Recieved__c</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Post-Closed,PC Review</value>
+    </filters>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Transaction__c.Brokered</value>
+    </filters>
+    <filters>
+        <field>Post_Closed_Date__c</field>
+        <operation>greaterThan</operation>
+        <value>5/15/2024</value>
+    </filters>
+    <filters>
+        <field>Post_Closed_Date__c</field>
+        <operation>equals</operation>
+    </filters>
+    <label>Broker Checks Outstanding</label>
+    <sharedTo>
+        <group>Bianca_s_Group_For_Sharing</group>
+        <group>Chris_Lowman</group>
+        <group>Opener</group>
+        <role>Processors_and_Closers</role>
+    </sharedTo>
+</ListView>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Correspondent_Closer_View</fullName>
+    <booleanFilter>(1  OR (3 AND 4)) AND 2 AND 5 AND 6</booleanFilter>
+    <columns>NAME</columns>
+    <columns>Status__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>CD_Sent_By_Date__c</columns>
+    <columns>CD_Sent_Date__c</columns>
+    <columns>Closing_Instructions_Sent__c</columns>
+    <columns>Vesting_Confirmed__c</columns>
+    <columns>CD_Is_Balanced__c</columns>
+    <columns>Lender_lookup__c</columns>
+    <columns>Manager_Notes__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Closing</value>
+    </filters>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Transaction__c.Correspondent</value>
+    </filters>
+    <filters>
+        <field>Status__c</field>
+        <operation>notEqual</operation>
+        <value>Funding,Post-Closed</value>
+    </filters>
+    <filters>
+        <field>Add_to_Closing_Queue__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Status__c</field>
+        <operation>notEqual</operation>
+        <value>Cancelled</value>
+    </filters>
+    <filters>
+        <field>Lender_lookup__c</field>
+        <operation>equals</operation>
+        <value>UWM,Gold Star Mortgage Financial Group Corp</value>
+    </filters>
+    <label>Correspondent Closer View</label>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

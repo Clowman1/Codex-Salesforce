@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Task_for_Bianca_to_Send_Pre_Approval_Box</name>
+        <label>Task for Bianca to Send Pre-Approval Box</label>
+        <locationX>50</locationX>
+        <locationY>431</locationY>
+        <actionName>NewTask</actionName>
+        <actionType>quickAction</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>Subject</name>
+            <value>
+                <stringValue>Send Out Pre-Approval Gift Box</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>ActivityDate</name>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>OwnerId</name>
+            <value>
+                <elementReference>BiancaUserId</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>WhoId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>NewTask</nameSegment>
+    </actionCalls>
+    <apiVersion>57.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Realtor_is_Nickley_Group</name>
+        <label>Realtor is Nickley Group?</label>
+        <locationX>182</locationX>
+        <locationY>323</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Nickley_Group</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Realtor_Buying_Agent__r.Realtor_Group__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>The Nickley Group</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Task_for_Bianca_to_Send_Pre_Approval_Box</targetReference>
+            </connector>
+            <label>Nickley Group</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Create Pre-Approval Gift Box for Nickley Group {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Create Pre-Approval Gift Box for Nickley Group</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Realtor_is_Nickley_Group</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Pre-Approval</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>LeadSource</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Realtor Referral</stringValue>
+            </value>
+        </filters>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+    <variables>
+        <name>BiancaUserId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <stringValue>0055x00000Bf9ia</stringValue>
+        </value>
+    </variables>
+</Flow>

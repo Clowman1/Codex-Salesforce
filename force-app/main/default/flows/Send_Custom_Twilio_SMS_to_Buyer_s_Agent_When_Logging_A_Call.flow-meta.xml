@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Nurture_Twilio_Communication</name>
+        <label>Send Nurture Twilio Communication</label>
+        <locationX>50</locationX>
+        <locationY>647</locationY>
+        <actionName>TwilioSF__TwilioSendSMS</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>fromNumber</name>
+            <value>
+                <elementReference>$Label.Twilio_From_Number</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>message</name>
+            <value>
+                <elementReference>NurtureBody</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>recordId</name>
+            <value>
+                <elementReference>Get_Lead.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>toNumber</name>
+            <value>
+                <elementReference>Get_Lead.Realtor_Buying_Agent__r.PersonMobilePhone</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TwilioSF__TwilioSendSMS</nameSegment>
+    </actionCalls>
+    <actionCalls>
+        <name>Send_Twilio_Communication</name>
+        <label>Send Twilio Communication</label>
+        <locationX>314</locationX>
+        <locationY>647</locationY>
+        <actionName>TwilioSF__TwilioSendSMS</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>fromNumber</name>
+            <value>
+                <elementReference>$Label.Twilio_From_Number</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>message</name>
+            <value>
+                <elementReference>SMSBody</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>recordId</name>
+            <value>
+                <elementReference>Get_Lead.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>toNumber</name>
+            <value>
+                <elementReference>Get_Lead.Realtor_Buying_Agent__r.PersonMobilePhone</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TwilioSF__TwilioSendSMS</nameSegment>
+    </actionCalls>
+    <apiVersion>56.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Lead_is_Realtor_Referral_and_Buyer_s_Agent_is_Filled_In</name>
+        <label>Lead Buyer&apos;s Agent is Filled In?</label>
+        <locationX>380</locationX>
+        <locationY>431</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Send_SMS</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Lead.Realtor_Buying_Agent__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Lead_Status_is_Nurture</targetReference>
+            </connector>
+            <label>Send SMS</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Lead_Status_is_Nurture</name>
+        <label>Lead Status is Nurture?</label>
+        <locationX>182</locationX>
+        <locationY>539</locationY>
+        <defaultConnector>
+            <targetReference>Send_Twilio_Communication</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Nurturing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Lead.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Nurturing</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_Nurture_Twilio_Communication</targetReference>
+            </connector>
+            <label>Nurturing</label>
+        </rules>
+    </decisions>
+    <description>This flow will send a custom message to a Lead&apos;s Buyer Agent when the &quot;External Message to Buyer&apos;s Agent&quot; field is filled in while logging a call in Salesforce. The body of the text will be exactly what is entered in the field on the task.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>External_Message</name>
+        <dataType>String</dataType>
+        <expression>IF(OR(
+ISBLANK({!$Record.External_Message_to_Buyer_s_Agent_Contin__c}), 
+ISNULL({!$Record.External_Message_to_Buyer_s_Agent_Contin__c})
+),
+{!$Record.External_Message_to_Buyer_s_Agent__c},
+{!$Record.External_Message_to_Buyer_s_Agent__c} + {!$Record.External_Message_to_Buyer_s_Agent_Contin__c}
+)</expression>
+    </formulas>
+    <interviewLabel>Send Custom Twilio SMS to Buyer&apos;s Agent When Logging A Call {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Send Custom Twilio SMS to Buyer&apos;s Agent When Logging A Call</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Lead</name>
+        <label>Get Lead</label>
+        <locationX>380</locationX>
+        <locationY>323</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Lead_is_Realtor_Referral_and_Buyer_s_Agent_is_Filled_In</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.WhoId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>254</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Lead</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>External_Message_to_Buyer_s_Agent__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>WhoId</field>
+            <operator>StartsWith</operator>
+            <value>
+                <stringValue>00Q</stringValue>
+            </value>
+        </filters>
+        <object>Task</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <name>NurtureBody</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>{!Get_Lead.FirstName} {!Get_Lead.LastName} Update: {!External_Message}. As always, thank you for the referral. Please contact us directly if you have any further questions. - Reach Home Loans</text>
+    </textTemplates>
+    <textTemplates>
+        <name>SMSBody</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>{!Get_Lead.FirstName} {!Get_Lead.LastName} Update: {!External_Message} - {!$User.FirstName}</text>
+    </textTemplates>
+</Flow>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Realtor_lead__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>This field shows the related lead record for realtors.</description>
+    <label>Realtor lead</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>Lead.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Realtor Lead record type</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Lead</referenceTo>
+    <relationshipLabel>Accounts</relationshipLabel>
+    <relationshipName>Realtor_person_account</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

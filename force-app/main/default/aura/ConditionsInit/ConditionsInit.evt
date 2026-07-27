@@ -1,0 +1,7 @@
+<!--
+ - Created by zeyad on 8/21/2022.
+ -->
+
+<aura:event type="APPLICATION" description="ConditionsInit">
+    <aura:attribute type="Object" name="condition"/>
+</aura:event>

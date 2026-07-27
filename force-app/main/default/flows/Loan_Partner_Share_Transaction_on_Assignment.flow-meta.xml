@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Dummy_Assignment</name>
+        <label>Dummy Assignment</label>
+        <locationX>314</locationX>
+        <locationY>887</locationY>
+        <assignmentItems>
+            <assignToReference>DummyValue</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Value</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Check_If_Loan_Partner_Is_Set</name>
+        <label>Check If Loan Partner Is Set</label>
+        <locationX>314</locationX>
+        <locationY>323</locationY>
+        <defaultConnector>
+            <targetReference>Check_If_There_Was_Previous_Loan_Partner</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>New_Loan_Partner_Set</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Loan_Partner__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Transaction_Share</targetReference>
+            </connector>
+            <label>New Loan Partner Set</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_If_There_Was_Previous_Loan_Partner</name>
+        <label>Check If There Was Previous Loan Partner</label>
+        <locationX>314</locationX>
+        <locationY>671</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>There_Was_Loan_Partner</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior.Loan_Partner__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Delete_Manual_Share</targetReference>
+            </connector>
+            <label>There Was Loan Partner</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Loan Partner: Share Transaction on Assignment {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Loan Partner: Share Transaction on Assignment</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Transaction_Share</name>
+        <label>Create Transaction Share</label>
+        <locationX>50</locationX>
+        <locationY>431</locationY>
+        <connector>
+            <targetReference>Check_If_There_Was_Previous_Loan_Partner</targetReference>
+        </connector>
+        <faultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Check_If_There_Was_Previous_Loan_Partner</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>AccessLevel</field>
+            <value>
+                <stringValue>Read</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ParentId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>RowCause</field>
+            <value>
+                <stringValue>Manual</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>UserOrGroupId</field>
+            <value>
+                <elementReference>$Record.Loan_Partner__c</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Transaction__Share</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordDeletes>
+        <name>Delete_Manual_Share</name>
+        <label>Delete Manual Share</label>
+        <locationX>50</locationX>
+        <locationY>779</locationY>
+        <faultConnector>
+            <targetReference>Dummy_Assignment</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>RowCause</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Manual</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>UserOrGroupId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record__Prior.Loan_Partner__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>ParentId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record__Prior.Id</elementReference>
+            </value>
+        </filters>
+        <object>Transaction__Share</object>
+    </recordDeletes>
+    <start>
+        <locationX>188</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Check_If_Loan_Partner_Is_Set</targetReference>
+        </connector>
+        <filterFormula>OR(
+AND(
+ISNEW(),
+NOT(ISBLANK({!$Record.Loan_Partner__c}))
+),
+ISCHANGED({!$Record.Loan_Partner__c})
+)</filterFormula>
+        <object>Transaction__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>DummyValue</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

@@ -1,0 +1,814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Email_to_close_out_file</fullName>
+        <description>Email to close out file</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>brodrigues@reachhomeloans.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>seckert@reachhomeloans.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Alert_Close_Out_File</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_when_3_days_until_rate_lock_exp_date</fullName>
+        <description>Email when 3 days until rate lock exp date</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Loan_Officer__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>Processor__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Rate_lock_expiration_date_3_days</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_when_5_days_until_rate_lock_exp_date</fullName>
+        <description>Email when 5 days until rate lock exp date</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Loan_Officer__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>Processor__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Rate_lock_expiration_date_5_days</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_when_Closing_Package_Is_Not_Dispositioned</fullName>
+        <description>Email when Closing Package Is Not Dispositioned</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Title_Agent_Email__c</field>
+            <type>email</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Closing_Package_Follow_Up</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_when_day_of_rate_lock_exp_date</fullName>
+        <description>Email when day of rate lock exp date</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Loan_Officer__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>Processor__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Rate_lock_expiration_date_day_of</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_when_new_transaction_is_created</fullName>
+        <ccEmails>submissions@reachhomeloans.com</ccEmails>
+        <description>Email when new transaction is created</description>
+        <protected>false</protected>
+        <senderAddress>reachus@reachhomeloans.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/New_Transaction_email</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_when_transaction_CD_Request_Date_is_populated</fullName>
+        <ccEmails>postclosing@reachhomeloans.com</ccEmails>
+        <description>Email when transaction &quot;CD Request Date&quot; is populated</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>monicaquintero@reachhomeloans.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/CD_Request_Date_field_populated</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_when_transaction_CD_Send_By_Date_is_approaching_with_no_CD_Sent_Date</fullName>
+        <description>Email when transaction CD Send By Date is approaching with no CD Sent Date</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>clowman@reachhomeloans.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>rickie@reachhomeloans.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>seckert@reachhomeloans.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <field>Processor__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/CD_Sent_Date_is_blank</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_when_transaction_Closing_Move_to_Docs_is_populated</fullName>
+        <description>Email when transaction &quot;Closing Move to Docs&quot; is populated</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>monicaquintero@reachhomeloans.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Closing_Move_to_Docs_field_populated</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_when_transaction_Conditionally_Approved_Biz_Dev</fullName>
+        <description>Email when transaction Conditionally Approved Biz Dev</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>astephens@reachhomeloans.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Conditionally_Approved_Transaction_Biz_Dev_Realtor_Referral</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_when_transaction_Conditionally_Approved_Realtor_Referral</fullName>
+        <description>Email when transaction Conditionally Approved Realtor Referral</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>astephens@reachhomeloans.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Conditionally_Approved_Transaction_Biz_Dev_Realtor_Referral</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_when_transaction_closing_date_changes</fullName>
+        <description>Email when transaction closing date changes</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>brodrigues@reachhomeloans.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Transaction_Closing_Date_change</template>
+    </alerts>
+    <alerts>
+        <fullName>Submission_Form_Complete_Alert</fullName>
+        <ccEmails>submissions@reachhomeloans.com</ccEmails>
+        <description>Submission Form Complete</description>
+        <protected>false</protected>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Submission_Form_Complete</template>
+    </alerts>
+    <alerts>
+        <fullName>Transaction_Loan_Commitment_Date_approaching</fullName>
+        <description>Transaction Loan Commitment Date approaching</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>ccash@reachhomeloans.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>clowman@reachhomeloans.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <field>Processor__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Transaction_Loan_Commitment_Date</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>Loan_in_process_date_field_update</fullName>
+        <field>Submitted_to_Processing_Date__c</field>
+        <formula>TODAY()</formula>
+        <name>Loan in process date field update</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Status_Approved_Date_Field_Update</fullName>
+        <field>Loan_Conditionally_Approved_Date__c</field>
+        <formula>TODAY()</formula>
+        <name>Status Approved Date Field Update</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Status_Docs_Ordered_Date_Field_Update</fullName>
+        <field>Docs_Ordered_Date__c</field>
+        <formula>TODAY()</formula>
+        <name>Status Docs Ordered Date Field Update</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Status_Re_Submitted_Field_Update</fullName>
+        <field>Re_submitted_to_Underwriting_Date__c</field>
+        <formula>TODAY()</formula>
+        <name>Status Re-Submitted Field Update</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <rules>
+        <fullName>Application In Text</fullName>
+        <actions>
+            <name>Application_In_Borrower_Sent</name>
+            <type>Task</type>
+        </actions>
+        <actions>
+            <name>Application_In_Text_Sent</name>
+            <type>Task</type>
+        </actions>
+        <actions>
+            <name>BAA_Application_In_Text</name>
+            <type>Task</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Application In</value>
+        </criteriaItems>
+        <description>Application In Text to Buyers Agent and Borrower</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Application Text Sent</fullName>
+        <actions>
+            <name>Application_Text_BA_Sent1</name>
+            <type>Task</type>
+        </actions>
+        <actions>
+            <name>Application_Text_Borrower_Sent2</name>
+            <type>Task</type>
+        </actions>
+        <actions>
+            <name>BAA_Application_Text1</name>
+            <type>Task</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Application</value>
+        </criteriaItems>
+        <description>Application Text to Buyers Agent and Borrower</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Appraisal Ordered Email to Parties</fullName>
+        <actions>
+            <name>Appraisal_Ordered</name>
+            <type>Task</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Transaction__c.Appraisal_1_Ordered_Date__c</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </criteriaItems>
+        <description>Appraisal Ordered Email to Parties</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Approved Email</fullName>
+        <actions>
+            <name>Email_Approved_Review_Request_Clear_to_Close</name>
+            <type>Task</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Approved</value>
+        </criteriaItems>
+        <description>email to all parties when Approved status is selected</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Approved Text</fullName>
+        <actions>
+            <name>Approved_Text</name>
+            <type>Task</type>
+        </actions>
+        <actions>
+            <name>BAA_Approved_Text</name>
+            <type>Task</type>
+        </actions>
+        <actions>
+            <name>Borrower_Approved_Text</name>
+            <type>Task</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Approved</value>
+        </criteriaItems>
+        <description>Approved Text to Buyers Agent and Borrower</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>CD Send notification</fullName>
+        <active>true</active>
+        <criteriaItems>
+            <field>Transaction__c.CD_Sent_Date__c</field>
+            <operation>equals</operation>
+        </criteriaItems>
+        <description>This workflow will run when a transaction has a CD Send By Date approaching, but the CD has not been sent (CD Sent Date is blank).</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>Email_when_transaction_CD_Send_By_Date_is_approaching_with_no_CD_Sent_Date</name>
+                <type>Alert</type>
+            </actions>
+            <offsetFromField>Transaction__c.CD_Sent_By_Date__c</offsetFromField>
+            <timeLength>-14</timeLength>
+            <workflowTimeTriggerUnit>Hours</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+    </rules>
+    <rules>
+        <fullName>Conditionally Approved Text</fullName>
+        <actions>
+            <name>BAA_Conditionally_Approved_Text</name>
+            <type>Task</type>
+        </actions>
+        <actions>
+            <name>Borrower_Conditionally_Approved_Text</name>
+            <type>Task</type>
+        </actions>
+        <actions>
+            <name>Conditionally_Approved_Text</name>
+            <type>Task</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Conditionally Approved</value>
+        </criteriaItems>
+        <description>Conditionally Approved Text to Buyers Agent and Borrower</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Email Alert To Close Out File</fullName>
+        <actions>
+            <name>Email_to_close_out_file</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Closed</value>
+        </criteriaItems>
+        <description>Sends an email to check fields, start marketing, etc (close out process)</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Re-Submitted Text</fullName>
+        <actions>
+            <name>BAA_Re_Submitted_Text</name>
+            <type>Task</type>
+        </actions>
+        <actions>
+            <name>Borrower_Re_Submitted_Text</name>
+            <type>Task</type>
+        </actions>
+        <actions>
+            <name>Re_Submitted_Text</name>
+            <type>Task</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Re-Submitted</value>
+        </criteriaItems>
+        <description>Re-Submitted Text to Buyers Agent and Borrower</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Status Application Date Field Update</fullName>
+        <active>false</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Application</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Status Application In Field Update</fullName>
+        <active>false</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Application In</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Status Conditional Approved Date Field Update</fullName>
+        <actions>
+            <name>Status_Approved_Date_Field_Update</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Conditionally Approved</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Status Docs Ordered Date Field Update</fullName>
+        <actions>
+            <name>Status_Docs_Ordered_Date_Field_Update</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Docs Ordered</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Status Processing Date Field Update</fullName>
+        <actions>
+            <name>Loan_in_process_date_field_update</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Processing</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Status Re-Submitted Field Update</fullName>
+        <actions>
+            <name>Status_Re_Submitted_Field_Update</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <booleanFilter>(1 OR 2) AND 3</booleanFilter>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Re-Submitted</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Re-Submitted (Items Needed)</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Transaction__c.Re_submitted_to_Underwriting_Date__c</field>
+            <operation>equals</operation>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Status Submitted%2FDate Field Update</fullName>
+        <active>false</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </criteriaItems>
+        <description>This will populate the date field when the status of a file changes in the pipeline.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Submitted Text</fullName>
+        <actions>
+            <name>BAA_Submitted_Text</name>
+            <type>Task</type>
+        </actions>
+        <actions>
+            <name>Submitted_Text_BA_Sent</name>
+            <type>Task</type>
+        </actions>
+        <actions>
+            <name>Submitted_Text_Borrower_Sent</name>
+            <type>Task</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </criteriaItems>
+        <description>Submitted Text to Buyers Agent and Borrower</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Submitted to Investor Email</fullName>
+        <actions>
+            <name>Email_Submitted_to_Investor</name>
+            <type>Task</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Transaction__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </criteriaItems>
+        <description>email to all parties when Submitted status is selected</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Transaction Closing Date change</fullName>
+        <actions>
+            <name>Email_when_transaction_closing_date_changes</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <formula>AND(ISCHANGED( Closing_Date__c ),  OR(ISPICKVAL(  Biz_Dev__c  , &quot;Biz Dev - Carey&quot;), ISPICKVAL(  Biz_Dev__c  , &quot;Biz Dev - Boufford&quot;),ISPICKVAL(Biz_Dev__c , &quot;Biz Dev - Saludes&quot;) ) )</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <tasks>
+        <fullName>Application_In_Borrower_Sent</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-17ed</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Application In Borrower Sent</subject>
+    </tasks>
+    <tasks>
+        <fullName>Application_In_Text_Sent</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-7054</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Application In Text BA Sent</subject>
+    </tasks>
+    <tasks>
+        <fullName>Application_Text_BA_Sent</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-MtgPlanner_CRM__Transaction_Property__c-8e2d</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Application Text BA Sent</subject>
+    </tasks>
+    <tasks>
+        <fullName>Application_Text_BA_Sent1</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-ae26</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Application Text BA Sent</subject>
+    </tasks>
+    <tasks>
+        <fullName>Application_Text_Borrower_Sent</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-MtgPlanner_CRM__Transaction_Property__c-6fcb</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Application Text Borrower Sent</subject>
+    </tasks>
+    <tasks>
+        <fullName>Application_Text_Borrower_Sent2</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-215b</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Application Text Borrower Sent</subject>
+    </tasks>
+    <tasks>
+        <fullName>Appraisal_Ordered</fullName>
+        <assignedToType>owner</assignedToType>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Appraisal Ordered</subject>
+    </tasks>
+    <tasks>
+        <fullName>Approved_Text</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-5327</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Approved Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>BAA_Application_In_Text</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-5138</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>BAA Application In Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>BAA_Application_Text</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-MtgPlanner_CRM__Transaction_Property__c-0b02</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>BAA Application Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>BAA_Application_Text1</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-5c09</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>BAA Application Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>BAA_Approved_Text</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-5bab</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>BAA Approved Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>BAA_Conditionally_Approved_Text</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-612c</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>BAA Conditionally Approved Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>BAA_Re_Submitted_Text</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-4304</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>BAA Re-Submitted Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>BAA_Submitted_Text</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-52ba</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>BAA Submitted Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>Borrower_Approved_Text</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-ce0f</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Borrower Approved Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>Borrower_Conditionally_Approved_Text</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-0257</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Borrower Conditionally Approved Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>Borrower_Re_Submitted_Text</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-1f3a</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Borrower Re-Submitted Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>Conditionally_Approved_Text</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-d1c0</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Conditionally Approved Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>Email_Approved_Review_Request_Clear_to_Close</fullName>
+        <assignedToType>owner</assignedToType>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Email: Approved - Review Request - Clear to Close</subject>
+    </tasks>
+    <tasks>
+        <fullName>Email_Submitted_to_Investor</fullName>
+        <assignedToType>owner</assignedToType>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Email: Submitted to Investor</subject>
+    </tasks>
+    <tasks>
+        <fullName>Re_Submitted_Text</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-1899</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Re-Submitted Text</subject>
+    </tasks>
+    <tasks>
+        <fullName>Submitted_Text_BA_Sent</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-7e22</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Submitted Text BA Sent</subject>
+    </tasks>
+    <tasks>
+        <fullName>Submitted_Text_Borrower_Sent</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>SMS-Notification-Transaction__c-27c1</description>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Completed</status>
+        <subject>Submitted Text Borrower Sent</subject>
+    </tasks>
+</Workflow>

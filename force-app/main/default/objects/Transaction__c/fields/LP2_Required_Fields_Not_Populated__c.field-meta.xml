@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LP2_Required_Fields_Not_Populated__c</fullName>
+    <formula>OR(
+ISBLANK(TEXT(Loan_Type_2nd_TD__c)),
+ISBLANK(Loan_2nd_TD__c),
+ISBLANK(TEXT(Doc_Type_2nd_TD__c)),
+ISBLANK(Loan_Amount_2nd__c),
+ISBLANK(Term_2nd__c)
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>LP2 Required Fields Not Populated</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

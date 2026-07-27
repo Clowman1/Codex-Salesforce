@@ -1,0 +1,13 @@
+<aura:component implements="forceCommunity:layout,forceCommunity:availableForAllPageTypes" access="global">
+    <aura:attribute name="component1" type="Aura.Component[]" required="false"></aura:attribute>
+    <aura:attribute name="component2" type="Aura.Component[]" required="false"></aura:attribute>
+    <aura:attribute name="component3" type="Aura.Component[]" required="false"></aura:attribute>
+    <aura:attribute name="component4" type="Aura.Component[]" required="false"></aura:attribute>
+    <lightning:layout multipleRows="true">
+        <lightning:layoutItem size="12" class="slds-m-top_xx-large ">
+            <div class="slds-container_x-large">
+                {!v.component1}
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

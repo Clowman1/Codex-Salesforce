@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Agent_Intake_Form__c</fullName>
+    <description>Field to be used on Intake Form</description>
+    <label>Agent (Intake Form)</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>No preferred LO</fullName>
+                <default>false</default>
+                <label>No preferred LO</label>
+            </value>
+            <value>
+                <fullName>Brandon Brotsky</fullName>
+                <default>false</default>
+                <label>Brandon Brotsky</label>
+            </value>
+            <value>
+                <fullName>Joseph Olmsted</fullName>
+                <default>false</default>
+                <label>Joseph Olmsted</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

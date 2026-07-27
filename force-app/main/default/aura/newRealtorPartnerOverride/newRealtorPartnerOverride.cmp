@@ -1,0 +1,49 @@
+<aura:component implements="lightning:actionOverride,flexipage:availableForAllPageTypes" access="global">
+    <aura:attribute name="isSaving" type="Boolean" default="false"/>
+
+    <section class="realtor-override">
+        <header class="override-hero">
+            <p>Reach Home Loans</p>
+            <h1>Create New Realtor Partner</h1>
+            <span>Create a Realtor Person Account with only the fields needed to start the relationship.</span>
+        </header>
+        <div class="override-body">
+            <lightning:recordEditForm
+                aura:id="realtorForm"
+                objectApiName="Account"
+                recordTypeId="012f20000010aScAAI"
+                onsubmit="{!c.handleSubmit}"
+                onsuccess="{!c.handleSuccess}"
+                onerror="{!c.handleError}">
+                <lightning:messages/>
+
+                <div class="form-section">
+                    <h2>Required Details</h2>
+                    <div class="form-grid">
+                        <lightning:inputField fieldName="FirstName" required="true"/>
+                        <lightning:inputField fieldName="LastName" required="true"/>
+                        <lightning:inputField fieldName="PersonMobilePhone" required="true"/>
+                        <lightning:inputField fieldName="PersonEmail" required="true"/>
+                        <lightning:inputField fieldName="Biz_Dev_Designation__c" required="true"/>
+                    </div>
+                </div>
+
+                <div class="form-section form-section-muted">
+                    <h2>Partner Details</h2>
+                    <div class="form-grid">
+                        <lightning:inputField fieldName="PersonTitle"/>
+                        <lightning:inputField fieldName="Realtor_Group__c"/>
+                        <lightning:inputField fieldName="Transaction_Coordinator__c"/>
+                        <lightning:inputField fieldName="Realtor_Individual_License_Number__c"/>
+                        <lightning:inputField fieldName="Company_License_Number__c"/>
+                    </div>
+                </div>
+
+                <footer class="override-footer">
+                    <lightning:button label="Cancel" onclick="{!c.cancel}" disabled="{!v.isSaving}"/>
+                    <lightning:button type="submit" variant="brand" label="Create Realtor Partner" disabled="{!v.isSaving}"/>
+                </footer>
+            </lightning:recordEditForm>
+        </div>
+    </section>
+</aura:component>

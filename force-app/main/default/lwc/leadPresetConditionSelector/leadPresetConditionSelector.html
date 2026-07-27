@@ -1,0 +1,83 @@
+<template>
+    <section class="selector">
+        <div class="selector-header">
+            <div>
+                <p class="eyebrow">Preset Conditions</p>
+                <h2>Review and choose borrower conditions</h2>
+                <p class="subcopy">
+                    Common items are pre-checked. Uncheck anything that does not apply, or add less common items below.
+                </p>
+            </div>
+            <div class="selection-count">{selectedCount} selected</div>
+        </div>
+
+        <template lwc:if={isLoading}>
+            <lightning-spinner alternative-text="Loading preset conditions"></lightning-spinner>
+        </template>
+
+        <template lwc:if={errorMessage}>
+            <div class="error">{errorMessage}</div>
+        </template>
+
+        <template lwc:if={hasSections}>
+            <div class="section-list">
+                <template for:each={sections} for:item="section">
+                    <article class={section.className} key={section.name}>
+                        <div class="section-heading">
+                            <div>
+                                <p class="section-kicker">{section.category}</p>
+                                <h3>{section.title}</h3>
+                                <p class="section-note">{section.note}</p>
+                            </div>
+                            <div class="section-actions">
+                                <span class="section-count">{section.selectedCount}/{section.items.length}</span>
+                                <template lwc:if={section.isIncome}>
+                                    <button
+                                        class="section-toggle"
+                                        type="button"
+                                        data-section={section.name}
+                                        onclick={handleToggleSection}
+                                        aria-expanded={section.isExpanded}
+                                    >
+                                        <span class="toggle-symbol">{section.toggleSymbol}</span>
+                                        {section.toggleLabel}
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                        <template lwc:if={section.isExpanded}>
+                            <div class="condition-grid">
+                                <template for:each={section.items} for:item="item">
+                                    <label class={item.className} key={item.id}>
+                                        <input
+                                            type="checkbox"
+                                            checked={item.selected}
+                                            data-key={item.key}
+                                            onchange={handleToggle}
+                                        />
+                                        <span class="condition-copy">
+                                            <span class="condition-label">{item.label}</span>
+                                            <template lwc:if={item.description}>
+                                                <span class="condition-description">{item.description}</span>
+                                            </template>
+                                        </span>
+                                    </label>
+                                </template>
+                            </div>
+                        </template>
+                    </article>
+                </template>
+            </div>
+
+            <div class="actions">
+                <lightning-button label="Refresh Presets" onclick={loadConditions}></lightning-button>
+                <lightning-button
+                    label="Create Selected Conditions"
+                    variant="brand"
+                    onclick={handleCreate}
+                    disabled={disableCreate}
+                ></lightning-button>
+            </div>
+        </template>
+    </section>
+</template>

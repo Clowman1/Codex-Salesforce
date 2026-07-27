@@ -1,0 +1,18 @@
+<template>
+    <section class="submission-shell">
+        <header class="submission-hero">
+            <div>
+                <p class="submission-eyebrow">Reach Home Loans</p>
+                <h1>Submission Form</h1>
+                <p>Complete the loan setup details for this transaction.</p>
+            </div>
+        </header>
+
+        <div class="submission-body">
+            <template if:false={isReady}>
+                <div class="submission-loading">Loading transaction context...</div>
+            </template>
+            <lightning-flow onstatuschange={handleStatusChange}></lightning-flow>
+        </div>
+    </section>
+</template>

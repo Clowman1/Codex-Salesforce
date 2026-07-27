@@ -1,0 +1,104 @@
+<template>
+    <div class="portal-shell">
+        <aside class="brand-rail">
+            <img class="brand-logo" src={reachLogoUrl} alt="Reach Home Loans" />
+        </aside>
+        <main class="imbus-main-container">
+            <div class="imbus-main-container-header hero-header">
+                <div class="imbus-title">
+                    <h1 class="imbus-title-greeting">Welcome Back, {displayBorrowerName}</h1>
+                    <h4 class="imbus-title-description">You can manage your documents here</h4>
+                </div>
+            </div>
+            <div class="imbus-stats-container">
+                <div class="imbus-stat-card">
+                    <div class="imbus-stat-title">
+                        <div class="imbus-stat-text">Documents Needed</div>
+                    </div>
+                    <div class="imbus-stat-number-container">
+                        <div class="imbus-stat-number">
+                            <div class="imbus-stat-number-text">{documentStatus.needed}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="imbus-stat-card">
+                    <div class="imbus-stat-title">
+                        <div class="imbus-stat-text">Documents Uploaded</div>
+                    </div>
+                    <div class="imbus-stat-number-container">
+                        <div class="imbus-stat-number">
+                            <div class="imbus-stat-number-text">{documentStatus.pending}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="imbus-stat-card">
+                    <div class="imbus-stat-title">
+                        <div class="imbus-stat-text">Documents Approved</div>
+                    </div>
+                    <div class="imbus-stat-number-container">
+                        <div class="imbus-stat-number">
+                            <div class="imbus-stat-number-text">{documentStatus.approved}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="imbus-main-container-header">
+                <div class="imbus-title">
+                    <h2 class="imbus-title-greeting">Documents Required</h2>
+                    <h3 class="imbus-title-description">The documents requested below help your loan team keep your file moving before your loan is converted to a transaction.</h3>
+                </div>
+            </div>
+            <div class="imbus-document-table">
+                <template lwc:if={isPhone}>
+                    <div class="imbus-table-header imbus-table-row">
+                        <div class="column-title">Document Name</div>
+                        <div class="column-title">Document Description</div>
+                        <div class="column-title">Actions</div>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="imbus-table-header imbus-table-row">
+                        <div class="column-title">Document Name</div>
+                        <div class="column-title">Status</div>
+                        <div class="column-title">Document Description</div>
+                        <div class="column-title">Actions</div>
+                    </div>
+                </template>
+                <template for:each={requests} for:item="request">
+                    <c-lead-borrower-portal-document-row
+                        key={request.id}
+                        lead-id={recordId}
+                        portal-hash={hashRecordId}
+                        request={request}
+                        onrequestupdated={handleRequestUpdated}
+                        onuploaderror={handleUploadError}>
+                    </c-lead-borrower-portal-document-row>
+                </template>
+            </div>
+        </main>
+        <aside class="team-rail">
+            <template lwc:if={showLoanOfficerCard}>
+                <div class="team-card">
+                    <div class="team-card-label">Your Loan Officer</div>
+                    <template lwc:if={showPhoto}>
+                        <img class="team-photo" src={photoUrl} alt={loanOfficerName} />
+                    </template>
+                    <template lwc:else>
+                        <div class="team-photo-placeholder">{loanOfficerName}</div>
+                    </template>
+                    <div class="team-name">{loanOfficerName}</div>
+                    <div class="team-title">{displayTitle}</div>
+                    <template lwc:if={loanOfficerNmls}>
+                        <div class="team-detail">{nmlsLabel}</div>
+                    </template>
+                    <template lwc:if={displayPhone}>
+                        <div class="team-detail">{displayPhone}</div>
+                    </template>
+                    <template lwc:if={loanOfficerEmail}>
+                        <div class="team-email">{loanOfficerEmail}</div>
+                    </template>
+                </div>
+            </template>
+        </aside>
+    </div>
+</template>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Doc_Type_2nd_TD__c</fullName>
+    <label>Doc Type (2nd TD)</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Full</fullName>
+                <default>false</default>
+                <label>Full</label>
+            </value>
+            <value>
+                <fullName>Stated</fullName>
+                <default>false</default>
+                <label>Stated</label>
+            </value>
+            <value>
+                <fullName>Lite</fullName>
+                <default>false</default>
+                <label>Lite</label>
+            </value>
+            <value>
+                <fullName>SISA</fullName>
+                <default>false</default>
+                <label>SISA</label>
+            </value>
+            <value>
+                <fullName>SIVA</fullName>
+                <default>false</default>
+                <label>SIVA</label>
+            </value>
+            <value>
+                <fullName>SINA</fullName>
+                <default>false</default>
+                <label>SINA</label>
+            </value>
+            <value>
+                <fullName>VINA</fullName>
+                <default>false</default>
+                <label>VINA</label>
+            </value>
+            <value>
+                <fullName>No Ratio</fullName>
+                <default>false</default>
+                <label>No Ratio</label>
+            </value>
+            <value>
+                <fullName>NINA</fullName>
+                <default>false</default>
+                <label>NINA</label>
+            </value>
+            <value>
+                <fullName>No Doc</fullName>
+                <default>false</default>
+                <label>No Doc</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

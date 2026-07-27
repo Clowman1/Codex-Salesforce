@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>55.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Is_Recent_SMS_Found</name>
+        <label>Is Recent SMS Found?</label>
+        <locationX>182</locationX>
+        <locationY>395</locationY>
+        <defaultConnectorLabel>NO SMS</defaultConnectorLabel>
+        <rules>
+            <name>Yes_SMS_Is_Found</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Most_Recent_Outbound_SMS</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Message_Owner_0</targetReference>
+            </connector>
+            <label>Yes SMS Is Found</label>
+        </rules>
+    </decisions>
+    <description>This Flow will assign an inbound reply to the appropriate party and send the Owner a text message. Redacted previous versions as we are now simply assigning the message to the last user who sent an outbound message.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>ExceptionMessage</name>
+        <dataType>String</dataType>
+        <expression>&quot;There was an error assigning this message to the appropriate Owner. Please use the following link to view the message in question: &quot; + &quot;https://reachhomeloans.lightning.force.com/lightning/r/TwilioSF__Message__c/&quot; + {!$Record.Id} + &quot;/view&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>MessageBody</name>
+        <dataType>String</dataType>
+        <expression>&quot;You have a new reply from: &quot; + {!$Record.TwilioSF__Lead__r.Name} + &quot;. Please login to Salesforce to see the message and reply.&quot;</expression>
+    </formulas>
+    <interviewLabel>Route Twilio Reply to Owner {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Route Twilio Reply to Owner</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Most_Recent_Outbound_SMS</name>
+        <label>Get Most Recent Outbound SMS</label>
+        <locationX>182</locationX>
+        <locationY>287</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Is_Recent_SMS_Found</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>TwilioSF__To_Number__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.TwilioSF__From_Number__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>TwilioSF__Direction__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>outbound-api</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>TwilioSF__Message__c</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Message_Owner_0</name>
+        <label>Update Message Owner</label>
+        <locationX>50</locationX>
+        <locationY>503</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>Get_Most_Recent_Outbound_SMS.OwnerId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Most_Recent_Outbound_SMS</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>TwilioSF__Direction__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>inbound</stringValue>
+            </value>
+        </filters>
+        <object>TwilioSF__Message__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+    <triggerOrder>500</triggerOrder>
+</Flow>

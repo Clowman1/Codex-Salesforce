@@ -1,0 +1,94 @@
+.choice-shell {
+    background:
+        radial-gradient(circle at top left, rgba(255, 171, 61, 0.16), transparent 28rem),
+        linear-gradient(135deg, #172543 0%, #22365b 55%, #304967 100%);
+    border: 1px solid #9bbce7;
+    border-radius: 22px;
+    box-shadow: 0 20px 42px rgba(23, 37, 67, 0.22);
+    padding: 1.25rem;
+}
+
+.choice-header {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.eyebrow {
+    color: #ffab3d;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    margin: 0 0 0.3rem;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-size: 1.45rem;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+p {
+    color: #dbe7f7;
+    margin: 0.35rem 0 0;
+}
+
+.choice-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.choice-card {
+    background: linear-gradient(180deg, #ffffff, #f6f9fe);
+    border: 1px solid #c7d6ea;
+    border-radius: 18px;
+    box-shadow: 0 12px 26px rgba(9, 21, 42, 0.18);
+    color: #172543;
+    cursor: pointer;
+    display: grid;
+    gap: 0.4rem;
+    padding: 1rem;
+    text-align: left;
+    transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.choice-card:hover,
+.choice-card-selected {
+    border-color: #ffab3d;
+    box-shadow: 0 16px 34px rgba(245, 143, 31, 0.25);
+    transform: translateY(-2px);
+}
+
+.choice-card-selected {
+    background: linear-gradient(135deg, rgba(255, 171, 61, 0.22), #ffffff);
+}
+
+.card-kicker {
+    color: #f59f2f;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.card-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+.card-copy {
+    color: #52627a;
+    font-size: 0.86rem;
+    line-height: 1.35;
+}
+
+.error {
+    background: #fff0f2;
+    border: 1px solid #ffb7c2;
+    border-radius: 12px;
+    color: #b42338;
+    font-weight: 700;
+    margin-top: 1rem;
+    padding: 0.75rem;
+}

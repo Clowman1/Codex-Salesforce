@@ -1,0 +1,30 @@
+<template>
+    <section class="details-shell">
+        <div class="details-header">
+            <p class="eyebrow">Initial Bundle Details</p>
+            <h2>Tell us how to build the starter condition set</h2>
+            <p>Select the loan purpose below. Income conditions are available on the next screen for manual selection.</p>
+        </div>
+
+        <div class="group">
+            <div class="group-heading">
+                <span>Loan Purpose</span>
+                <small>Required</small>
+            </div>
+            <div class="card-grid two">
+                <button class={purchaseClass} type="button" data-field="loanPurpose" data-value="Purchase" onclick={handleSelect}>
+                    <span class="card-title">Purchase</span>
+                    <span class="card-copy">Starts with common identification and purchase asset defaults.</span>
+                </button>
+                <button class={refinanceClass} type="button" data-field="loanPurpose" data-value="Refinance" onclick={handleSelect}>
+                    <span class="card-title">Refinance</span>
+                    <span class="card-copy">Starts with common identification defaults.</span>
+                </button>
+            </div>
+        </div>
+
+        <template lwc:if={errorMessage}>
+            <div class="error">{errorMessage}</div>
+        </template>
+    </section>
+</template>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Realtor Referral</fullName>
+        <default>false</default>
+        <label>Realtor Referral</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Past Client</fullName>
+        <default>false</default>
+        <label>Past Client</label>
+    </standardValue>
+    <standardValue>
+        <fullName>InIt Webinar</fullName>
+        <default>false</default>
+        <label>InIt Webinar</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Benjamin B.</fullName>
+        <default>false</default>
+        <label>Benjamin B.</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Personal Referral</fullName>
+        <default>false</default>
+        <label>Personal Referral</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Nickley Listing Credit</fullName>
+        <default>false</default>
+        <label>Nickley Listing Credit</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Google_Organic</fullName>
+        <default>false</default>
+        <label>Google</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Website - Purchase</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Website - Purchase</label>
+    </standardValue>
+    <standardValue>
+        <fullName>RHL Main Line - Sales</fullName>
+        <default>false</default>
+        <label>RHL Main Line - Sales</label>
+    </standardValue>
+    <standardValue>
+        <fullName>YouTube</fullName>
+        <default>false</default>
+        <label>YouTube</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Instagram</fullName>
+        <default>false</default>
+        <label>Instagram</label>
+    </standardValue>
+    <standardValue>
+        <fullName>IGDM</fullName>
+        <default>false</default>
+        <label>IGDM</label>
+    </standardValue>
+    <standardValue>
+        <fullName>TikTok</fullName>
+        <default>false</default>
+        <label>TikTok</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Chat GPT</fullName>
+        <default>false</default>
+        <label>Chat GPT</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Claude</fullName>
+        <default>false</default>
+        <label>Claude</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Gemini</fullName>
+        <default>false</default>
+        <label>Gemini</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Website</fullName>
+        <default>false</default>
+        <label>Website</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Hometown Hero - FB</fullName>
+        <default>false</default>
+        <label>Hometown Hero - FB</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Nickley ISA</fullName>
+        <default>false</default>
+        <label>Nickley ISA</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Previous Client Referral</fullName>
+        <default>false</default>
+        <label>Previous Client Referral</label>
+    </standardValue>
+    <standardValue>
+        <fullName>VM Refinance</fullName>
+        <default>false</default>
+        <label>VM Refinance</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Reach In Market Dialer</fullName>
+        <default>false</default>
+        <label>Reach In Market Dialer</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Employee Referral</fullName>
+        <default>false</default>
+        <label>Employee Referral</label>
+    </standardValue>
+    <standardValue>
+        <fullName>VM Purchase</fullName>
+        <default>false</default>
+        <label>VM Purchase</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Zillow</fullName>
+        <default>false</default>
+        <label>Zillow</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Other</fullName>
+        <default>false</default>
+        <label>Other</label>
+    </standardValue>
+    <standardValue>
+        <fullName>RDC</fullName>
+        <default>false</default>
+        <label>RDC</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Webinar</fullName>
+        <default>false</default>
+        <label>Webinar</label>
+    </standardValue>
+    <standardValue>
+        <fullName>E - Webinar</fullName>
+        <default>false</default>
+        <label>E - Webinar</label>
+    </standardValue>
+    <standardValue>
+        <fullName>VSL</fullName>
+        <default>false</default>
+        <label>VSL</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Consumer Webinar</fullName>
+        <default>false</default>
+        <label>Consumer Webinar</label>
+    </standardValue>
+</StandardValueSet>

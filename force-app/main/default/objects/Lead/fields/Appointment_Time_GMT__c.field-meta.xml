@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Appointment_Time_GMT__c</fullName>
+    <description>This shows the time of the most recently added event in GMT time zone.</description>
+    <label>Appointment Time GMT</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Time</type>
+</CustomField>

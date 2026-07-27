@@ -1,0 +1,18 @@
+<template>
+    <lightning-modal-header label="Upload Files"></lightning-modal-header>
+    <lightning-modal-body>
+        <div class="upload-container">
+            <lightning-file-upload
+                    label=""
+                    name="fileUploader"
+                    accept=".pdf,.png,.jpg,.jpeg,.doc"
+                    record-id={loanId}
+                    data-id="fileUploader"
+                    onuploadfinished={handleUploadFinished}
+                    multiple
+                    variant="label-hidden"
+            >
+            </lightning-file-upload>
+        </div>
+    </lightning-modal-body>
+</template>

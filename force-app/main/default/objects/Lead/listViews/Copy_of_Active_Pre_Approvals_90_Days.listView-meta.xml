@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Copy_of_Active_Pre_Approvals_90_Days</fullName>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>LEAD.LAST_ACTIVITY</columns>
+    <columns>LEAD.FIRST_NAME</columns>
+    <columns>LEAD.LAST_NAME</columns>
+    <columns>Pre_Approval_Date__c</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>Loan_Amount__c</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <columns>Biz_Dev__c</columns>
+    <columns>Appointment_Date_Time__c</columns>
+    <columns>Owner__c</columns>
+    <columns>Realtor_Buying_Agent__c</columns>
+    <columns>Last_Call_Attempt_RingCentral__c</columns>
+    <columns>Last_SMS_Attempt_RingCentral__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>equals</operation>
+        <value>Pre-Approval</value>
+    </filters>
+    <filters>
+        <field>LEAD.CONVERTED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>Owner__c</field>
+        <operation>contains</operation>
+        <value>Fritz,Straight</value>
+    </filters>
+    <label>Zach &amp; Megan&apos;s Pre-Approvals</label>
+    <sharedTo>
+        <group>Admins</group>
+        <group>Daniel_Rubio_Group_for_Sharing</group>
+        <group>Joey_s_Group_For_Sharing</group>
+    </sharedTo>
+</ListView>

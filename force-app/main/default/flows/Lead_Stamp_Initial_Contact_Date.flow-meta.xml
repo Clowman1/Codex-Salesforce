@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Stamp_Initial_Contact_Date</name>
+        <label>Stamp Initial Contact Date</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Initial_Contact_Date__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <environments>Default</environments>
+    <interviewLabel>Lead: Stamp Initial Contact Date {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead: Stamp Initial Contact Date</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Stamp_Initial_Contact_Date</targetReference>
+        </connector>
+        <filterFormula>AND(
+ISCHANGED({!$Record.Status}),
+OR(CONTAINS(TEXT(PRIORVALUE({!$Record.Status})), &apos;Contact Attempt&apos;), TEXT(PRIORVALUE({!$Record.Status})) = &apos;Contacted/Call Back&apos;),
+NOT(OR(CONTAINS(TEXT({!$Record.Status}), &apos;Contact Attempt&apos;), TEXT({!$Record.Status}) = &apos;Contacted/Call Back&apos;))
+)</filterFormula>
+        <object>Lead</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

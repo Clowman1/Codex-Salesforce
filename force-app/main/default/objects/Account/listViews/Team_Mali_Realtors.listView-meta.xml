@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Team_Mali_Realtors</fullName>
+    <columns>ACCOUNT.CREATED_DATE</columns>
+    <columns>ACCOUNT.LAST_ACTIVITY</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Status__pc</columns>
+    <columns>PC_TITLE</columns>
+    <columns>Appointment_Date_Time__c</columns>
+    <columns>ACCOUNT.PHONE1</columns>
+    <columns>PC_PHONE3</columns>
+    <columns>PC_EMAIL</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>Group__pc</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>ACCOUNT.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>PersonAccount.PersonAccount</value>
+    </filters>
+    <filters>
+        <field>CORE.USERS.LAST_NAME</field>
+        <operation>contains</operation>
+        <value>Mali</value>
+    </filters>
+    <filters>
+        <field>Status__pc</field>
+        <operation>notEqual</operation>
+        <value>Nurture</value>
+    </filters>
+    <label>Team Mali Realtors</label>
+    <sharedTo>
+        <group>Mike_Mali_For_Sharing</group>
+    </sharedTo>
+</ListView>

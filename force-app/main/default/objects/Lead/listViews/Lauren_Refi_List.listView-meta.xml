@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lauren_Refi_List</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>LEAD.PHONE</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>Last_SMS_Attempt_RingCentral__c</columns>
+    <columns>Last_Call_Attempt_RingCentral__c</columns>
+    <columns>LEAD.LAST_ACTIVITY</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Owner__c</field>
+        <operation>equals</operation>
+        <value>Lauren Williams</value>
+    </filters>
+    <filters>
+        <field>LEAD.CREATED_DATE</field>
+        <operation>equals</operation>
+        <value>8/7/2025 12:00 AM</value>
+    </filters>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notEqual</operation>
+        <value>Nurturing</value>
+    </filters>
+    <label>Past Client Refinance List</label>
+    <sharedTo>
+        <group>Admins</group>
+        <group>Lauren_Only</group>
+        <group>Loan_Officer_Sales</group>
+    </sharedTo>
+</ListView>

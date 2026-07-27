@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Realtor Lead process</fullName>
+    <isActive>true</isActive>
+    <values>
+        <fullName>Active</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Call - Referral Pending</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Contact Attempt 1</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Contact Attempt 2</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Contact Attempt 3</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Contact Attempt 4</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Contact Attempt 5</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Contact Attempt 6</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Contacted%2FCall Back</fullName>
+        <default>true</default>
+    </values>
+    <values>
+        <fullName>Meeting Complete</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Meeting Set</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>New</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Nurturing</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Nurturing - Meeting Complete</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Scheduling Meeting</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Working</fullName>
+        <default>false</default>
+    </values>
+</BusinessProcess>

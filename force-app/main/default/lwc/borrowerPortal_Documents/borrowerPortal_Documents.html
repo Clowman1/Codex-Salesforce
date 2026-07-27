@@ -1,0 +1,76 @@
+<!--
+ - Created by zeyad on 7/14/2024.
+ -->
+ 
+<!-- Borrower Portal Documents -->
+<template>
+    <div class="imbus-main-container">
+        <div class="imbus-main-container-header">
+            <div class="imbus-title">
+                <h1 class="imbus-title-greeting">Welcome Back, {borrowerName}</h1>
+                <h4 class="imbus-title-description">You can manage your documents here</h4>
+            </div>
+        </div>
+        <div class="imbus-stats-container">
+            <div class="imbus-stat-card">
+                <div class="imbus-stat-title">
+                    <div class="imbus-stat-text">Documents Needed</div>
+                    <div></div>
+                </div>
+                <div class="imbus-stat-number-container">
+                    <div class="imbus-stat-number">
+                        <div class="imbus-stat-number-text">{documentStatus.requested}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="imbus-stat-card">
+                <div class="imbus-stat-title">
+                    <div class="imbus-stat-text">Documents Uploaded</div>
+                    <div></div>
+                </div>
+                <div class="imbus-stat-number-container">
+                    <div class="imbus-stat-number">
+                        <div class="imbus-stat-number-text">{documentStatus.pending}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="imbus-stat-card">
+                <div class="imbus-stat-title">
+                    <div class="imbus-stat-text">Documents Approved</div>
+                    <div></div>
+                </div>
+                <div class="imbus-stat-number-container">
+                    <div class="imbus-stat-number">
+                        <div class="imbus-stat-number-text">{documentStatus.approved}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="imbus-main-container-header">
+            <div class="imbus-title">
+                <h2 class="imbus-title-greeting">Documents Required</h2>
+                <h3 class="imbus-title-description">The documents requested below will be used to satisfy underwriting conditions that must be met in order for your loan to fund.</h3>
+            </div>
+        </div>
+        <div class="imbus-document-table">
+            <template lwc:if={isPhone}>
+                <div  class="imbus-table-header imbus-table-row">
+                    <div class="column-title">Document Name</div>
+                    <div class="column-title">Document Description</div>
+                    <div class="column-title">Actions</div>
+                </div>
+            </template>
+            <template lwc:else>
+                <div  class="imbus-table-header imbus-table-row">
+                    <div class="column-title">Document Name</div>
+                    <div class="column-title">Status</div>
+                    <div class="column-title">Document Description</div>
+                    <div class="column-title">Actions</div>
+                </div>
+            </template>
+            <template for:each={conditions} for:item="condition">
+                <c-borrower-portal-document-row key={condition} loan-id={recordId} condition={condition}></c-borrower-portal-document-row>
+            </template>
+        </div>
+    </div>
+</template>

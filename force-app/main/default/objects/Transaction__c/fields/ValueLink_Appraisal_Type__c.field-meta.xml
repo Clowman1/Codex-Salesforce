@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ValueLink_Appraisal_Type__c</fullName>
+    <label>ValueLink Appraisal Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>1004 Conventional</fullName>
+                <default>false</default>
+                <label>1004 Conventional</label>
+            </value>
+            <value>
+                <fullName>1004 plus 1007</fullName>
+                <default>false</default>
+                <label>1004 plus 1007</label>
+            </value>
+            <value>
+                <fullName>1004 plus 216</fullName>
+                <default>false</default>
+                <label>1004 plus 216</label>
+            </value>
+            <value>
+                <fullName>1004 plus 216 and 1007</fullName>
+                <default>false</default>
+                <label>1004 plus 216 and 1007</label>
+            </value>
+            <value>
+                <fullName>1004 Conventional (Complex/ Jumbo)</fullName>
+                <default>false</default>
+                <label>1004 Conventional (Complex/ Jumbo)</label>
+            </value>
+            <value>
+                <fullName>1004 plus 216 and 1007 (Complex/ Jumbo)</fullName>
+                <default>false</default>
+                <label>1004 plus 216 and 1007 (Complex/ Jumbo)</label>
+            </value>
+            <value>
+                <fullName>1004 FHA</fullName>
+                <default>false</default>
+                <label>1004 FHA</label>
+            </value>
+            <value>
+                <fullName>1004 FHA Flip</fullName>
+                <default>false</default>
+                <label>1004 FHA Flip</label>
+            </value>
+            <value>
+                <fullName>1004 plus 1007 FHA</fullName>
+                <default>false</default>
+                <label>1004 plus 1007 FHA</label>
+            </value>
+            <value>
+                <fullName>1004 plus 216 and 1007 FHA</fullName>
+                <default>false</default>
+                <label>1004 plus 216 and 1007 FHA</label>
+            </value>
+            <value>
+                <fullName>1004 plus 216 and 1007 FHA (Complex/ Jumbo)</fullName>
+                <default>false</default>
+                <label>1004 plus 216 and 1007 FHA (Complex/ Jumbo)</label>
+            </value>
+            <value>
+                <fullName>1004 FHA (Complex/ Jumbo)</fullName>
+                <default>false</default>
+                <label>1004 FHA (Complex/ Jumbo)</label>
+            </value>
+            <value>
+                <fullName>1004- Super Jumbo</fullName>
+                <default>false</default>
+                <label>1004- Super Jumbo</label>
+            </value>
+            <value>
+                <fullName>1073 Conventional</fullName>
+                <default>false</default>
+                <label>1073 Conventional</label>
+            </value>
+            <value>
+                <fullName>1073 plus 1007</fullName>
+                <default>false</default>
+                <label>1073 plus 1007</label>
+            </value>
+            <value>
+                <fullName>1073 plus 216 and 1007</fullName>
+                <default>false</default>
+                <label>1073 plus 216 and 1007</label>
+            </value>
+            <value>
+                <fullName>1073 Conventional (Complex/ Jumbo)</fullName>
+                <default>false</default>
+                <label>1073 Conventional (Complex/ Jumbo)</label>
+            </value>
+            <value>
+                <fullName>1073 Conv (Complex/Jumbo) plus 1007</fullName>
+                <default>false</default>
+                <label>1073 Conv (Complex/Jumbo) plus 1007</label>
+            </value>
+            <value>
+                <fullName>1073 FHA</fullName>
+                <default>false</default>
+                <label>1073 FHA</label>
+            </value>
+            <value>
+                <fullName>1073 FHA Flip</fullName>
+                <default>false</default>
+                <label>1073 FHA Flip</label>
+            </value>
+            <value>
+                <fullName>1073 plus 1007 and 216 FHA</fullName>
+                <default>false</default>
+                <label>1073 plus 1007 and 216 FHA</label>
+            </value>
+            <value>
+                <fullName>1073 FHA (Complex/ Jumbo)</fullName>
+                <default>false</default>
+                <label>1073 FHA (Complex/ Jumbo)</label>
+            </value>
+            <value>
+                <fullName>1025 Small Residential Conventional</fullName>
+                <default>false</default>
+                <label>1025 Small Residential Conventional</label>
+            </value>
+            <value>
+                <fullName>1025 Small Residential plus 216</fullName>
+                <default>false</default>
+                <label>1025 Small Residential plus 216</label>
+            </value>
+            <value>
+                <fullName>1025 W/ REO addendum</fullName>
+                <default>false</default>
+                <label>1025 W/ REO addendum</label>
+            </value>
+            <value>
+                <fullName>1025 Conventional (Complex/ Jumbo)</fullName>
+                <default>false</default>
+                <label>1025 Conventional (Complex/ Jumbo)</label>
+            </value>
+            <value>
+                <fullName>1025 Small Residential FHA</fullName>
+                <default>false</default>
+                <label>1025 Small Residential FHA</label>
+            </value>
+            <value>
+                <fullName>1025 FHA (Complex/ Jumbo)</fullName>
+                <default>false</default>
+                <label>1025 FHA (Complex/ Jumbo)</label>
+            </value>
+            <value>
+                <fullName>1004C - Conventional</fullName>
+                <default>false</default>
+                <label>1004C - Conventional</label>
+            </value>
+            <value>
+                <fullName>1004C w/ 1007</fullName>
+                <default>false</default>
+                <label>1004C w/ 1007</label>
+            </value>
+            <value>
+                <fullName>1004C w/ 216 and 1007</fullName>
+                <default>false</default>
+                <label>1004C w/ 216 and 1007</label>
+            </value>
+            <value>
+                <fullName>1004C (Complex/ Rural)</fullName>
+                <default>false</default>
+                <label>1004C (Complex/ Rural)</label>
+            </value>
+            <value>
+                <fullName>1004C FHA</fullName>
+                <default>false</default>
+                <label>1004C FHA</label>
+            </value>
+            <value>
+                <fullName>1004D- Completion</fullName>
+                <default>false</default>
+                <label>1004D- Completion</label>
+            </value>
+            <value>
+                <fullName>1004D completion FHA</fullName>
+                <default>false</default>
+                <label>1004D completion FHA</label>
+            </value>
+            <value>
+                <fullName>1004D- Appraisal Update</fullName>
+                <default>false</default>
+                <label>1004D- Appraisal Update</label>
+            </value>
+            <value>
+                <fullName>1004D Update FHA</fullName>
+                <default>false</default>
+                <label>1004D Update FHA</label>
+            </value>
+            <value>
+                <fullName>1007 Rent Schedule</fullName>
+                <default>false</default>
+                <label>1007 Rent Schedule</label>
+            </value>
+            <value>
+                <fullName>FHA Comparable Rent Schedule (1007)</fullName>
+                <default>false</default>
+                <label>FHA Comparable Rent Schedule (1007)</label>
+            </value>
+            <value>
+                <fullName>216 Operating Income Stmt.</fullName>
+                <default>false</default>
+                <label>216 Operating Income Stmt.</label>
+            </value>
+            <value>
+                <fullName>216 Operating Income Stmt. and 1007 Rent Schedule</fullName>
+                <default>false</default>
+                <label>216 Operating Income Stmt. and 1007 Rent Schedule</label>
+            </value>
+            <value>
+                <fullName>1004 High Value/High LTV</fullName>
+                <default>false</default>
+                <label>1004 High Value/High LTV</label>
+            </value>
+            <value>
+                <fullName>Field Review</fullName>
+                <default>false</default>
+                <label>Field Review</label>
+            </value>
+            <value>
+                <fullName>Field Review FHA</fullName>
+                <default>false</default>
+                <label>Field Review FHA</label>
+            </value>
+            <value>
+                <fullName>2000A 2-4 Unit Field Review</fullName>
+                <default>false</default>
+                <label>2000A 2-4 Unit Field Review</label>
+            </value>
+            <value>
+                <fullName>Exterior Property Inspection Report</fullName>
+                <default>false</default>
+                <label>Exterior Property Inspection Report</label>
+            </value>
+            <value>
+                <fullName>Conventional conversion</fullName>
+                <default>false</default>
+                <label>Conventional conversion</label>
+            </value>
+            <value>
+                <fullName>FHA conversion</fullName>
+                <default>false</default>
+                <label>FHA conversion</label>
+            </value>
+            <value>
+                <fullName>AVM</fullName>
+                <default>false</default>
+                <label>AVM</label>
+            </value>
+            <value>
+                <fullName>CDAIR - 1004D Disaster Inspection</fullName>
+                <default>false</default>
+                <label>CDAIR - 1004D Disaster Inspection</label>
+            </value>
+            <value>
+                <fullName>CDAIR - 1004D Disaster Inspection FHA</fullName>
+                <default>false</default>
+                <label>CDAIR - 1004D Disaster Inspection FHA</label>
+            </value>
+            <value>
+                <fullName>1025 Small Residential Plus 216 FHA</fullName>
+                <default>false</default>
+                <label>1025 Small Residential Plus 216 FHA</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

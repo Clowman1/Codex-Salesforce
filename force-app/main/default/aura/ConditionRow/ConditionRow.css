@@ -1,0 +1,165 @@
+/**
+ * Created by zeyad on 8/11/2022.
+ */
+.THIS .condition-row__field--clickable {
+  cursor: pointer;
+}
+.THIS .condition-row__field--editable:hover {
+  outline: 1px solid gray;
+  background: #fafafa;
+  cursor: pointer !important;
+  box-sizing: border-box;
+}
+.THIS {
+  --table-min-width: 1020px;
+  background: #ffffff;
+}
+.THIS.condition-row__wrapper .condition-row--selected {
+  background: #e3f2fa;
+}
+.THIS.condition-row__wrapper .condition-row {
+  transition: 0.5s;
+  min-width: var(--table-min-width, 1020px);
+}
+
+/* Grid row — inherits --table-grid-columns from ConditionsViewer wrapper */
+.THIS.condition-row__wrapper .conditions-table__row {
+  display: grid;
+  grid-template-columns: var(--table-grid-columns, 40px repeat(6, minmax(100px, 1fr)) 280px);
+  align-items: center;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.THIS.condition-row__wrapper .conditions-table__cell {
+  min-width: 0;
+  padding: 0 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Edit mode — let lightning:inputField dropdowns (picklist, lookup) escape the cell */
+.THIS.condition-row__wrapper .conditions-table__cell--editing {
+  overflow: visible;
+  z-index: 10;
+  position: relative;
+}
+
+/* Action icons */
+.THIS .condition-row__icon--warning {
+  background: #b02222;
+}
+.THIS .condition-row__icon--positive {
+  background: #3d9ed6;
+}
+.THIS .condition-row__icon--positive svg,
+.THIS .condition-row__icon--warning svg {
+  fill: white;
+}
+.THIS .condition-row__icon--positive svg:hover {
+  fill: white;
+}
+
+/* File upload */
+.THIS .slds-file-selector__button {
+  border: none !important;
+  padding: 8px 16px !important;
+  border-radius: 4px !important;
+}
+.THIS .condition-row__file-upload .slds-file-selector__dropzone {
+  width: 2rem !important;
+  height: 2rem !important;
+  overflow: hidden !important;
+  position: relative !important;
+  margin-right: 4px !important;
+  margin-left: 4px !important;
+}
+.THIS .condition-row__file-upload .slds-file-selector__button {
+  position: absolute !important;
+  left: -8px !important;
+  top: -24px !important;
+}
+.THIS.condition-row__wrapper .condition-row__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 5px 0;
+  align-content: center;
+  overflow: visible;
+}
+.THIS .condition-row__file-upload .slds-form-element__label {
+  display: none;
+}
+
+/* Expanded row */
+.THIS .condition-row--expanded {
+  min-height: 300px;
+  transition: 0.5s;
+}
+.THIS .condition-row__background--grey {
+  background: white;
+  border: 1px solid rgba(123, 123, 123, 0.15);
+}
+
+/* Badge */
+.THIS .slds-badge_inverse {
+  --slds-c-badge-color-background: #162a51 !important;
+}
+
+/* File upload text */
+.THIS .fileUpload {
+  padding-top: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+}
+.THIS .fileUploadHeading {
+  font-weight: 500;
+  padding-top: 5px;
+  text-align: left;
+}
+.THIS .fileUploadedText {
+  padding-top: 5px;
+  font-size: 12px;
+  text-align: left;
+}
+.THIS .slds-textarea {
+  height: 80px;
+}
+.THIS .textField {
+  cursor: text;
+}
+.THIS .label__grey {
+  color: gray;
+}
+
+.THIS.condition-row__wrapper .select-checkbox {
+  --lwc-spacingXSmall: 0;
+}
+
+.THIS .unread-comments {
+  margin-left: var(--lwc-spacingXxSmall, 0.25rem);
+}
+
+/* Notes section */
+.THIS .condition-row__notes {
+  display: flex;
+  gap: 1rem;
+}
+.THIS .condition-row__notes-field {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.THIS .condition-row__notes-section--mobile {
+  max-width: calc(var(--container-width, 100%) - 3rem);
+}
+.THIS .condition-row__notes-section--mobile .condition-row__notes {
+  flex-direction: column;
+}
+
+/* Save / Cancel buttons */
+.THIS .condition-row__buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}

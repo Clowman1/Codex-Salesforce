@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Past_Client_Refinance_Queue_Lead</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>LEAD.PHONE</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>Interest_Rate__c</columns>
+    <columns>Loan_Amount__c</columns>
+    <columns>LTV__c</columns>
+    <columns>Loan_Program__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>Loan_Type_1st_TD__c</columns>
+    <columns>Previous_Loan_Officer__c</columns>
+    <filterScope>Queue</filterScope>
+    <filters>
+        <field>Loan_Program__c</field>
+        <operation>notContain</operation>
+        <value>HELOC</value>
+    </filters>
+    <filters>
+        <field>Loan_Amount__c</field>
+        <operation>greaterThan</operation>
+        <value>100000</value>
+    </filters>
+    <filters>
+        <field>Loan_Type_1st_TD__c</field>
+        <operation>notEqual</operation>
+        <value>Other</value>
+    </filters>
+    <filters>
+        <field>Previous_Loan_Officer__c</field>
+        <operation>notEqual</operation>
+        <value>Edgard Gonzalez,Harold Ellis,Joseph Carey</value>
+    </filters>
+    <label>Past Client Refinance Queue</label>
+    <queue>Past_Client_Refinance_Queue</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

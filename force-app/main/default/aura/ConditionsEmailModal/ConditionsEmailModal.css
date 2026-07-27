@@ -1,0 +1,73 @@
+.THIS .ncs-email-preview{
+    border:1px solid rgba(0,0,0,.1);
+    padding:10px;
+    margin-top:10px;
+    width:100%;
+}
+
+.THIS.email-conditions-wrapper .email-conditions-bold_text {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.THIS.email-conditions-wrapper .email-sender_select .slds-form-element__label {
+    display: none;
+}
+
+.THIS.email-conditions-wrapper .pdf-attachments {
+    border: 1px solid #d8e1ef;
+    border-radius: 6px;
+    background: #f8fafc;
+    padding: 0.875rem;
+}
+
+.THIS.email-conditions-wrapper .pdf-attachments__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.THIS.email-conditions-wrapper .pdf-attachments__title {
+    color: #1a2541;
+    font-weight: 700;
+}
+
+.THIS.email-conditions-wrapper .pdf-attachments__subtitle,
+.THIS.email-conditions-wrapper .pdf-attachments__meta,
+.THIS.email-conditions-wrapper .pdf-attachments__empty {
+    color: #64748b;
+    font-size: 0.75rem;
+}
+
+.THIS.email-conditions-wrapper .pdf-attachments__list {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.THIS.email-conditions-wrapper .pdf-attachments__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border: 1px solid #d8e1ef;
+    border-radius: 4px;
+    background: #fff;
+    padding: 0.5rem 0.625rem;
+}
+
+.THIS.email-conditions-wrapper .pdf-attachments__row .slds-form-element {
+    margin: 0;
+    min-width: 0;
+}
+
+.THIS.email-conditions-wrapper .pdf-attachments__name {
+    color: #1a2541;
+    font-weight: 600;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

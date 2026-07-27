@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>smagicinteract__Send_SMS</fullName>
+    <availability>online</availability>
+    <description>Send sms to individual lead</description>
+    <displayType>button</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>Send SMS</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <url>{!REQUIRESCRIPT(&quot;/soap/ajax/14.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/14.0/apex.js&quot;)}  
+{!REQUIRESCRIPT(&apos;/resource/smagicinteract__smJQuery/js/jquery-1.10.2.js&apos;)} 
+{!REQUIRESCRIPT(&apos;/resource/smagicinteract__smJQuery/js/jquery-ui-1.10.4.custom.min.js&apos;)} 
+{!REQUIRESCRIPT(&quot;/resource/smagicinteract__sendSMSJS&quot;)}
+
+var cssUrl = &apos;{!URLFOR(&apos;/resource/smagicinteract__smJQuery/css/sm-theme/jquery-ui-1.10.4.custom.min.css&apos;)}&apos;; 
+
+var packagePrefix = &quot;smagicinteract__&quot;;
+var userId = &apos;{!$User.Id}&apos;;  
+var elementIdVar = &apos;&apos;;
+var showUserDropDown = false; 
+var dialogTitle = &apos;&apos;; 
+var recordType = &apos;Lead&apos;;  // Enter the API name of an object
+var idToUpdate = &apos;{!Lead.Id}&apos; // Enter merge field of id for example:- for Contact object enter &apos;{!Contact.Id}&apos;
+var nameField = &apos;Name&apos;; // Enter the API Name of a Name Field
+var mobileField = &apos;MobilePhone&apos;;  // Enter the API Name of a Mobile Field. For multiple mobile fields, add API Names of Mobile Fields comma separated (Max 3 allowed)
+var optOutField = &apos;smagicinteract__SMSOptOut__c&apos;; // Enter API name of optOut field 
+var optOutDefaultValue = &apos;no&apos;;     // Enter the default OptOut Value
+var smsType = &apos;&apos;; // Enter type as &apos;popup&apos; if you want to send message from popup
+var unrelatedObjectAPIName = &apos;&apos;; // Enter the API Name of an Unrelated object
+
+sendSMS(recordType, idToUpdate, userId, nameField, mobileField, optOutField, optOutDefaultValue, smsType, elementIdVar, packagePrefix, showUserDropDown, dialogTitle, cssUrl, unrelatedObjectAPIName);</url>
+</WebLink>

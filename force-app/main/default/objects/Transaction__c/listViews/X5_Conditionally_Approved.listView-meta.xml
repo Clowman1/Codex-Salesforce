@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>X5_Conditionally_Approved</fullName>
+    <columns>NAME</columns>
+    <columns>Borrower_Name__c</columns>
+    <columns>Loan_Type_1st_TD__c</columns>
+    <columns>Status__c</columns>
+    <columns>Submitted_to_Processing_Date__c</columns>
+    <columns>Submitted_to_Underwriting_Date__c</columns>
+    <columns>Loan_Conditionally_Approved_Date__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>Loan_Amount_1st__c</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>LAST_ACTIVITY</columns>
+    <columns>Realtor_Buying_Agent__c</columns>
+    <columns>Processor__c</columns>
+    <columns>Loan_Officer__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Conditionally Approved</value>
+    </filters>
+    <label>5. Conditionally Approved</label>
+    <sharedTo>
+        <group>Closers</group>
+        <group>Management</group>
+    </sharedTo>
+</ListView>

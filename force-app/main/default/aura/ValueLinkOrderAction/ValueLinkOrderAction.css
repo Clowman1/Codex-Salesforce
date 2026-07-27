@@ -1,0 +1,102 @@
+.THIS.vl-shell {
+    min-width: 42rem;
+    color: #10213f;
+}
+
+.THIS .vl-header {
+    background: #16233f;
+    color: #ffffff;
+    padding: 1rem 1.25rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.THIS .vl-eyebrow {
+    color: #ffad42;
+    font-size: .72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0 0 .25rem;
+}
+
+.THIS h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.THIS .vl-subtitle {
+    margin: .25rem 0 0;
+    color: #dbe7f7;
+}
+
+.THIS .vl-spinner {
+    min-height: 8rem;
+    position: relative;
+}
+
+.THIS .vl-section {
+    border: 1px solid #d8e0ec;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: #ffffff;
+}
+
+.THIS .vl-section-heading {
+    margin-bottom: .9rem;
+}
+
+.THIS .vl-section-heading h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.THIS .vl-section-heading p {
+    margin: .2rem 0 0;
+    color: #53627a;
+}
+
+.THIS .vl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .75rem;
+}
+
+.THIS .vl-field-spacer {
+    margin-top: .75rem;
+}
+
+.THIS .vl-file-list {
+    margin: .8rem 0 0;
+    padding-left: 1.25rem;
+    color: #25395c;
+    font-weight: 600;
+}
+
+.THIS .vl-alert {
+    padding: .75rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.THIS .vl-alert-error {
+    background: #fde8eb;
+    color: #8f1631;
+    border: 1px solid #f3b9c4;
+}
+
+.THIS .vl-alert-success {
+    background: #e8f8f1;
+    color: #17633d;
+    border: 1px solid #b6e4ca;
+}
+
+.THIS .vl-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: .75rem;
+    padding-top: .25rem;
+}

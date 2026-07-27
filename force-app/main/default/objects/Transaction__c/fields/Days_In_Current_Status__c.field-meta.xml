@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Days_In_Current_Status__c</fullName>
+    <description>Formula count of days since the Transaction entered its current Status.</description>
+    <externalId>false</externalId>
+    <formula>IF(ISBLANK(Current_Status_Since__c), NULL, TODAY() - Current_Status_Since__c)</formula>
+    <label>Days in Current Status</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>1</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

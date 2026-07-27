@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_Serhant</name>
+        <label>Assign Serhant</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Biz_Dev__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Biz Dev - SERHANT ORL</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Lead</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Wemert</name>
+        <label>Assign Wemert</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Biz_Dev__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Biz Dev - Wemert</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>BrandonBrotsky</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Lead</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Which_Realtor_Group</name>
+        <label>Which Realtor Group?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>SERHANT_ORL</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Realtor_Buying_Agent__r.Realtor_Group__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>SERHANT - ORL</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Serhant</targetReference>
+            </connector>
+            <label>SERHANT - ORL</label>
+        </rules>
+        <rules>
+            <name>Wemert_Group</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Realtor_Buying_Agent__r.Realtor_Group__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Wemert Group</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Wemert</targetReference>
+            </connector>
+            <label>Wemert Group</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>BrandonBrotsky</name>
+        <dataType>String</dataType>
+        <expression>&apos;005f2000009NwSsAAK&apos;</expression>
+    </formulas>
+    <interviewLabel>Assign Biz Dev {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Assign Biz Dev</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_Lead</name>
+        <label>Update Lead</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Which_Realtor_Group</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Realtor_Buying_Agent__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+    <triggerOrder>50</triggerOrder>
+</Flow>

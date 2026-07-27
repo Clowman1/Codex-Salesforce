@@ -1,0 +1,11 @@
+<!--
+ - Created by andrk on 7/1/2023.
+ -->
+
+ <design:component>
+    <design:attribute label="Component's title" name="cardTitle" />
+	<design:attribute label="Title text color" name="titleTextColor" />
+    <design:attribute label="Component's description" name="cardDescription" />
+    <design:attribute label="Component's text below description" name="cardText" />
+    <design:attribute label="Component's accepted files types" name="filetypes" />
+</design:component>

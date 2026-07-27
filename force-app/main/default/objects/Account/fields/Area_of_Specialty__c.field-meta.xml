@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Area_of_Specialty__c</fullName>
+    <label>Area of Specialty</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Doctor Loan</fullName>
+                <default>false</default>
+                <label>Doctor Loan</label>
+            </value>
+            <value>
+                <fullName>All-In-One Loan</fullName>
+                <default>false</default>
+                <label>All-In-One Loan</label>
+            </value>
+            <value>
+                <fullName>ARM</fullName>
+                <default>false</default>
+                <label>ARM</label>
+            </value>
+            <value>
+                <fullName>Asset Depletion</fullName>
+                <default>false</default>
+                <label>Asset Depletion</label>
+            </value>
+            <value>
+                <fullName>Bank Statement</fullName>
+                <default>false</default>
+                <label>Bank Statement</label>
+            </value>
+            <value>
+                <fullName>Bridge Loans</fullName>
+                <default>false</default>
+                <label>Bridge Loans</label>
+            </value>
+            <value>
+                <fullName>Community Mortgage/No Income</fullName>
+                <default>false</default>
+                <label>Community Mortgage/No Income</label>
+            </value>
+            <value>
+                <fullName>Condotel</fullName>
+                <default>false</default>
+                <label>Condotel</label>
+            </value>
+            <value>
+                <fullName>Conventional</fullName>
+                <default>false</default>
+                <label>Conventional</label>
+            </value>
+            <value>
+                <fullName>DPA</fullName>
+                <default>false</default>
+                <label>DPA</label>
+            </value>
+            <value>
+                <fullName>DSCR</fullName>
+                <default>false</default>
+                <label>DSCR</label>
+            </value>
+            <value>
+                <fullName>FHA</fullName>
+                <default>false</default>
+                <label>FHA</label>
+            </value>
+            <value>
+                <fullName>FHA 100% Financing</fullName>
+                <default>false</default>
+                <label>FHA 100% Financing</label>
+            </value>
+            <value>
+                <fullName>FHA 203K</fullName>
+                <default>false</default>
+                <label>FHA 203K</label>
+            </value>
+            <value>
+                <fullName>Fannie Homestyle Reno</fullName>
+                <default>false</default>
+                <label>Fannie Homestyle Reno</label>
+            </value>
+            <value>
+                <fullName>Foreign National</fullName>
+                <default>false</default>
+                <label>Foreign National</label>
+            </value>
+            <value>
+                <fullName>Hard Money</fullName>
+                <default>false</default>
+                <label>Hard Money</label>
+            </value>
+            <value>
+                <fullName>HELOC</fullName>
+                <default>false</default>
+                <label>HELOC</label>
+            </value>
+            <value>
+                <fullName>ITIN</fullName>
+                <default>false</default>
+                <label>ITIN</label>
+            </value>
+            <value>
+                <fullName>Jumbo</fullName>
+                <default>false</default>
+                <label>Jumbo</label>
+            </value>
+            <value>
+                <fullName>Non-QM</fullName>
+                <default>false</default>
+                <label>Non-QM</label>
+            </value>
+            <value>
+                <fullName>Non-Warrantable Condo</fullName>
+                <default>false</default>
+                <label>Non-Warrantable Condo</label>
+            </value>
+            <value>
+                <fullName>P&amp;L</fullName>
+                <default>false</default>
+                <label>P&amp;L</label>
+            </value>
+            <value>
+                <fullName>USDA</fullName>
+                <default>false</default>
+                <label>USDA</label>
+            </value>
+            <value>
+                <fullName>VA</fullName>
+                <default>false</default>
+                <label>VA</label>
+            </value>
+            <value>
+                <fullName>Vacant Land</fullName>
+                <default>false</default>
+                <label>Vacant Land</label>
+            </value>
+            <value>
+                <fullName>1099</fullName>
+                <default>false</default>
+                <label>1099</label>
+            </value>
+            <value>
+                <fullName>Second Home</fullName>
+                <default>false</default>
+                <label>Second Home</label>
+            </value>
+            <value>
+                <fullName>Investment</fullName>
+                <default>false</default>
+                <label>Investment</label>
+            </value>
+            <value>
+                <fullName>Reverse Mortgage</fullName>
+                <default>false</default>
+                <label>Reverse Mortgage</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

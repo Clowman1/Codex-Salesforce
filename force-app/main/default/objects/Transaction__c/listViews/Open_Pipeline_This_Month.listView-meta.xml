@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Open_Pipeline_This_Month</fullName>
+    <booleanFilter>1 AND 2</booleanFilter>
+    <columns>NAME</columns>
+    <columns>Loan_Officer__c</columns>
+    <columns>Borrower_Name__c</columns>
+    <columns>OWNER.FIRST_NAME</columns>
+    <columns>Processor__c</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>Underwriter__c</columns>
+    <columns>Status__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>Realtor_Buying_Agent__c</columns>
+    <columns>Realtor_Listing_Agent__c</columns>
+    <columns>Loan_Amount_1st__c</columns>
+    <columns>Loan_Type_1st_TD__c</columns>
+    <columns>Loan_Commitment_Date__c</columns>
+    <columns>Closing_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Open,Disclosures Out,Pre-Processing,Processing,Submitted,Conditionally Approved,Re-Submitted,Re-Submitted (Items Needed),Approved,QC Review,Moved To Docs,Closed,Waiting On Loan Officer</value>
+    </filters>
+    <filters>
+        <field>Closing_Date__c</field>
+        <operation>equals</operation>
+        <value>THIS_MONTH</value>
+    </filters>
+    <label>Open Pipeline - This Month</label>
+    <sharedTo>
+        <group>Management</group>
+    </sharedTo>
+</ListView>

@@ -1,0 +1,65 @@
+<template>
+    <lightning-card title="RingCentral Users" icon-name="standard:user">
+        <p style="padding: 10px;
+    font-size: 18px;
+    color: red;">If upon Login click you see error related to Redirect URI, please try reload the page. (click search bar and hit enter)</p>
+        <template if:true={users}>
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col">
+                            <div class="slds-truncate" title="Name">Name</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Is Logged In">Credentials Set</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Login">Login</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={users} for:item="user">
+                        <tr key={user.Id}>
+                            <!-- Name -->
+                            <td>
+                                <div class="slds-truncate" title={user.Name}>{user.Name}</div>
+                            </td>
+
+                            <!-- IsLoggedIn -->
+                          <!-- IsLoggedIn -->
+<td class="slds-text-align_center">
+    <template if:true={user.IsLoggedIn}>
+        <lightning-icon icon-name="action:approval" alternative-text="OK" title="OK"></lightning-icon>
+    </template>
+    <template if:false={user.IsLoggedIn}>
+        <lightning-icon 
+            icon-name="utility:close" 
+            alternative-text="Not Logged In" 
+            size="small" 
+            class="slds-icon slds-icon-text-error">
+        </lightning-icon>
+    </template>
+</td>
+
+
+                            <!-- Login Button -->
+                            <td>
+                                <lightning-button 
+                                    label="Login" 
+                                    variant="brand" 
+                                    title="Login as {user.Name}" 
+                                    onclick={handleLogin} 
+                                    data-url={user.AuthUrl}>
+                                </lightning-button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </template>
+        <template if:false={users}>
+            <p class="slds-p-around_small">No users found.</p>
+        </template>
+    </lightning-card>
+</template>

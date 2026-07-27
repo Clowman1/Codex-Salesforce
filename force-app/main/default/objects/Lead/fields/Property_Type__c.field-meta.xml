@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Property_Type__c</fullName>
+    <label>Property Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Single Family</fullName>
+                <default>false</default>
+                <label>Single Family</label>
+            </value>
+            <value>
+                <fullName>Condo</fullName>
+                <default>false</default>
+                <label>Condo</label>
+            </value>
+            <value>
+                <fullName>Town House</fullName>
+                <default>false</default>
+                <label>Town House</label>
+            </value>
+            <value>
+                <fullName>1 Unit</fullName>
+                <default>false</default>
+                <label>1 Unit</label>
+            </value>
+            <value>
+                <fullName>2-4 Units</fullName>
+                <default>false</default>
+                <label>2-4 Units</label>
+            </value>
+            <value>
+                <fullName>4-10 Units</fullName>
+                <default>false</default>
+                <label>4-10 Units</label>
+            </value>
+            <value>
+                <fullName>10+ Units</fullName>
+                <default>false</default>
+                <label>10+ Units</label>
+            </value>
+            <value>
+                <fullName>PUD</fullName>
+                <default>false</default>
+                <label>PUD</label>
+            </value>
+            <value>
+                <fullName>Mobile Home</fullName>
+                <default>false</default>
+                <label>Mobile Home</label>
+            </value>
+            <value>
+                <fullName>Land</fullName>
+                <default>false</default>
+                <label>Land</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

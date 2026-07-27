@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>56.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Is_it_Dec_20th</name>
+        <label>Is it Dec 20th?</label>
+        <locationX>182</locationX>
+        <locationY>276</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes_Dec_20th</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Dec20</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Task_to_Confirm_TRID_Holidays</targetReference>
+            </connector>
+            <label>Yes, Dec 20th</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>Dec20</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(
+        MONTH({!$Flow.CurrentDate}) =12,
+        DAY({!$Flow.CurrentDate}) = 20
+)</expression>
+    </formulas>
+    <interviewLabel>Create Task to Verify TRID Holidays {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Create Task to Verify TRID Holidays</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Task_to_Confirm_TRID_Holidays</name>
+        <label>Create Task to Confirm TRID Holidays</label>
+        <locationX>50</locationX>
+        <locationY>396</locationY>
+        <inputAssignments>
+            <field>ActivityDate</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>Normal</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Open</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Confirm TRID Holidays for next year</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Is_it_Dec_20th</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Title</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Operations Manager</stringValue>
+            </value>
+        </filters>
+        <object>User</object>
+        <schedule>
+            <frequency>Daily</frequency>
+            <startDate>2023-01-27</startDate>
+            <startTime>15:00:00.000Z</startTime>
+        </schedule>
+        <triggerType>Scheduled</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

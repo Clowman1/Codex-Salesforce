@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_David</name>
+        <label>Assign David</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>davidSandovalId</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <constants>
+        <name>davidSandovalId</name>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>005Qi000008aIzV</stringValue>
+        </value>
+    </constants>
+    <description>When Realtor Group is &quot;Nickley - ISA&quot;, it is assigned to David Sandoval</description>
+    <environments>Default</environments>
+    <interviewLabel>Lead Assignment Rule {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead Assignment Rule</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Assign_David</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterFormula>AND(ISPICKVAL({!$Record.Realtor_Buying_Agent__r.Realtor_Group__c}, &quot;Nickley ISA&apos;s&quot;))</filterFormula>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

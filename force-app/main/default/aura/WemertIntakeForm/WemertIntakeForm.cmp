@@ -1,0 +1,320 @@
+<aura:component description="IntakeForm" implements="forceCommunity:availableForAllPageTypes,force:hasRecordId,force:lightningQuickAction" controller="WemertIntakeFormController">
+    <aura:attribute name="urlHash" type="String" />
+    <aura:attribute name="recordId" type="String" default=""/>
+    <aura:attribute name="form" type="Object"/>
+    <aura:attribute name="isModalOpen" type="boolean" default="false"/>
+    <aura:attribute name="phoneValue" type="String"/>
+    <aura:attribute name="emailValue" type="String"/>
+    <aura:attribute name="usersList" type="String"/>
+    <aura:attribute name="userId" type="String"/>
+    <aura:attribute name="selectedUser" type="String"/>
+    <aura:attribute name="referralEmail" type="String"/>
+    <aura:attribute name="pwaInitialized" type="boolean" default="false"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="showAgentSelection" type="boolean" default="FALSE"/>
+    <aura:attribute name="selectedAgent" type="String" />
+    
+    <aura:attribute name="showLoanOfficerSelection" type="boolean" default="FALSE"/>
+    <aura:attribute name="selectedLoanOfficer" type="String"  default="" />
+    <aura:attribute name="loanOfficers" type="User[]" />
+    
+    
+    <aura:attribute name="spanishSpeaker" type="String" default="No"/>
+    
+    <aura:attribute name="spinner" type="boolean" default="FALSE"/>
+    
+    <aura:attribute name="agentList" type="Account[]" />
+    
+    <aura:attribute name="showInstallButton" type="boolean" default="false"/>
+    <aura:attribute name="showIOSInstructions" type="boolean" default="false"/>
+    <aura:attribute name="isIOS" type="boolean" default="false"/>
+    <aura:attribute name="isStandalone" type="boolean" default="false"/>
+
+    <aura:if isTrue="{!v.spinner}">
+        <div aura:id="spinnerId" class="slds-spinner_container">
+            <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                <span class="slds-assistive-text">Loading...</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!$Browser.isPhone}">
+        <div aura:id="ncs-background" class="ncs-full-frame-content">
+            <lightning:layout horizontalAlign="center">
+                <lightning:layoutItem size="12" smallDeviceSize="12" mediumDeviceSize="12" largeDeviceSize="9" padding="around-small" >
+                    <lightning:layout multipleRows="true" class="ncs-form-mobile">
+                        <div>
+                            <img src="{!$Resource.LeadIntakeFormImage}" style="border-top-left-radius: 15px;border-top-right-radius: 15px;"/>
+                        </div>
+                        <div class="slds-align_absolute-center slds-text-heading_large slds-p-bottom_xx-large slds-p-top_medium slds-m-top_medium">
+                            <h1 style="font-weight:bold;">Lead Intake Form</h1>
+                        </div>
+                        <aura:if isTrue="{!v.showInstallButton}">
+                            <lightning:layoutItem size="12" class="slds-p-around_small slds-align_absolute-center">
+                                <lightning:button 
+                                    label="Install App" 
+                                    onclick="{!c.handleInstallClick}"
+                                    variant="brand"
+                                    class="slds-m-bottom_small"
+                                    iconName="utility:download"
+                                    iconPosition="left"/>
+                            </lightning:layoutItem>
+                        </aura:if>
+                        <aura:if isTrue="{!AND(v.isIOS, NOT(v.isStandalone))}">
+                            <lightning:layoutItem size="12" class="slds-p-around_small slds-align_absolute-center">
+                                <lightning:button 
+                                    label="How to Install" 
+                                    onclick="{!c.showIOSInstructionsAction}"
+                                    variant="neutral"
+                                    class="slds-m-bottom_small"
+                                    iconName="utility:info"/>
+                            </lightning:layoutItem>
+                        </aura:if>
+                        <lightning:layoutItem size="12">
+                            <lightning:recordEditForm aura:id="myrecordform" recordId=""  onsubmit="{!c.submitRecord}"  objectApiName="Lead" onsuccess="{!c.showSuccessMessage}" onerror="{!c.handleError}">
+                                <lightning:messages />
+                                <lightning:layout multipleRows="true" class="slds-m-horizontal_large">
+                                    <lightning:layoutItem size="12">
+                                        <lightning:inputField variant="label-stacked" fieldName="FirstName" required="true"/>
+                                        <lightning:inputField variant="label-stacked" fieldName="LastName"/>
+                                        <lightning:inputField variant="label-stacked" fieldName="Phone" required="true"/>
+                                        <lightning:inputField variant="label-stacked" fieldName="Email" value="{!v.emailValue}"/>
+                                        <span class="slds-form-element__label slds-no-flex">Things to know about the buyer</span>
+                                        <lightning:inputField variant="label-hidden" fieldName="Comments__c"/>
+                                        
+                                        
+                                        <!--
+										<span class="slds-form-element__label slds-no-flex">Spanish Speaker?</span>
+										<lightning:inputField variant="label-hidden" value="{!v.spanishSpeaker}" fieldName="Spanish_Speaker_Intake_Form__c"/>
+                                        -->
+                                        
+                            
+                                            <!--
+                                            <span class="slds-form-element__label slds-no-flex">Choose Preferred LO</span>
+                                            <lightning:inputField variant="label-hidden" fieldName="Agent_Intake_Form__c"/>
+											-->
+                                        	<p style="color:red;">{!v.agentErrorMessage}</p>
+                                            <lightning:select label="Select Agent" name="agentIntakeForm" required="true" onchange="{!c.handleAgentChange}">
+                                                <option value="">Please select agent</option>
+                                                <aura:iteration items="{!v.agentList}" var="agent">
+                                                    <option value="{!agent.Id}">{!agent.FirstName}&nbsp;{!agent.LastName}</option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        
+                                        <aura:if isTrue="{!v.showLoanOfficerSelection}">
+                                            <div class="lo-tile-section">
+                                                <span class="slds-form-element__label slds-no-flex">Choose Preferred LO</span>
+                                                <div class="lo-tile-grid">
+                                                    <aura:iteration items="{!v.loanOfficers}" var="loanOfficer">
+                                                        <button type="button"
+                                                                class="{!if(v.selectedLoanOfficer == loanOfficer.Id, 'lo-tile lo-tile-selected', 'lo-tile')}"
+                                                                data-id="{!loanOfficer.Id}"
+                                                                onclick="{!c.handleLoanOfficerTileClick}">
+                                                            <span class="lo-photo-wrap">
+                                                                <aura:if isTrue="{!not(empty(loanOfficer.Headshot_URL__c))}">
+                                                                    <img src="{!loanOfficer.Headshot_URL__c}" alt="{!loanOfficer.Name}" class="lo-photo"/>
+                                                                    <aura:set attribute="else">
+                                                                        <span class="lo-photo lo-photo-fallback">{!loanOfficer.FirstName}</span>
+                                                                    </aura:set>
+                                                                </aura:if>
+                                                            </span>
+                                                            <span class="lo-copy">
+                                                                <span class="lo-name">{!loanOfficer.FirstName}&nbsp;{!loanOfficer.LastName}</span>
+                                                                <span class="lo-title">{!loanOfficer.Phone}</span>
+                                                                <span class="lo-nmls">{!loanOfficer.Email}</span>
+                                                            </span>
+                                                        </button>
+                                                    </aura:iteration>
+                                                </div>
+                                            </div>
+                                        </aura:if>
+                                                        
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="12" class="slds-align_absolute-center">
+                                        <lightning:button class="slds-align_absolute-center slds-m-top_large slds-m-bottom_large slds-size_2-of-3 ncs-button" label="Submit Your Form" type="submit"/>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </lightning:recordEditForm>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!$Browser.formFactor == 'DESKTOP'}">
+        <div aura:id="ncs-background" class="ncs-full-frame-content">
+            <lightning:layout horizontalAlign="center">
+                <lightning:layoutItem size="9" smallDeviceSize="12" mediumDeviceSize="12" largeDeviceSize="9" padding="around-small" >
+                    <lightning:layout multipleRows="true" class="ncs-form">
+                        <lightning:layoutItem size="6">
+                            <img src="{!$Resource.LeadIntakeFormImage}" class="interior-image" style="border-top-left-radius: 15px; border-bottom-left-radius: 15px;"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="6">
+                            <lightning:recordEditForm aura:id="myrecordform"  objectApiName="Lead" onsubmit="{!c.submitRecord}" onsuccess="{!c.showSuccessMessage}" onerror="{!c.handleError}">
+                                <lightning:messages />
+                                <lightning:layout multipleRows="true" class="slds-m-horizontal_large">
+                                    <lightning:layoutItem size="12">
+                                        <div class="slds-align_absolute-center slds-text-heading_large slds-p-top_medium">
+                                            <h1 class="slds-p-bottom_x-large" style="font-weight:bold;">Lead Intake Form</h1>
+                                        </div>
+                                        <aura:if isTrue="{!v.showInstallButton}">
+                                            <div class="slds-align_absolute-center slds-m-bottom_medium">
+                                                <lightning:button 
+                                                    label="Install App" 
+                                                    onclick="{!c.handleInstallClick}"
+                                                    variant="brand"
+                                                    iconName="utility:download"
+                                                    iconPosition="left"/>
+                                            </div>
+                                        </aura:if>
+                                        <aura:if isTrue="{!AND(v.isIOS, NOT(v.showInstallButton), NOT(v.isStandalone))}">
+                                            <div class="slds-align_absolute-center slds-m-bottom_medium">
+                                                <lightning:button 
+                                                    label="How to Install" 
+                                                    onclick="{!c.showIOSInstructionsAction}"
+                                                    variant="neutral"
+                                                    iconName="utility:info"/>
+                                            </div>
+                                        </aura:if>
+                                        <lightning:inputField variant="label-stacked" fieldName="FirstName" required="true"/>
+                                        <lightning:inputField variant="label-stacked" fieldName="LastName"/>
+                                        <lightning:inputField variant="label-stacked" fieldName="Phone" required="true"/>
+                                        <lightning:inputField variant="label-stacked" fieldName="Email" value="{!v.emailValue}"/>
+                                        
+                                        <span class="slds-form-element__label slds-no-flex">Things to know about the buyer</span>
+                                        <lightning:inputField variant="label-hidden" fieldName="Comments__c"/>
+                                        
+                                        <!--
+										<span class="slds-form-element__label slds-no-flex">Spanish Speaker?</span>
+										<lightning:inputField variant="label-hidden" value="{!v.spanishSpeaker}" fieldName="Spanish_Speaker_Intake_Form__c"/>
+                                        -->
+                                        
+                                        
+                                            <!--
+                                            <span class="slds-form-element__label slds-no-flex">Choose Preferred LO</span>
+                                            <lightning:inputField variant="label-hidden" fieldName="Agent_Intake_Form__c"/>
+           -->
+                                        <p style="color:red;">{!v.agentErrorMessage}</p>
+                                        <lightning:select label="Select Agent" name="agentIntakeForm" required="true" onchange="{!c.handleAgentChange}">
+                                            <option value="">Please select agent</option>
+                                            
+                                            <aura:iteration items="{!v.agentList}" var="agent">
+                                                
+                                                <option value="{!agent.Id}">{!agent.FirstName}&nbsp;{!agent.LastName}</option>
+                                            </aura:iteration>
+                                        </lightning:select>
+
+                                        <aura:if isTrue="{!v.showLoanOfficerSelection}">
+                                            <div class="lo-tile-section">
+                                                <span class="slds-form-element__label slds-no-flex">Choose Preferred LO</span>
+                                                <div class="lo-tile-grid">
+                                                    <aura:iteration items="{!v.loanOfficers}" var="loanOfficer">
+                                                        <button type="button"
+                                                                class="{!if(v.selectedLoanOfficer == loanOfficer.Id, 'lo-tile lo-tile-selected', 'lo-tile')}"
+                                                                data-id="{!loanOfficer.Id}"
+                                                                onclick="{!c.handleLoanOfficerTileClick}">
+                                                            <span class="lo-photo-wrap">
+                                                                <aura:if isTrue="{!not(empty(loanOfficer.Headshot_URL__c))}">
+                                                                    <img src="{!loanOfficer.Headshot_URL__c}" alt="{!loanOfficer.Name}" class="lo-photo"/>
+                                                                    <aura:set attribute="else">
+                                                                        <span class="lo-photo lo-photo-fallback">{!loanOfficer.FirstName}</span>
+                                                                    </aura:set>
+                                                                </aura:if>
+                                                            </span>
+                                                            <span class="lo-copy">
+                                                                <span class="lo-name">{!loanOfficer.FirstName}&nbsp;{!loanOfficer.LastName}</span>
+                                                                <span class="lo-title">{!loanOfficer.Phone}</span>
+                                                                <span class="lo-nmls">{!loanOfficer.Email}</span>
+                                                            </span>
+                                                        </button>
+                                                    </aura:iteration>
+                                                </div>
+                                            </div>
+                                        </aura:if>                                        
+                                        
+									</lightning:layoutItem>
+                                    <lightning:layoutItem size="12" class="slds-align_absolute-center">
+                                        <lightning:button class="slds-align_absolute-center slds-m-top_large slds-m-bottom_large slds-size_2-of-3 ncs-button" label="Submit Your Form" type="submit"/>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </lightning:recordEditForm>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.isModalOpen}">
+        <!-- Modal/Popup Box starts here-->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                 aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box Header Starts here-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.refreshModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Form Saved
+                        Successfully</h2>
+                </header>
+                <!--Modal/Popup Box Body Starts here-->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p><b>Thank you for submitting the referral.</b>
+                    </p>
+                </div>
+                <!--Modal/Popup Box Footer Starts here-->
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="neutral"
+                                      label="Close"
+                                      title="Close"
+                                      onclick="{! c.refreshModel }"/>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+    <aura:if isTrue="{!AND(v.isIOS, v.showIOSInstructions)}">
+        <section role="dialog" tabindex="-1" aria-labelledby="ios-install-heading" aria-modal="true"
+                 aria-describedby="ios-install-content" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{!c.closeIOSInstructions}"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="ios-install-heading" class="slds-text-heading_medium slds-hyphenate">Install Lead Intake Form</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="ios-install-content">
+                    <div class="slds-text-align_center slds-m-bottom_medium">
+                        <lightning:icon iconName="utility:download" size="large" alternativeText="Install"/>
+                    </div>
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">To install this app on your iPhone or iPad:</h3>
+                    <ol class="slds-list_ordered slds-m-left_medium">
+                        <li class="slds-m-bottom_small">Tap the <strong>Share</strong> button <lightning:icon iconName="utility:share" size="x-small"/> at the bottom of your Safari browser</li>
+                        <li class="slds-m-bottom_small">Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+                        <li class="slds-m-bottom_small">Tap <strong>"Add"</strong> in the top right corner</li>
+                        <li>The app icon will appear on your home screen</li>
+                    </ol>
+                    <div class="slds-m-top_medium slds-text-color_weak">
+                        <p><strong>Note:</strong> You must use Safari browser on iOS to install this app. Chrome and other browsers on iOS do not support home screen installation.</p>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="neutral"
+                                      label="Close"
+                                      title="Close"
+                                      onclick="{!c.closeIOSInstructions}"/>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+</aura:component>

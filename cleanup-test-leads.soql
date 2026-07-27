@@ -1,0 +1,4 @@
+SELECT Id, Name, FirstName, LastName, Company, Status, CreatedDate, Owner.Name
+FROM Lead
+WHERE Name LIKE '%Test%'
+ORDER BY CreatedDate DESC

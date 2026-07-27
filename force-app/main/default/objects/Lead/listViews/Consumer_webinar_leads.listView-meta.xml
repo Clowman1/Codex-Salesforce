@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Consumer_webinar_leads</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>Webinar_Date__c</columns>
+    <columns>LEAD.PHONE</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>Lead_Owner_Name__c</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>LEAD.LAST_ACTIVITY</columns>
+    <columns>Appointment_Date_Time__c</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <columns>Last_SMS_Attempt_RingCentral__c</columns>
+    <columns>Last_Call_Attempt_RingCentral__c</columns>
+    <columns>Purchase_Price__c</columns>
+    <columns>Loan_Amount__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.CONVERTED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>LEAD.LEAD_SOURCE</field>
+        <operation>equals</operation>
+        <value>Consumer Webinar</value>
+    </filters>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notContain</operation>
+        <value>30 Day + Follow Up,Nurturing,Credit Repair,Nurture - Preapproval</value>
+    </filters>
+    <label>Consumer Webinar Leads</label>
+    <sharedTo>
+        <group>Adam_Only</group>
+        <group>Brandon_Brotsky</group>
+        <group>Megan_Straight</group>
+    </sharedTo>
+</ListView>

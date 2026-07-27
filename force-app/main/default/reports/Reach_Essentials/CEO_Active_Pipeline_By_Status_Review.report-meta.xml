@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>Transaction__c.Closing_Date__c</field>
+    </columns>
+    <columns>
+        <field>Transaction__c.Current_Status_Since__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Average</aggregateTypes>
+        <field>Transaction__c.Days_In_Current_Status__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Transaction__c.Loan_Amount_1st__c</field>
+    </columns>
+    <columns>
+        <field>Transaction__c.Loan_Purpose__c</field>
+    </columns>
+    <columns>
+        <field>Transaction__c.Loan_Type_1st_TD__c</field>
+    </columns>
+    <columns>
+        <field>Transaction__c.Lender_lookup__c</field>
+    </columns>
+    <columns>
+        <field>Transaction__c.Loan_Officer__c</field>
+    </columns>
+    <columns>
+        <field>Transaction__c.Processor__c</field>
+    </columns>
+    <description>Review report for CEO Hub Active Pipeline by Status pills.</description>
+    <filter>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5</booleanFilter>
+        <criteriaItems>
+            <column>Transaction__c.Status__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Conditionally Approved</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Transaction__c.Status__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Cancelled,Canceled,Post-Closed,QC Review,PC Review,Lost</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Transaction__c.New_Build_Bank_Owned__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>true</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Transaction__c.Closing_Date__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>lessOrEqual</operator>
+            <value>NEXT 30 DAYS</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>CUST_NAME</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Ayala - 1526144816</value>
+        </criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Transaction__c.Status__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>CEO Active Pipeline By Status Review</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$Transaction__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>Transaction__c.Closing_Date__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+</Report>

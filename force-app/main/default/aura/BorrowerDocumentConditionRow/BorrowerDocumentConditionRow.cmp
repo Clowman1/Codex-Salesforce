@@ -1,0 +1,80 @@
+<aura:component
+  implements="flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName,lightning:isUrlAddressable"
+  controller="BorrowerDocumentPortalController"
+  access="global"
+>
+  <aura:attribute name="condition" type="Object" />
+  <aura:attribute
+    name="filetype"
+    type="List"
+    default="['.pdf','.jpeg','.jpg','.png','.doc','.docx','.xls','.xlsx','.txt','.csv','.heic']"
+  />
+  <aura:attribute name="isOpen" type="Boolean" default="false" />
+  <aura:attribute name="index" type="Integer" default="false" />
+  <aura:attribute name="recordId" type="String" />
+  <aura:handler event="aura:waiting" action="{!c.showSpinner}" />
+  <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}" />
+  <aura:attribute name="spinner" type="boolean" default="false" />
+
+  <div
+    class="{!'condition-uploader__wrapper ' + if( v.isOpen,'slds-is-open slds-section slds-m-around_xx-small slds-theme_shade slds-card slds-card_boundary', 'slds-section slds-m-around_xx-small slds-theme_shade slds-card slds-card_boundary' )}"
+  >
+    <h3 class="slds-section__title">
+      <lightning:button
+        onclick="{!c.toggleState}"
+        class="{!'slds-theme_base slds-section__title-action ' + if(v.condition.hasActiveComments, 'condition-uploader__title-action_has-comments', '')}"
+        iconPosition="right"
+        variant="base"
+        label="{!concat(concat(concat(v.index, '. '),  v.condition.name), concat(' - Files Uploaded: ', v.condition.fileCount))}"
+        iconName="{!if(v.isOpen, 'utility:chevrondown', 'utility:chevronright')}"
+      ></lightning:button>
+      <aura:if isTrue="{!v.condition.hasActiveComments}">
+        <span class="condition-uploader__comment-alert">New comment</span>
+        <aura:set attribute="else">
+          <aura:if isTrue="{!v.condition.commentCount > 0}">
+            <span class="condition-uploader__comment-count">{!v.condition.commentCount} comments</span>
+          </aura:if>
+        </aura:set>
+      </aura:if>
+    </h3>
+
+    <div class="condition-uploader__card slds-section__content slds-p-around_small">
+      <lightning:layout
+        class="condition-uploader__card-content slds-grid_vertical-align-center slds-wrap slds-theme_default"
+      >
+        <aura:if isTrue="{!v.spinner}">
+          <div aura:id="spinnerId" class="slds-spinner_container">
+            <div class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative" role="alert">
+              <span class="slds-assistive-text">Loading...</span>
+              <div class="slds-spinner__dot-a"></div>
+              <div class="slds-spinner__dot-b"></div>
+            </div>
+          </div>
+        </aura:if>
+
+        <lightning:layoutItem size="12" largeDeviceSize="7">
+          <div class="condition-uploader__description slds-p-around_medium">
+            <p>{!v.condition.description}</p>
+          </div>
+        </lightning:layoutItem>
+
+        <lightning:layoutItem size="12" largeDeviceSize="5" class="condition-uploader__upload-align">
+          <lightning:fileUpload
+            class="slds-p-right_small slds-p-left_small"
+            name="fileUploader"
+            multiple="true"
+            accept="{!v.filetype}"
+            onuploadfinished="{!c.handleUploadFinished}"
+            recordId="{!v.recordId}"
+          ></lightning:fileUpload>
+        </lightning:layoutItem>
+
+        <aura:if isTrue="{!v.isOpen}">
+          <lightning:layoutItem size="12" class="condition-uploader__comments">
+            <c:conditionComments conditionId="{!v.condition.id}" isPortal="true"></c:conditionComments>
+          </lightning:layoutItem>
+        </aura:if>
+      </lightning:layout>
+    </div>
+  </div>
+</aura:component>

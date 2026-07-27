@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Borrower_Withdrawal_Reason__c</fullName>
+    <label>Borrower Withdrawal Reason</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Selected an Alternative Lender</fullName>
+                <default>false</default>
+                <label>Selected an Alternative Lender</label>
+            </value>
+            <value>
+                <fullName>Found a More Competetive Interest Rate</fullName>
+                <default>false</default>
+                <label>Found a More Competetive Interest Rate</label>
+            </value>
+            <value>
+                <fullName>Costs Are Too High</fullName>
+                <default>false</default>
+                <label>Costs Are Too High</label>
+            </value>
+            <value>
+                <fullName>Chose to Purchase a Different Property</fullName>
+                <default>false</default>
+                <label>Chose to Purchase a Different Property</label>
+            </value>
+            <value>
+                <fullName>Property Did Not Pass Inspection and Borrower is Not Purchasing Home</fullName>
+                <default>false</default>
+                <label>Property Did Not Pass Inspection and Borrower is Not Purchasing Home</label>
+            </value>
+            <value>
+                <fullName>Opted for a Direct Purchase Without Financing</fullName>
+                <default>false</default>
+                <label>Opted for a Direct Purchase Without Financing</label>
+            </value>
+            <value>
+                <fullName>Chose Not to Proceed with the Financing Process</fullName>
+                <default>false</default>
+                <label>Chose Not to Proceed with the Financing Process</label>
+            </value>
+            <value>
+                <fullName>Opted to Proceed with a Different Loan Application</fullName>
+                <default>false</default>
+                <label>Opted to Proceed with a Different Loan Application</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

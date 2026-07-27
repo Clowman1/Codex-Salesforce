@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <classAccesses>
+        <apexClass>BorrowerPortalEncryptionService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>BorrowerPortalLinkService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>BorrowerPortalService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>LeadDocumentPortalController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>LeadDocumentPortalService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>LeadDocumentRequestRepository</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>LeadDocumentRequestService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>LoanRepository</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <description>Allows the Lead Portal guest user to load the borrower-facing Lead document conditions portal.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Lead Borrower Portal Guest Access</label>
+    <pageAccesses>
+        <apexPage>LeadBorrowerDocumentPortal</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+</PermissionSet>

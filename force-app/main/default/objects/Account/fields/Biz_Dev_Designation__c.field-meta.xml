@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Biz_Dev_Designation__c</fullName>
+    <label>Biz Dev Designation</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>None</fullName>
+                <default>false</default>
+                <label>None</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Reach</fullName>
+                <default>false</default>
+                <label>Biz Dev - Reach</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Cabrera</fullName>
+                <default>false</default>
+                <label>Biz Dev - Cabrera</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Waters</fullName>
+                <default>false</default>
+                <label>Biz Dev - Waters</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Fritz</fullName>
+                <default>false</default>
+                <label>Biz Dev - Fritz</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Olmsted</fullName>
+                <default>false</default>
+                <label>Biz Dev - Olmsted</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Perrault</fullName>
+                <default>false</default>
+                <label>Biz Dev - Perrault</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Hornaday</fullName>
+                <default>false</default>
+                <label>Biz Dev - Hornaday</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Hsieh</fullName>
+                <default>false</default>
+                <label>Biz Dev - Hsieh</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Williams</fullName>
+                <default>false</default>
+                <label>Biz Dev - Williams</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Pugh</fullName>
+                <default>false</default>
+                <label>Biz Dev - Pugh</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Bondarevsky</fullName>
+                <default>false</default>
+                <label>Biz Dev - Bondarevsky</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Rebagliati</fullName>
+                <default>false</default>
+                <label>Biz Dev - Rebagliati</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Carey</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Biz Dev - Carey</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - SERHANT ORL</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Biz Dev - SERHANT ORL</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Saludes</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Biz Dev - Saludes</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Wemert</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Biz Dev - Wemert</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

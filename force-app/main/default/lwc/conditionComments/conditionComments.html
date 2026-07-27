@@ -1,0 +1,63 @@
+<template>
+    <div class="condition-comments-wrapper">
+
+        <div if:true={isLoading} class="slds-is-relative">
+            <div class="slds-card__body slds-card__body_inner slds-align_absolute-center">
+                <c-hero-icon is-loading=true scale="4" icon-style=" color: #d7d7d7;"></c-hero-icon>
+            </div>
+        </div>
+
+
+        <div class="flow-container">
+            <lightning-flow
+                    if:true={showConditionCommentFlow}
+                    flow-api-name='Condition_Comments_Retriver'
+                    flow-input-variables={conditionCommentFlowInput}
+                    onstatuschange={handleConditionCommentFlow}>
+            </lightning-flow>
+            <lightning-flow
+                    if:true={showCreateConditionCommentFlow}
+                    flow-api-name='Create_Condition_Comment'
+                    flow-input-variables={createConditionCommentFlowInput}
+                    onstatuschange={handleCreateConditionCommentFlow}>
+            </lightning-flow>
+            <lightning-flow
+                    if:true={showUpdateReadCommentFlow}
+                    flow-api-name='Update_Read_Field_on_Comment'
+                    flow-input-variables={updateReadCommentFlowInput}
+                    onstatuschange={handleUpdateReadCommentFlow}>
+            </lightning-flow>
+            <lightning-flow
+                    if:true={showProcessChatActionCommentFlow}
+                    flow-api-name='Process_Chat_Action'
+                    flow-input-variables={processChatActionCommentFlowInput}
+                    onstatuschange={handleProcessChatActionCommentFlow}>
+            </lightning-flow>
+        </div>
+
+        <c-message-notification
+                lwc:if={showError}
+                variant="error"
+                label="Error"
+                message={errorMessage}
+                is-inline-modal
+                onclose={handleCloseError}
+        ></c-message-notification>
+
+        <c-chat lwc:ref="chat"
+                ondoubleclick={doubleClickHandler}
+                onsendmessage={sendMessageHandler}
+                onchataction={chatActionHandler}
+        >
+
+            <c-enhanced-switcher
+                    if:false={isPortal}
+                    slot="sendButtonLeftSlot"
+                    config={toggleConfig}
+                    style="padding-right: 20px"
+                    onchange={visibilityChangeHandler}
+            ></c-enhanced-switcher>
+
+        </c-chat>
+    </div>
+</template>

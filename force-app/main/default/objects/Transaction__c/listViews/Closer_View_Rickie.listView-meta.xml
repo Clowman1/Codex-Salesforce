@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Closer_View_Rickie</fullName>
+    <columns>Borrower_Name__c</columns>
+    <columns>NAME</columns>
+    <columns>Status__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>CD_Request_Date__c</columns>
+    <columns>Closing_Instructions_Sent__c</columns>
+    <columns>CD_Sent_By_Date__c</columns>
+    <columns>CD_Sent_Date__c</columns>
+    <columns>Manager_Notes__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Conditionally Approved,Re-Submitted,Re-Submitted (Items Needed),Approved,QC Review</value>
+    </filters>
+    <filters>
+        <field>CD_Request_Date__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <filters>
+        <field>Closing_Move_To_Docs__c</field>
+        <operation>equals</operation>
+    </filters>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Transaction__c.Brokered</value>
+    </filters>
+    <label>Brokered Closer View - Rickie</label>
+    <sharedTo>
+        <group>Management</group>
+        <group>Processors</group>
+    </sharedTo>
+</ListView>

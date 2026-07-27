@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Lead$Name</field>
+    </columns>
+    <columns>
+        <field>Lead$LeadSource</field>
+    </columns>
+    <columns>
+        <field>Lead$Status</field>
+    </columns>
+    <columns>
+        <field>Lead$Owner</field>
+    </columns>
+    <columns>
+        <field>Lead$CreatedDate</field>
+    </columns>
+    <columns>
+        <field>Lead$Loan_Purpose__c</field>
+    </columns>
+    <columns>
+        <field>Lead$Converted_Transaction_ID__c</field>
+    </columns>
+    <columns>
+        <field>Lead$Phone</field>
+    </columns>
+    <columns>
+        <field>Lead$Email</field>
+    </columns>
+    <description>Review report for the CEO Lead Intelligence 2026 average new leads per month card.</description>
+    <filter>
+        <booleanFilter>(1 AND 2 AND (3 OR 4 OR 5)) AND (6 OR 7)</booleanFilter>
+        <criteriaItems>
+            <column>Lead$CreatedDate</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterOrEqual</operator>
+            <value>1/1/2026</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Lead$Owner</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Adam Stephens,Benjamin Bondarevsky,Benjamin Bondarevsky - Outside,John Carbera,John Cabrera,Byron Richie,Alex Saludes,Joseph Carey,Plutarco Castellanos,Ryan Kauffman,Chad Gorman,Dylan Betcher,Daniel Alvaro,Lauren Williams,Nimbus Development,Nimbus Development - Outside</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Lead$Status</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>New</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Lead$Loan_Purpose__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Refinance</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Lead$CreatedDate</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterOrEqual</operator>
+            <value>TODAY</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Lead$LeadSource</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Past Client</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Lead$Loan_Purpose__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>notEqual</operator>
+            <value>Refinance</value>
+        </criteriaItems>
+    </filter>
+    <format>Tabular</format>
+    <name>CEO Lead 2026 Monthly Average Review</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Leads_with_without_Transactions__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>Lead$CreatedDate</sortColumn>
+    <sortOrder>Desc</sortOrder>
+</Report>
+
+

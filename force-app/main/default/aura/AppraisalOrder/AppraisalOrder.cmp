@@ -1,0 +1,316 @@
+<!--
+ - ValueLink appraisal workspace for Transaction appraisal tab.
+ -->
+<aura:component description="AppraisalOrder" implements="force:hasRecordId,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes"
+                controller="AppraisalOrderController">
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+
+    <aura:attribute name="dataModel" type="Object"/>
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    <aura:attribute name="fetchingOrderComments" type="Boolean" default="false"/>
+    <aura:attribute name="fetchingOrderDocs" type="Boolean" default="false"/>
+    <aura:attribute name="newMessage" type="String"/>
+    <aura:attribute name="orderComments" type="Object[]" />
+    <aura:attribute name="orderDocuments" type="Object[]" />
+    <aura:attribute name="timelineItems" type="Object[]" />
+    <aura:attribute name="activeMapView" type="String" default="satellite"/>
+    <aura:attribute name="streetViewUrl" type="String"/>
+    <aura:attribute name="satelliteViewUrl" type="String"/>
+    <aura:attribute name="showConversationLog" type="Boolean" default="false"/>
+    <aura:attribute name="showStatusHistory" type="Boolean" default="false"/>
+    <aura:attribute name="showCancelModal" type="Boolean" default="false"/>
+    <aura:attribute name="cancelReason" type="String"/>
+    <aura:attribute name="hasOrder" type="Boolean" default="true" />
+    <aura:attribute name="fileToBeUploaded" type="Object[]"/>
+    <aura:attribute name="filetype" type="List" default="['.pdf','.jpeg','.jpg' ]"/>
+
+    <aura:if isTrue="{!NOT(v.hasOrder)}">
+        <lightning:card title="Appraisal Workspace" class="appraisalCard">
+            <div class="appraisal-empty">
+                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                <h2>No appraisal order created for this transaction</h2>
+                <p>Once an order is created, ValueLink details, documents, and the manual report import backup will appear here.</p>
+            </div>
+        </lightning:card>
+        <aura:set attribute="else">
+            <lightning:card class="appraisalCard">
+                <aura:if isTrue="{!v.isLoading}">
+                    <lightning:spinner size="medium"/>
+                </aura:if>
+
+                <div class="appraisal-hero">
+                    <div>
+                        <p class="eyebrow">ValueLink Appraisal</p>
+                        <h2>{!v.dataModel.street}</h2>
+                        <p class="appraisal-address">{!v.dataModel.city}, {!v.dataModel.state} {!v.dataModel.zip}</p>
+                    </div>
+                    <div class="hero-actions">
+                        <span class="{!if(v.dataModel.appraisalStatus == 'Completed', 'status-pill status-complete', 'status-pill status-active')}">
+                            {!v.dataModel.appraisalStatus}
+                        </span>
+                        <lightning:button label="Fetch Completed Reports"
+                                          iconName="utility:download"
+                                          onclick="{!c.fetchReports}"
+                                          variant="brand"/>
+                        <lightning:button label="Cancel Appraisal Order"
+                                          iconName="utility:close"
+                                          onclick="{!c.openCancelModal}"
+                                          variant="destructive"/>
+                    </div>
+                </div>
+
+                <aura:if isTrue="{!v.showCancelModal}">
+                    <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="cancel-appraisal-heading"
+                             class="slds-modal slds-fade-in-open appraisal-cancel-modal">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <lightning:buttonIcon iconName="utility:close"
+                                                      alternativeText="Close"
+                                                      title="Close"
+                                                      onclick="{!c.closeCancelModal}"
+                                                      class="slds-modal__close"/>
+                                <h2 id="cancel-appraisal-heading" class="slds-text-heading_medium">
+                                    Cancel Appraisal Order?
+                                </h2>
+                                <p class="slds-m-top_x-small">This will send a cancellation request to ValueLink for this order.</p>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium">
+                                <div class="cancel-summary">
+                                    <div>
+                                        <span>Order Number</span>
+                                        <strong>{!v.dataModel.orderNumber}</strong>
+                                    </div>
+                                    <div>
+                                        <span>ValueLink Order ID</span>
+                                        <strong>{!v.dataModel.orderId}</strong>
+                                    </div>
+                                    <div>
+                                        <span>Current Status</span>
+                                        <strong>{!v.dataModel.appraisalStatus}</strong>
+                                    </div>
+                                </div>
+                                <div class="cancel-warning">
+                                    Please double check before continuing. Once ValueLink accepts the cancellation, Salesforce will mark this appraisal order as Cancelled.
+                                </div>
+                                <lightning:textarea aura:id="cancelReasonInput"
+                                                    label="Cancellation Reason"
+                                                    required="true"
+                                                    value="{!v.cancelReason}"
+                                                    placeholder="Example: Borrower cancelled appraisal order, duplicate order, or order no longer needed."/>
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <lightning:button label="Keep Order" onclick="{!c.closeCancelModal}"/>
+                                <lightning:button label="Yes, Cancel Order"
+                                                  variant="destructive"
+                                                  onclick="{!c.cancelAppraisalOrder}"/>
+                            </footer>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </aura:if>
+
+                <div class="summary-grid">
+                    <div class="summary-tile">
+                        <span>Order Number</span>
+                        <strong>{!v.dataModel.orderNumber}</strong>
+                    </div>
+                    <div class="summary-tile">
+                        <span>Due Date</span>
+                        <strong>{!v.dataModel.dateNeeded}</strong>
+                    </div>
+                    <div class="summary-tile">
+                        <span>Inspection Scheduled</span>
+                        <strong>{!v.dataModel.inspectionScheduledDate}</strong>
+                    </div>
+                    <div class="summary-tile">
+                        <span>Inspection Complete</span>
+                        <strong>{!v.dataModel.inspectionCompletedDate}</strong>
+                    </div>
+                    <div class="summary-tile">
+                        <span>Estimated Completion</span>
+                        <strong>{!v.dataModel.estCompletionDate}</strong>
+                    </div>
+                    <div class="summary-tile">
+                        <span>Appraisal Folder Files</span>
+                        <strong>{!v.dataModel.appraisalFolderDocumentCount}</strong>
+                    </div>
+                </div>
+
+                <div class="workspace-grid">
+                    <section class="workspace-panel map-panel">
+                        <div class="panel-heading">
+                            <div>
+                                <h3>Property View</h3>
+                                <p>Satellite is shown by default. Use Street View when Google has property-level coverage.</p>
+                            </div>
+                            <div class="view-switch">
+                                <button class="{!if(v.activeMapView == 'street', 'view-button view-button-active', 'view-button')}"
+                                        data-view="street"
+                                        onclick="{!c.setMapView}">
+                                    Street View
+                                </button>
+                                <button class="{!if(v.activeMapView == 'satellite', 'view-button view-button-active', 'view-button')}"
+                                        data-view="satellite"
+                                        onclick="{!c.setMapView}">
+                                    Satellite
+                                </button>
+                            </div>
+                        </div>
+                        <aura:if isTrue="{!v.activeMapView == 'street'}">
+                            <iframe id="GoogleStreetViewID" title="Google Street View iframe" src="{!v.streetViewUrl}">
+                            </iframe>
+                            <aura:set attribute="else">
+                                <iframe id="GoogleMapID" title="Google Maps iframe" src="{!v.satelliteViewUrl}">
+                                </iframe>
+                            </aura:set>
+                        </aura:if>
+                    </section>
+
+                    <section class="workspace-panel">
+                        <div class="panel-heading">
+                            <div>
+                                <h3>Order Details</h3>
+                                <p>Current ValueLink order data and backup import status.</p>
+                            </div>
+                        </div>
+                        <div class="detail-list">
+                            <div>
+                                <span>Product Ordered</span>
+                                <strong>{!v.dataModel.productOrdered}</strong>
+                            </div>
+                            <div>
+                                <span>ValueLink Order ID</span>
+                                <strong>{!v.dataModel.orderId}</strong>
+                            </div>
+                            <div>
+                                <span>Last Report Fetch</span>
+                                <strong>
+                                    <lightning:formattedDateTime value="{!v.dataModel.lastReportFetch}" year="numeric" month="short" day="2-digit" hour="2-digit" minute="2-digit"/>
+                                </strong>
+                            </div>
+                        </div>
+                        <div class="backup-note">
+                            Completed appraisal documents auto-download into the Appraisal folder when ValueLink marks the order complete. Use the button above as a manual forced backup.
+                        </div>
+                    </section>
+                </div>
+
+                <div class="workspace-panel section-panel timeline-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>ValueLink Activity Timeline</h3>
+                            <p>Order milestones, report download activity, and ValueLink document routing history.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-list">
+                        <aura:if isTrue="{!v.timelineItems}">
+                            <aura:iteration items="{!v.timelineItems}" var="item">
+                                <div class="timeline-item">
+                                    <div class="timeline-icon">
+                                        <lightning:icon iconName="{!item.iconName}" size="x-small"/>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-title-row">
+                                            <strong>{!item.title}</strong>
+                                            <span>{!item.status}</span>
+                                        </div>
+                                        <p>{!item.detail}</p>
+                                        <small>
+                                            <lightning:formattedDateTime value="{!item.occurredOn}" year="numeric" month="short" day="2-digit" hour="2-digit" minute="2-digit"/>
+                                        </small>
+                                    </div>
+                                </div>
+                            </aura:iteration>
+                            <aura:set attribute="else">
+                                <div class="empty-inline">No ValueLink activity has been logged yet.</div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                </div>
+
+                <div class="workspace-panel section-panel">
+                    <button class="section-toggle" onclick="{!c.toggleFlyOutSection}" name="showConversationLog">
+                        <span>Conversation Log</span>
+                        <lightning:icon iconName="utility:chevrondown" size="x-small"/>
+                    </button>
+                    <aura:if isTrue="{!v.showConversationLog}">
+                        <div class="section-body">
+                            <aura:if isTrue="{!v.fetchingOrderComments}">
+                                <lightning:spinner size="small"/>
+                            </aura:if>
+                            <div class="conversation-scroll">
+                                <aura:iteration items="{!v.orderComments}" var="message">
+                                    <section role="log" class="slds-chat">
+                                        <ul class="slds-chat-list">
+                                            <li class="{!if(message.CommentType == 'document', 'slds-chat-listitem slds-chat-listitem_event',if(message.UserTypeName == 'Client', 'slds-chat-listitem slds-chat-listitem_outbound', 'slds-chat-listitem slds-chat-listitem_inbound'))}">
+                                                <div class="{!if(message.CommentType == 'document','slds-chat-event','slds-chat-message')}">
+                                                    <div class="{!if(message.CommentType == 'document','slds-chat-event__body','slds-chat-message__body')}">
+                                                        <aura:if isTrue="{!message.CommentType == 'document'}">
+                                                            <span><lightning:icon size="x-small" iconName="utility:file"/> {!message.Comment}</span>
+                                                            <aura:set attribute="else">
+                                                                <div class="{!if(message.UserTypeName == 'Client', 'slds-chat-message__text slds-chat-message__text_outbound', 'slds-chat-message__text slds-chat-message__text_inbound')}">
+                                                                    <span>{!message.Comment}</span>
+                                                                </div>
+                                                                <div class="slds-chat-message__meta">Created On
+                                                                    <lightning:formattedDateTime value="{!message.CreatedOn}" year="numeric" month="numeric" day="numeric" timeZone="UTC"/>
+                                                                </div>
+                                                            </aura:set>
+                                                        </aura:if>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </section>
+                                </aura:iteration>
+                            </div>
+                            <lightning:textarea placeholder="Type a message..." value="{!v.newMessage}" variant="label-hidden"/>
+                            <div class="section-actions">
+                                <lightning:button variant="brand" onclick="{!c.sendMessage}" label="Send Message"/>
+                            </div>
+                        </div>
+                    </aura:if>
+                </div>
+
+                <div class="workspace-panel section-panel">
+                    <button class="section-toggle" onclick="{!c.toggleFlyOutSection}" name="showStatusHistory">
+                        <span>ValueLink Documents</span>
+                        <lightning:icon iconName="utility:chevrondown" size="x-small"/>
+                    </button>
+                    <aura:if isTrue="{!v.showStatusHistory}">
+                        <div class="section-body">
+                            <aura:if isTrue="{!v.fetchingOrderDocs}">
+                                <lightning:spinner size="small"/>
+                            </aura:if>
+                            <aura:if isTrue="{!v.orderDocuments}">
+                                <ul class="document-list">
+                                    <aura:iteration items="{!v.orderDocuments}" var="doc">
+                                        <li>
+                                            <button class="document-row" onclick="{!c.downloadFile}" data-fileid="{!doc.OrderDocumentID}">
+                                                <lightning:icon iconName="standard:file" size="small"/>
+                                                <span>
+                                                    <strong>{!doc.DocumentFileName}</strong>
+                                                    <small>Submitted On <lightning:formattedDateTime value="{!doc.DocumentSubmittedOn}" year="numeric" month="numeric" day="numeric" timeZone="UTC"/></small>
+                                                </span>
+                                                <lightning:icon iconName="utility:download" size="x-small"/>
+                                            </button>
+                                        </li>
+                                    </aura:iteration>
+                                </ul>
+                                <aura:set attribute="else">
+                                    <div class="empty-inline">No ValueLink documents to display.</div>
+                                </aura:set>
+                            </aura:if>
+                            <div class="upload-zone">
+                                <lightning:input type="file" aura:id="file-input" name="fileUploader"
+                                                 multiple="false"
+                                                 accept="{!v.filetype}"
+                                                 files="{!v.fileToBeUploaded}"
+                                                 onchange="{!c.handleChangeOnUpload}"/>
+                            </div>
+                        </div>
+                    </aura:if>
+                </div>
+            </lightning:card>
+        </aura:set>
+    </aura:if>
+</aura:component>

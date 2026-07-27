@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>58.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Set_Type</name>
+        <label>Set Type</label>
+        <locationX>402</locationX>
+        <locationY>431</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Type</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ConditionName</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.Description__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Description</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Is_Assigned_To_on_reference_set</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Is_Assigned_To_on_reference_set</name>
+        <label>Is Assigned To on reference set?</label>
+        <locationX>534</locationX>
+        <locationY>623</locationY>
+        <defaultConnector>
+            <targetReference>Assign_To_Owner</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Transaction_Condition_Reference__r.AssignedToRole__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Transaction_Condition_Reference__r.AssignedToRole__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue></stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Transaction</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Is_Reference_Null</name>
+        <label>Is Reference Null</label>
+        <locationX>534</locationX>
+        <locationY>323</locationY>
+        <defaultConnector>
+            <targetReference>Is_Assigned_To_on_reference_set</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>null</defaultConnectorLabel>
+        <rules>
+            <name>not_null</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Transaction_Condition_Reference__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Transaction_Condition_Reference__r.Type__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Initial Submission</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Transaction_Condition_Reference__r.Type__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Initial Submission Optional</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Transaction_Condition_Reference__r.Type__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Vendor Standard</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Type</targetReference>
+            </connector>
+            <label>not null</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Pick_Assignee_By_Role</name>
+        <label>Pick Assignee By Role</label>
+        <locationX>314</locationX>
+        <locationY>839</locationY>
+        <defaultConnector>
+            <targetReference>Assign_To_Owner</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Assign to Transaction Owner</defaultConnectorLabel>
+        <rules>
+            <name>Assign_To_Processor_Rule</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>fx_Role_Contains_Processor</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Transaction</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Transaction.Processor__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_To_Processor_User</targetReference>
+            </connector>
+            <label>Assign to Processor</label>
+        </rules>
+        <rules>
+            <name>Assign_To_Loan_Officer_Rule</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>fx_Role_Contains_Loan_Officer</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Transaction</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Transaction.Loan_Officer__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_To_Loan_Officer_User</targetReference>
+            </connector>
+            <label>Assign to Loan Officer</label>
+        </rules>
+    </decisions>
+    <description>Returned update elements (after before save flow change).</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>ConditionName</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!$Record.Transaction_Condition_Reference__r.Borrower_Label__c}),
+{!$Setup.UWMSettings__c.Default_Condition_Name__c},
+{!$Record.Transaction_Condition_Reference__r.Borrower_Label__c})</expression>
+    </formulas>
+    <formulas>
+        <name>Description</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!$Record.Transaction_Condition_Reference__r.Borrower_Description__c}),{!$Record.UWM_Description__c},{!$Record.Transaction_Condition_Reference__r.Borrower_Description__c})</expression>
+    </formulas>
+    <formulas>
+        <name>fx_Role_Contains_Loan_Officer</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(CONTAINS(LOWER(TEXT({!$Record.Transaction_Condition_Reference__r.AssignedToRole__c})), &quot;loan officer&quot;), AND(CONTAINS(LOWER(TEXT({!$Record.Transaction_Condition_Reference__r.AssignedToRole__c})), &quot;officer&quot;), NOT(CONTAINS(LOWER(TEXT({!$Record.Transaction_Condition_Reference__r.AssignedToRole__c})), &quot;processor&quot;))))</expression>
+    </formulas>
+    <formulas>
+        <name>fx_Role_Contains_Processor</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS(LOWER(TEXT({!$Record.Transaction_Condition_Reference__r.AssignedToRole__c})), &quot;processor&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Type</name>
+        <dataType>String</dataType>
+        <expression>IF(
+ISPICKVAL({!$Record.Transaction_Condition_Reference__r.Type__c}, &apos;Loan Officer&apos;),
+&apos;Loan Officer&apos;,
+IF(
+ISPICKVAL({!$Record.Transaction_Condition_Reference__r.Type__c}, &apos;Vendor&apos;),
+&apos;Vendor&apos;,
+IF(
+ISPICKVAL({!$Record.Transaction_Condition_Reference__r.Type__c}, &apos;Post Closing&apos;),
+&apos;Post Closing&apos;,
+&apos;Processor&apos;
+)))</expression>
+    </formulas>
+    <interviewLabel>Assign Loan Condition On Creation {!$Flow.CurrentDateTime}</interviewLabel>
+    <isOverridable>true</isOverridable>
+    <label>Assign Loan Condition On Creation</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Transaction</name>
+        <label>Get Transaction</label>
+        <locationX>314</locationX>
+        <locationY>731</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Pick_Assignee_By_Role</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Transaction__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Transaction__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Loan_Officer__c</queriedFields>
+        <queriedFields>Processor__c</queriedFields>
+        <queriedFields>OwnerId</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Assign_To_Loan_Officer_User</name>
+        <label>Assign To Processor User</label>
+        <locationX>314</locationX>
+        <locationY>947</locationY>
+        <inputAssignments>
+            <field>Assigned_To__c</field>
+            <value>
+                <elementReference>$Record.Transaction__r.Processor__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Assign_To_Owner</name>
+        <label>{!$Record.Transaction__r.Processor__c}</label>
+        <locationX>534</locationX>
+        <locationY>1331</locationY>
+        <inputAssignments>
+            <field>Assigned_To__c</field>
+            <value>
+                <elementReference>$Record.Transaction__r.Processor__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Assign_To_Processor_User</name>
+        <label>Assign To Processor User</label>
+        <locationX>50</locationX>
+        <locationY>947</locationY>
+        <inputAssignments>
+            <field>Assigned_To__c</field>
+            <value>
+                <elementReference>$Record.Transaction__r.Processor__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>408</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Is_Reference_Null</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterFormula>AND(
+        NOT(ISBLANK({!$Record.Transaction_Condition_Reference__c})),
+        NOT(ISBLANK({!$Record.Transaction_Condition_Reference__r.Reference_Id__c}))
+)</filterFormula>
+        <object>Condition__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

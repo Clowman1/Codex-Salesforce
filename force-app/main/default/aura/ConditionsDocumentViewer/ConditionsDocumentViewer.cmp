@@ -1,0 +1,332 @@
+<!--
+ - Created by zeyad on 8/15/2022.
+ -->
+
+<aura:component description="DocumentViewer" controller="DocumentController">
+    <aura:attribute name="files" type="List" />
+    <aura:attribute name="applicationFilesLinks" type="List" />
+    <aura:attribute name="applicationConditions" type="List" />
+    <aura:attribute name="linkedApplicationConditions" type="List" />
+    <aura:attribute name="selectedFileToRelinkId" type="String" />
+    <aura:attribute name="ddMenuRemoveRelateToggledPrevious" type="String"/>
+    <aura:attribute name="isImage" type="Boolean" />
+    <aura:attribute name="showRejectPrompt" type="Boolean" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="showRightSidePanel" type="Boolean" default="false" />
+    <aura:attribute name="selectedFile" type="Object" default="" />
+    <aura:attribute name="selectedReviewDocumentId" type="String" />
+    <aura:attribute name="selectedReviewDocumentTitle" type="String" />
+    <aura:attribute name="rejectionReason" type="String" />
+    <aura:attribute name="updatedConditionDescription" type="String" />
+    <aura:attribute name="emailBorrower" type="Boolean" default="true" />
+    <aura:attribute name="hasRejectedDocumentInReviewSession" type="Boolean" default="false" />
+    <aura:attribute name="sendBorrowerMessage" type="String" />
+    <lightning:overlayLibrary aura:id="overlayLib" />
+    <aura:attribute name="filePath" type="String" />
+    <aura:attribute name="fileTitle" type="String" />
+    <aura:attribute name="folders" type="List" />
+    <aura:attribute name="conditionDescription" type="String" />
+    <aura:attribute name="conditionName" type="String" />
+    <aura:attribute name="dataIdentifier" type="Integer" default="0" />
+    <aura:attribute name="conditionId" type="String" />
+    <aura:attribute name="errorMessage" type="String" />
+    <aura:attribute name="applicationId" type="String"/>
+    <aura:handler name="init" action="{!c.init}" value="{!this}" />
+    <aura:registerEvent name="conditionsInit" type="c:ConditionsInit" />
+    <aura:registerEvent name="refreshEvent" type="c:RefreshEvent" />
+    <ltng:require styles="{!$Resource.PULSEResources  + '/css/ConditionsDocumentViewer.css'}" />
+
+    <div class="slds-p-around_medium fill-available">
+                        
+        <lightning:layout class="gap15rem fill-available" horizontalAlign="spread" multipleRows="false">
+            <lightning:layoutItem flexibility="grow" class="slds-m-right_x-small">
+                <aura:if isTrue="{!not(empty(v.filePath))}">
+                    <aura:if isTrue="{!v.isImage}">
+                        <img class="slds-box_border" style="width: -webkit-fill-available;"
+                            alt="Document on Condition" src="{!v.filePath}" />
+                        <aura:set attribute="else">
+                            <iframe class="doc-frame preview" title="Preview of the condition documents"  src="{!v.filePath}"></iframe>
+                        </aura:set>
+                    </aura:if>
+                </aura:if>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="5" class="flex-col-imb">
+                <h2 class="slds-m-bottom_small">{!v.conditionName}</h2>
+                <p class="slds-m-bottom_small">
+                    {!v.conditionDescription}
+                </p>
+                <aura:if isTrue="{!v.showRejectPrompt}">
+                    <p class="slds-text-heading_label">{!concat('Reject Document: ', v.selectedReviewDocumentTitle)}</p>
+                    <br />
+                    <div class="cdv__reject-form">
+                        <aura:if isTrue="{!empty(v.errorMessage)}">
+                            <lightning:messages></lightning:messages>
+                        </aura:if>
+                        <aura:if isTrue="{!not(empty(v.errorMessage))}">
+                            <div class="slds-text-color_error slds-text-heading_small">{!v.errorMessage}</div>
+                        </aura:if>
+                        <lightning:layout multipleRows="true" verticalAlign="stretch">
+                            <lightning:input
+                                type="checkbox"
+                                label="Email rejection note to borrower"
+                                checked="{!v.emailBorrower}"
+                            ></lightning:input>
+                            <lightning:layoutItem size="12" class="slds-m-top_medium">
+                                <div style="font-weight: 700; color: #080707; margin-bottom: 0.25rem;">Rejection Comment to Client</div>
+                                <div class="cdv__review-field">
+                                    <lightning:textarea
+                                        required="true"
+                                        label="Rejection Comment to Client"
+                                        value="{!v.rejectionReason}"
+                                    ></lightning:textarea>
+                                </div>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="12" class="slds-m-top_medium">
+                                <div style="font-weight: 700; color: #080707; margin-bottom: 0.25rem;">Condition Description Update</div>
+                                <div class="cdv__review-field">
+                                    <lightning:textarea
+                                        label="Condition Description Update"
+                                        value="{!v.updatedConditionDescription}"
+                                        placeholder="Optional: update what the borrower should provide next."
+                                    ></lightning:textarea>
+                                </div>
+                            </lightning:layoutItem>
+                            <lightning:layout horizontalAlign="center" class="slds-m-around_medium">
+                                <lightning:buttonGroup class="slds-button-group-row">
+                                    <div class="slds-button-group-item">
+                                        <lightning:button
+                                            class="slds-theme_brand slds-theme_alert-texture"
+                                            onclick="{!c.cancelReject}"
+                                            iconPosition="left"
+                                            variant="neutral"
+                                            type="button"
+                                            label="Cancel"
+                                        ></lightning:button>
+                                    </div>
+                                    <div class="slds-button-group-item">
+                                        <lightning:button
+                                            class="slds-theme_brand slds-theme_alert-texture"
+                                            iconPosition="left"
+                                            variant="destructive"
+                                            type="button"
+                                            label="Reject"
+                                            onclick="{!c.rejectDocument}"
+                                        ></lightning:button>
+                                    </div>
+                                </lightning:buttonGroup>
+                            </lightning:layout>
+                        </lightning:layout>
+                    </div>
+                    <aura:set attribute="else">
+                        <lightning:layout horizontalAlign="spread" class="slds-m-bottom_x-medium">
+                            <h3 id="all-docs-section-title" class=""> 
+                                Documents 
+                            </h3>
+                            <lightning:button label="Download All" onclick="{!c.downloadFiles}"/>
+                        </lightning:layout>
+                        
+                        <div id="all-docs-section" class="slds-box_border flx-grow">
+                            <div style="padding:.5rem">
+                                <ul class="imbus-max-height-files-345">
+                                    <aura:iteration items="{!v.files}" var="file" indexVar="ind">
+                                        <li
+                                            class="{!concat('slds-item slds-p-around_x-small slds-m-bottom_x-small', if(equals(ind,v.dataIdentifier), ' ncs-selected-file', ''))}"
+                                            onclick="{!c.previewDoc}"
+                                            data-identifier="{!ind}"
+                                            data-handle="true"
+                                        >
+                                            <lightning:tile class="slds-tile_board">
+                                                <aura:set attribute="media">
+                                                    <lightning:layoutItem>
+                                                        <!-- button to open conditions relater section -->
+                                                        <div id="{!concat('menuRemoveRelate', file.ContentDocumentId)}" class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                                            <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true"
+                                                                    data-id="{!file.ContentDocumentId}" data-index="{!concat('menuRemoveRelate', file.ContentDocumentId)}"
+                                                                    aria-expanded="false" onclick="{!c.toggleMenuRemoveRelateVisibility}">
+                                                                <lightning:icon iconName="utility:link" size="small"></lightning:icon>
+                                                            </button>
+                                                            <div class="slds-dropdown slds-dropdown_left slds-dropdown_small">
+                                                                <ul class="slds-dropdown__list" role="menu" aria-label="Show More">
+                                                        
+                                                                    <li class="slds-dropdown__item slds-is-selected" role="presentation" onclick="{!c.removeCurrentFileLink}"
+                                                                        data-id="{!v.conditionId}" data-linked="true" data-contentdocid="{!file.ContentDocumentId}"
+                                                                        data-identifier="{!ind}">
+                                                                        <span class="slds-truncate" title="Remove from Condition">
+                                                                            <lightning:icon iconName="utility:unlinked" />
+                                                                            Remove from Condition
+                                                                        </span>
+                                                                    </li>
+                                                                    <li class="slds-dropdown__item slds-is-selected" role="presentation" onclick="{!c.toggleFilesLinksMenuVisibility}"
+                                                                        data-id="{!v.conditionId}" data-linked="true" data-contentdocid="{!file.ContentDocumentId}">
+                                                                        <span class="slds-truncate" title="Relate to Another Condition">
+                                                                            <lightning:icon iconName="standard:link" />
+                                                                            Relate to Another Condition
+                                                                        </span>
+                                                                    </li>
+                                                                    
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+
+                                                        <aura:if isTrue="{! file.isEditable}">
+                                                            <span data-identifier="{!ind}" data-ignore="true" onclick="{!c.uneditFile}">
+                                                                <lightning:buttonIcon iconName="utility:close"></lightning:buttonIcon>
+                                                            </span>
+                                                            <aura:set attribute="else">
+                                                                <span data-identifier="{!ind}" data-ignore="true"  onclick="{!c.editFile}">
+                                                                    <lightning:buttonIcon iconName="utility:edit"></lightning:buttonIcon>
+                                                                </span>
+                                                            </aura:set>
+                                                        </aura:if>
+
+                                                    </lightning:layoutItem>
+                                                </aura:set>
+                                                <lightning:layout horizontalAlign="spread" verticalAlign="center">
+                                                    <lightning:layoutItem class="slds-p-right_medium" size="6">
+                                                        <div data-handle="true" class="cdv__file-name"
+                                                            style="font-size:0.875rem; display:flex; align-items:center; justify-content:space-between;">
+                                                            <lightning:input disabled="{!not(file.isEditable)}"
+                                                                            type="text" variant="label-hidden"
+                                                                            value="{!file.Title}" />
+
+                                                            <aura:if isTrue="{! file.isEditable}">
+                                                            <span data-identifier="{!ind}"   data-ignore="true"  onclick="{!c.saveFile}">
+                                                                <lightning:buttonIcon variant="bare" iconName="utility:save"></lightning:buttonIcon>
+                                                                </span>
+                                                            </aura:if>
+                                                            <lightning:layout>
+                                                                <aura:if isTrue="{! file.FileExtension == 'pdf'}">
+                                                                    <lightning:layoutItem>
+                                                                        <lightning:icon iconName="doctype:pdf"
+                                                                                        size="x-small"></lightning:icon>
+                                                                    </lightning:layoutItem>
+                                                                </aura:if>
+                                                                <aura:if
+                                                                    isTrue="{! file.FileExtension == 'doc' || file.FileExtension == 'docx'}">
+                                                                    <lightning:layoutItem>
+                                                                        <lightning:icon iconName="doctype:word"
+                                                                                        size="x-small"></lightning:icon>
+                                                                    </lightning:layoutItem>
+                                                                </aura:if>
+                                                                <aura:if
+                                                                    isTrue="{! file.FileExtension == 'jpg' || file.FileExtension == 'jpeg' || file.FileExtension == 'png'}"
+                                                                >
+                                                                    <lightning:layoutItem>
+                                                                        <lightning:icon iconName="doctype:image"
+                                                                                        size="x-small"></lightning:icon>
+                                                                    </lightning:layoutItem>
+                                                                </aura:if>
+                                                                <aura:if
+                                                                    isTrue="{! file.FileExtension == 'xls' || file.FileExtension == 'xlsx'}">
+                                                                    <lightning:layoutItem>
+                                                                        <lightning:icon iconName="doctype:excel"
+                                                                                        size="x-small"></lightning:icon>
+                                                                    </lightning:layoutItem>
+                                                                </aura:if>
+                                                                <aura:if isTrue="{! file.FileExtension == 'txt'}">
+                                                                    <lightning:layoutItem>
+                                                                        <lightning:icon iconName="doctype:txt"
+                                                                                        size="x-small"></lightning:icon>
+                                                                    </lightning:layoutItem>
+                                                                </aura:if>
+                                                                <aura:if isTrue="{! file.FileExtension == 'csv'}">
+                                                                    <lightning:layoutItem>
+                                                                        <lightning:icon iconName="doctype:csv"
+                                                                                        size="x-small"></lightning:icon>
+                                                                    </lightning:layoutItem>
+                                                                </aura:if>
+                                                            </lightning:layout>
+                                                        </div>
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem class="flx-grow">
+                                                        <lightning:select disabled="{!not(file.isEditable)}"
+                                                                        title="{!ind}" onchange="{!c.folderChange}"
+                                                                        aura:id="select" variant="label-hidden" value="{!file.Folder__c}"
+                                                                        name="select">
+                                                            <aura:iteration items="{!v.folders}" var="option">
+                                                                <option selected="{!file.Folder__c == option}" value="{!option}">{!option}</option>
+                                                            </aura:iteration>
+                                                        </lightning:select>
+                                                    </lightning:layoutItem>
+                                                    <lightning:layoutItem class="slds-m-left_small">
+                                                        <lightning:buttonGroup>
+                                                            <lightning:button
+                                                                label="Accept"
+                                                                variant="brand"
+                                                                onclick="{!c.approveDocument}"
+                                                                name="{!concat(file.ContentDocumentId, '|', ind)}"
+                                                            />
+                                                            <lightning:button
+                                                                label="Reject"
+                                                                variant="destructive"
+                                                                onclick="{!c.rejectPrompt}"
+                                                                name="{!concat(file.ContentDocumentId, '|', ind)}"
+                                                                title="{!file.Title}"
+                                                            />
+                                                        </lightning:buttonGroup>
+                                                    </lightning:layoutItem>
+
+                                                </lightning:layout>
+                                            </lightning:tile>
+                                        </li>
+                                    </aura:iteration>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3 id="conditions-relater-section-title" class="slds-m-bottom_x-small slds-hide">
+                            Relate to Conditions
+                        </h3>
+                        <div id="conditions-relater-goback" class="slds-box_border flx-grow slds-hide">
+                            <div class="slds-item slds-p-around_x-small ncs-selected-file">
+                                <lightning:button variant="brand-outline" label="Go Back" 
+                                    onclick="{!c.toggleFilesLinksMenuVisibility}" iconName="utility:back" 
+                                />
+                            </div>
+                        </div>
+                        <div id="conditions-relater-section" class="imbus-max-height-files-368 slds-box_border flx-grow slds-hide">
+
+                            <div style="padding:.5rem">
+                                <lightning:layoutItem>
+                                    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                        <div class="slds-dropdown_left slds-dropdown_small">
+                                            <ul class="slds-dropdown__list" role="menu" aria-label="Show More">
+                                                <aura:iteration items="{!v.linkedApplicationConditions}" var="ac" indexVar="indAc">
+                        
+                                                    <aura:if isTrue="{!ac.ContentDocumentLinks[0]}">
+                        
+                                                        <li class="slds-dropdown__item slds-is-selected slds-m-around_xx-small imbus-cursor-pointer" role="presentation"
+                                                            onclick="{!c.onSelectFileLink}" key="{!ac.Id}" data-linked="true" data-id="{!ac.Id}"
+                                                            data-name="{!ac.Name}" data-contentdocid="{!v.selectedFileToRelinkId}">
+                                                            <span class="slds-truncate" title="{!ac.Name}">
+                                                                <lightning:icon iconName="standard:link" />
+                                                                {!concat(' ',ac.Name)}
+                                                            </span>
+                                                        </li>
+                                                        <aura:set attribute="else">
+                                                            <li class="slds-dropdown__item slds-is-selected slds-m-around_xx-small imbus-cursor-pointer" role="presentation"
+                                                                onclick="{!c.onSelectFileLink}" key="{!ac.Id}" data-linked="false"
+                                                                data-id="{!ac.Id}" data-contentdocid="{!v.selectedFileToRelinkId}"
+                                                                data-name="{!ac.Name}">
+                                                                <span class="slds-truncate" title="{!ac.Name}">
+                                                                    <lightning:icon iconName="utility:unlinked" />
+                                                                    {!concat(' ',ac.Name)}
+                                                                </span>
+                                                            </li>
+                                                        </aura:set>
+                                                    </aura:if>
+                        
+                                                </aura:iteration>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </div>
+                        </div>
+                    </aura:set>
+                </aura:if>
+            </lightning:layoutItem>
+        </lightning:layout>
+            
+    </div>
+</aura:component>

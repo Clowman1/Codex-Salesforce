@@ -1,0 +1,358 @@
+<template>
+    <section class="importer-card">
+        <div class="header-row">
+            <div class="header-copy">
+                <span class="eyebrow">Condition Importer</span>
+                <h2>Import Conditions from PDF</h2>
+                <p>Drag and drop Non-UWM lender PDF to extract and create loan conditions.</p>
+            </div>
+            <template if:true={showStartOver}>
+                <button class="secondary-btn" onclick={handleStartOver}>Start Over</button>
+            </template>
+        </div>
+
+        <template if:true={isWorking}>
+            <div class="processing-overlay">
+                <div class="overlay-card">
+                    <div class="spinner"></div>
+                    <p>{progressText}</p> 
+                </div>
+            </div>
+        </template>
+
+        <template if:true={showUploader}>
+            <section class="stage-card stage-card--upload">
+                <div class="stage-header">
+                    <div class="header-copy">
+                        <span class="stage-step">Step 1</span>
+                        <h3>Upload Lender Conditions</h3>
+                        <p>{uploadSummaryText}</p>
+                    </div>
+                </div>
+
+                <div
+                    class={dropZoneClass}
+                    onclick={handleBrowseClick}
+                    ondragover={handleDragOver}
+                    ondragleave={handleDragLeave}
+                    ondrop={handleDrop}
+                    onkeydown={handleDropZoneKeydown}
+                    tabindex="0"
+                    role="button"
+                    aria-label="Upload lender condition PDF files"
+                >
+                    <div>
+                        <div class="drop-icon">PDF</div>
+                        <h4>Drop your files here</h4>
+                        <p>Drag and drop your PDF file here, then review the extracted conditions.</p>
+                        <span class="primary-btn drop-zone__cta">Choose PDF Files</span>
+                    </div>
+                </div>
+
+                <input
+                    data-id="pdfInput"
+                    type="file"
+                    multiple
+                    accept=".pdf,application/pdf"
+                    onchange={handleInputChange}
+                    class="hidden-input"
+                />
+
+                <template if:true={hasUploadedFiles}>
+                    <div class="file-list">
+                        <template for:each={uploadedFiles} for:item="uploaded">
+                            <div key={uploaded.clientKey} class="file-row">
+                                <div class="file-copy">
+                                    <div class="file-name">{uploaded.fileName}</div>
+                                    <p>{uploaded.message}</p>
+                                </div>
+                                <span class={uploaded.statusClass}>{uploaded.statusLabel}</span>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </section>
+        </template>
+
+        <template if:true={showReview}>
+            <section class="stage-card stage-card--review">
+                <div class="stage-header stage-header--review">
+                    <div class="header-copy">
+                        <span class="stage-step">Step 2</span>
+                        <h3>Review Extracted Conditions</h3>
+                        <p>{selectedCount} selected for creation</p>
+                    </div>
+                    <div class="action-group">
+                        <button class="secondary-btn" onclick={handleAddManualCondition}>Add Manual Condition</button>
+                        <button class="secondary-btn" onclick={handleCancelPreview}>Cancel Preview</button>
+                        <button class="primary-btn" disabled={importDisabled} onclick={handleCreateConditions}>
+                            {importButtonLabel}
+                        </button>
+                    </div>
+                </div>
+
+                <template if:true={hasGlobalMessage}>
+                    <div class="message message--info">{globalMessage}</div>
+                </template>
+                <template if:true={hasExtractionErrors}>
+                    <template for:each={extractionErrors} for:item="errorText">
+                        <div key={errorText} class="message message--error">{errorText}</div>
+                    </template>
+                </template>
+
+                <template if:true={hasConditions}>
+                    <div class="summary-grid">
+                        <div class="summary-tile">
+                            <span class="summary-label">Total Conditions</span>
+                            <strong>{totalCount}</strong>
+                            <p>All extracted and manual entries in this review session.</p>
+                        </div>
+                        <div class="summary-tile">
+                            <span class="summary-label">Selected</span>
+                            <strong>{selectedCount}</strong>
+                            <p>Conditions that will be created when you continue.</p>
+                        </div>
+                        <div class="summary-tile">
+                            <span class="summary-label">Duplicates</span>
+                            <strong>{duplicateCount}</strong>
+                            <p>Rows flagged as matching an existing or repeated condition.</p>
+                        </div>
+                        <div class="summary-tile">
+                            <span class="summary-label">Manual Entries</span>
+                            <strong>{manualCount}</strong>
+                            <p>Conditions added directly in this review table.</p>
+                        </div>
+                    </div>
+
+                    <div class="review-toolbar">
+                        <div class="header-copy">
+                            <span class="summary-label">Review Actions</span>
+                            <p>Scan each row, update key fields inline, and expand details only when needed.</p>
+                        </div>
+                        <div class="review-toolbar__actions">
+                            <button class="secondary-btn secondary-btn--quiet" onclick={handleSelectAllReady}>
+                                Select All Ready
+                            </button>
+                            <button class="secondary-btn secondary-btn--quiet" onclick={handleClearSelection}>
+                                Clear Selection
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="conditions-table-shell">
+                        <table class="conditions-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Include</th>
+                                    <th scope="col">Condition</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Source</th>
+                                    <th scope="col">Review</th>
+                                    <th scope="col">Details</th>
+                                </tr>
+                            </thead>
+                            <template for:each={decoratedConditions} for:item="condition">
+                                <tbody key={condition.clientKey}>
+                                    <tr class={condition.rowClass}>
+                                        <td class="conditions-table__include">
+                                            <label class="include-toggle">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={condition.selected}
+                                                    disabled={condition.isDuplicate}
+                                                    data-key={condition.clientKey}
+                                                    onchange={handleConditionToggle}
+                                                />
+                                                <span>Include</span>
+                                            </label>
+                                        </td>
+                                        <td class="conditions-table__condition">
+                                            <label class="table-input-label">
+                                                <span class="table-field-label">Name</span>
+                                                <input
+                                                    type="text"
+                                                    value={condition.name}
+                                                    data-key={condition.clientKey}
+                                                    data-field="name"
+                                                    onchange={handleFieldChange}
+                                                />
+                                            </label>
+                                            <p class="conditions-table__description">{condition.descriptionPreview}</p>
+                                        </td>
+                                        <td>
+                                            <label class="table-input-label">
+                                                <span class="table-field-label">Type</span>
+                                                <select
+                                                    value={condition.type}
+                                                    data-key={condition.clientKey}
+                                                    data-field="type"
+                                                    onchange={handleFieldChange}
+                                                >
+                                                    <template for:each={typeOptions} for:item="option">
+                                                        <option key={option.value} value={option.value}>{option.label}</option>
+                                                    </template>
+                                                </select>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label class="table-input-label">
+                                                <span class="table-field-label">Status</span>
+                                                <select
+                                                    value={condition.status}
+                                                    data-key={condition.clientKey}
+                                                    data-field="status"
+                                                    onchange={handleFieldChange}
+                                                >
+                                                    <template for:each={statusOptions} for:item="option">
+                                                        <option key={option.value} value={option.value}>{option.label}</option>
+                                                    </template>
+                                                </select>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <div class="chip-group chip-group--wrapped">
+                                                <span class={condition.sourceBadgeClass}>{condition.sourceLabel}</span>
+                                                <span class={condition.confidenceBadgeClass}>{condition.confidenceLabel}</span>
+                                            </div>
+                                        </td>
+                                        <td class="conditions-table__review">
+                                            <div class="chip-group chip-group--wrapped">
+                                                <span class={condition.selectionStateClass}>{condition.selectionStateLabel}</span>
+                                                <span class="badge">{condition.borrowerVisibilityLabel}</span>
+                                                <span class="badge">{condition.emailVisibilityLabel}</span>
+                                            </div>
+                                            <template if:true={condition.isDuplicate}>
+                                                <div class="table-warning">Duplicate</div>
+                                            </template>
+                                        </td>
+                                        <td class="conditions-table__details">
+                                            <button
+                                                class="text-btn"
+                                                data-key={condition.clientKey}
+                                                onclick={handleToggleDetails}
+                                                aria-expanded={condition.isExpanded}
+                                                aria-controls={condition.detailsSectionId}
+                                            >
+                                                {condition.detailsButtonLabel}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <template if:true={condition.isExpanded}>
+                                        <tr class="conditions-table__detail-row">
+                                            <td colspan="7">
+                                                <div id={condition.detailsSectionId} class="detail-panel">
+                                                    <div class="detail-panel__header">
+                                                        <div class="header-copy">
+                                                            <h4>{condition.displayName}</h4>
+                                                            <p>Update the full description, assignment, and visibility settings for this condition.</p>
+                                                        </div>
+                                                        <div class="chip-group chip-group--wrapped">
+                                                            <span class={condition.sourceBadgeClass}>{condition.sourceLabel}</span>
+                                                            <span class={condition.confidenceBadgeClass}>{condition.confidenceLabel}</span>
+                                                            <span class={condition.selectionStateClass}>{condition.selectionStateLabel}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <template if:true={condition.duplicateReason}>
+                                                        <div class="message message--warning">{condition.duplicateReason}</div>
+                                                    </template>
+
+                                                    <div class="field-grid">
+                                                        <div class="field field--full">
+                                                            <label>Description</label>
+                                                            <lightning-textarea
+                                                                variant="label-hidden"
+                                                                label="Description"
+                                                                value={condition.description} 
+                                                                data-key={condition.clientKey}
+                                                                data-field="description"
+                                                                onchange={handleFieldChange}
+                                                            ></lightning-textarea>
+                                                        </div>
+                                                        <div class="field field--full assignment-row">
+                                                            <div class="field assignment-row__assignee">
+                                                                <label>Assigned To</label>
+                                                                <lightning-record-picker
+                                                                    variant="label-hidden"
+                                                                    label="Assigned To"
+                                                                    object-api-name="User"
+                                                                    value={condition.assignedToInputValue}
+                                                                    placeholder="Search users"
+                                                                    data-key={condition.clientKey}
+                                                                    data-field="assignedToId"
+                                                                    onchange={handleFieldChange}
+                                                                ></lightning-record-picker>
+                                                                <p class="field-help">Leave blank to assign the condition to the current user.</p>
+                                                            </div>
+                                                            <div class="checkbox-row assignment-row__toggles">
+                                                                <div class="checkbox-field">
+                                                                    <label>
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            checked={condition.canBorrowerSee}
+                                                                            data-key={condition.clientKey}
+                                                                            data-field="canBorrowerSee"
+                                                                            onchange={handleFieldChange}
+                                                                        />
+                                                                        Can Borrower See
+                                                                    </label>
+                                                                </div>
+                                                                <div class="checkbox-field">
+                                                                    <label>
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            checked={condition.includeInEmail}
+                                                                            data-key={condition.clientKey}
+                                                                            data-field="includeInEmail"
+                                                                            onchange={handleFieldChange}
+                                                                        />
+                                                                        Include in Email
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </template>
+                        </table>
+                    </div>
+                </template>
+
+                <template if:false={hasConditions}>
+                    <div class="empty-state">
+                        <div class="empty-state__icon">!</div>
+                        <h4>No conditions to review</h4>
+                        <p>Upload additional PDFs or start over to begin a new extraction session.</p>
+                    </div>
+                </template>
+            </section>
+        </template>
+
+        <template if:true={importCompleted}>
+            <section class="success-card">
+                <div class="success-icon">OK</div>
+                <h3>Conditions created</h3>
+                <p>Created {createdCount} condition(s). Uploaded PDFs remain attached to this Loan.</p>
+            </section>
+        </template>
+    </section>
+
+    <template if:true={showCancelConfirm}>
+        <section class="modal-shell" role="dialog" aria-modal="true">
+            <div class="modal-card">
+                <h3>Cancel Condition Creation?</h3>
+                <p>Do you want to keep the uploaded PDF files on this Loan and cancel condition creation?</p>
+                <div class="action-group action-group--modal">
+                    <button class="secondary-btn" onclick={handleCloseCancelModal}>Keep Reviewing</button>
+                    <button class="primary-btn" onclick={handleKeepFilesWithoutCreate}>Save PDFs Only</button>
+                </div>
+            </div>
+            <div class="modal-backdrop"></div>
+        </section>
+    </template>
+</template>

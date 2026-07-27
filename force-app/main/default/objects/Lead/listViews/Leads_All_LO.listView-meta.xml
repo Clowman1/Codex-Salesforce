@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Leads_All_LO</fullName>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>LEAD.LAST_ACTIVITY</columns>
+    <columns>CORE.USERS.FIRST_NAME</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>Biz_Dev__c</columns>
+    <columns>FULL_NAME</columns>
+    <columns>LEAD.PHONE</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>Loan_Amount__c</columns>
+    <columns>Appointment_Date_Time__c</columns>
+    <columns>Realtor_Buying_Agent__c</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.RECORDTYPE</field>
+        <operation>notEqual</operation>
+        <value>Lead.Realtor_Lead_record_type</value>
+    </filters>
+    <label>Leads All</label>
+    <sharedTo>
+        <role>Loan_Officer</role>
+    </sharedTo>
+</ListView>

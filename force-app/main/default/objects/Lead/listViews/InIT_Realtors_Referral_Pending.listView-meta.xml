@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>InIT_Realtors_Referral_Pending</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>LEAD.LAST_ACTIVITY</columns>
+    <columns>LEAD.TITLE</columns>
+    <columns>LEAD.PHONE</columns>
+    <columns>LEAD.RATING</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>County_of_Operation__c</columns>
+    <columns>Number_of_Transactions__c</columns>
+    <columns>Buyer_Volume__c</columns>
+    <columns>RETR_Link__c</columns>
+    <columns>Appointment_Date_Time__c</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <filterScope>Mine</filterScope>
+    <filters>
+        <field>LEAD.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Lead.Realtor_Lead_record_type</value>
+    </filters>
+    <filters>
+        <field>LEAD.LEAD_SOURCE</field>
+        <operation>equals</operation>
+        <value>InIt Webinar</value>
+    </filters>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>equals</operation>
+        <value>Call - Referral Pending</value>
+    </filters>
+    <label>InIT Realtors - Referral Pending</label>
+    <sharedTo>
+        <group>Management</group>
+    </sharedTo>
+</ListView>

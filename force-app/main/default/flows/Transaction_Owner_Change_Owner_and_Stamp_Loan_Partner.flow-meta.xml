@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_Blank</name>
+        <label>Assign Blank</label>
+        <locationX>314</locationX>
+        <locationY>395</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Loan_Partner__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Assign_Loan_Partner</name>
+        <label>Assign Loan Partner</label>
+        <locationX>50</locationX>
+        <locationY>395</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Loan_Partner__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.Loan_Officer__r.Loan_Partner__c</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>LO_has_Loan_Partner</name>
+        <label>LO has Loan Partner?</label>
+        <locationX>182</locationX>
+        <locationY>287</locationY>
+        <defaultConnector>
+            <targetReference>Assign_Blank</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No, Assign Blank</defaultConnectorLabel>
+        <rules>
+            <name>Yes_Assign_Loan_Partner</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Loan_Officer__r.Loan_Partner__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Loan_Partner</targetReference>
+            </connector>
+            <label>Yes, Assign Loan Partner</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>ISNEW</name>
+        <dataType>Boolean</dataType>
+        <expression>ISNEW()</expression>
+    </formulas>
+    <interviewLabel>Transaction Owner: Change {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Transaction Owner: Change Owner and Stamp Loan Partner</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>LO_has_Loan_Partner</targetReference>
+        </connector>
+        <filterFormula>OR(
+AND(
+ISBLANK({!$Record.Loan_Partner__c}),
+NOT(ISBLANK({!$Record.Loan_Officer__c})),
+ISNEW()
+),
+ISCHANGED({!$Record.Loan_Officer__c})
+)</filterFormula>
+        <object>Transaction__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>DummyVar</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

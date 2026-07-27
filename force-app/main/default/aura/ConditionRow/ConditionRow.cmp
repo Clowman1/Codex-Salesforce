@@ -1,0 +1,274 @@
+<!--
+ - Created by zeyad on 8/11/2022.
+ -->
+<aura:component controller="LoanConditionController" description="ConditionRow">
+  <aura:attribute name="columns" type="List" />
+  <aura:attribute name="cells" type="List" />
+  <aura:attribute name="hovers" type="Object" default="{}" />
+  <aura:attribute name="currentEditField" type="String" default="" />
+  <aura:attribute name="isFieldEdit" type="Boolean" default="false" />
+  <aura:attribute name="recordId" type="String" />
+  <aura:attribute name="filetype" type="List" default="['.pdf','.jpeg','.jpg','.png','.doc','.docx','.xls','.xlsx','.txt','.csv' ]" />
+  <aura:attribute name="isExpandedNotes" type="Boolean" default="" />
+  <aura:attribute name="isExpandedComments" type="Boolean" default="" />
+  <aura:attribute name="condition" type="Object" default="" />
+  <aura:attribute name="initialCondition" type="Object" default="" />
+  <aura:attribute name="documentCount" type="Integer" />
+  <aura:attribute name="unreadCommentsCount" type="Integer" />
+  <aura:attribute name="commentsIcon" type="String" />
+  <aura:attribute name="showSpinner" type="Boolean" default="false" />
+  <aura:attribute name="showSuccessNotification" type="Boolean" default="false" />
+  <aura:attribute name="showErrorNotification" type="Boolean" default="false" />
+  <aura:attribute name="errorMessage" type="String" />
+  <aura:attribute name="applicationId" type="String" />
+  <aura:attribute name="isMobileView" type="Boolean" default="false" />
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+  <aura:registerEvent name="conditionsReInit" type="c:ConditionsInit" />
+  <aura:registerEvent name="refreshEvent" type="c:RefreshEvent" />
+  <aura:registerEvent name="conditionRowEvent" type="c:ConditionRowEvent" />
+  <lightning:overlayLibrary aura:id="overlayLib" />
+
+  <div class="condition-row__wrapper slds-is-relative">
+    <aura:if isTrue="{!v.showSpinner}">
+      <lightning:spinner variant="brand" size="large" />
+    </aura:if>
+    <aura:if isTrue="{!v.showSuccessNotification}">
+      <!-- prettier-ignore -->
+      <c:messageNotification label="Success" variant="success" isRelativeModal="true" message="Form Saved Successfully" onclose="{!c.closeSuccessNotification}" />
+    </aura:if>
+    <aura:if isTrue="{!v.showErrorNotification}">
+      <!-- prettier-ignore -->
+      <c:messageNotification label="Error" variant="error" isRelativeModal="true" message="{!v.errorMessage}" onclose="{!c.closeErrorNotification}" />
+    </aura:if>
+
+    <div
+      class="{!if(v.initialCondition.isSelected, 'condition-row--selected', '') + if(v.isExpandedNotes, ' condition-row--expanded', '') + ' slds-border_bottom condition-row'}"
+    >
+      <lightning:notificationsLibrary aura:id="notifLib" />
+
+      <!-- Main data row — CSS Grid aligned with header -->
+      <aura:if isTrue="{!v.condition.data.Id}">
+        <div class="conditions-table__row slds-p-vertical_small">
+          <!-- Checkbox cell -->
+          <div class="conditions-table__cell">
+            <!-- prettier-ignore -->
+            <lightning:input
+                type="checkbox"
+                class="select-checkbox"
+                value="{!v.initialCondition.isSelected}"
+                checked="{!v.initialCondition.isSelected}"
+                label=""
+                onchange="{!c.handleRowSelect}"
+              />
+          </div>
+
+          <!-- Dynamic cells -->
+          <aura:iteration items="{!v.cells}" var="cell">
+            <aura:if isTrue="{!cell.isAction}">
+              <!-- Action column -->
+              <div class="conditions-table__cell condition-row__actions">
+                <!-- prettier-ignore -->
+                <lightning:buttonIcon
+                  onclick="{!c.toggleIncludeInEmail}"
+                  iconName="{!if(v.condition.data.Include_In_Email__c, 'utility:email', 'utility:turn_off_notifications')}"
+                  class="{!if(v.condition.data.Include_In_Email__c, 'condition-row__icon--positive', '')}"
+                  size="large"
+                  alternativeText="Include In Email?"
+                  title="Include In Email?"
+                />
+                <!-- prettier-ignore -->
+                <lightning:buttonIcon
+                  onclick="{!c.toggleCanSee}"
+                  iconName="{!if(v.condition.data.Can_Borrower_See__c, 'utility:preview', 'utility:ban')}"
+                  size="large"
+                  class="{!if(v.condition.data.Can_Borrower_See__c, 'condition-row__icon--positive', '')}"
+                  alternativeText="Can Borrower See?"
+                  title="Can Borrower See?"
+                />
+                <lightning:fileUpload
+                  name="fileUploader"
+                  class="condition-row__file-upload"
+                  multiple="true"
+                  accept="{!v.filetype}"
+                  recordId="{!v.recordId}"
+                  onuploadfinished="{!c.handleUploadFinished}"
+                  title="Upload Files"
+                  label=""
+                />
+                <!-- prettier-ignore -->
+                <lightning:buttonIcon
+                  iconName="utility:document_preview"
+                  onclick="{!c.reviewDocuments}"
+                  size="large"
+                  alternativeText="Preview Documents"
+                  title="Preview Documents"
+                />
+                <!-- prettier-ignore -->
+                <lightning:buttonIcon
+                  iconName="utility:note"
+                  onclick="{!c.enableNotes}"
+                  size="large"
+                  alternativeText="Notes"
+                  title="Notes"
+                />
+                <aura:if isTrue="{!v.unreadCommentsCount == null}">
+                  <!-- prettier-ignore -->
+                  <lightning:buttonIcon
+                    iconName="utility:comments"
+                    onclick="{!c.enableComments}"
+                    size="large"
+                    alternativeText="Comments"
+                    title="Comments"
+                  />
+                  <aura:set attribute="else">
+                    <button name="lead" class="slds-button slds-button_icon slds-button_icon-border unread-comments">
+                      <!-- prettier-ignore -->
+                      <span onclick="{!c.enableComments}">
+                        <lightning:icon iconName="standard:feedback" size="medium" />
+                      </span>
+                    </button>
+                  </aura:set>
+                </aura:if>
+                <!-- prettier-ignore -->
+                <lightning:buttonIcon
+                  iconName="utility:delete"
+                  class="{!if(not(empty(v.condition.data.UWM_Condition_Id__c)), '', 'condition-row__icon--warning')}"
+                  disabled="{!not(empty(v.condition.data.UWM_Condition_Id__c))}"
+                  onclick="{!c.deleteItem}"
+                  size="large"
+                  alternativeText="{!if(not(empty(v.condition.data.UWM_Condition_Id__c)), 'Unable to Delete UWM Condition', 'Delete')}"
+                  title="{!if(not(empty(v.condition.data.UWM_Condition_Id__c)), 'Unable to Delete UWM Condition', 'Delete')}"
+                />
+                <aura:if isTrue="{!v.documentCount == null}">
+                  <aura:set attribute="else">
+                    <span><lightning:badge label="{!v.documentCount}" class="slds-badge_inverse slds-m-horizontal_x-small" /></span>
+                  </aura:set>
+                </aura:if>
+              </div>
+
+              <!-- Data column -->
+              <aura:set attribute="else">
+                <div
+                  class="{!'conditions-table__cell' + if(and(cell.isEditable, and(v.isFieldEdit, v.currentEditField == cell.name)), ' conditions-table__cell--editing', '')}"
+                >
+                  <!-- Inline edit mode -->
+                  <aura:if isTrue="{!and(cell.isEditable, and(v.isFieldEdit, v.currentEditField == cell.name))}">
+                    <div class="textField">
+                      <lightning:recordEditForm recordId="{!v.condition.data.Id}" objectApiName="Condition__c">
+                        <!-- prettier-ignore -->
+                        <lightning:inputField
+                          variant="label-hidden"
+                          onchange="{!c.saveFieldValue}"
+                          fieldName="{!cell.name}"
+                        />
+                      </lightning:recordEditForm>
+                    </div>
+                    <!-- Display mode -->
+                    <aura:set attribute="else">
+                      <aura:if isTrue="{!cell.hasAvatar}">
+                        <!-- User lookup — avatar with photo and initials -->
+                        <!-- prettier-ignore -->
+                        <div
+                          data-identifier="{!cell.name}"
+                          onclick="{!c.toggleDynamic}"
+                          role="button"
+                          tabindex="0"
+                          class="{!'slds-grid slds-grid_vertical' + if(cell.isEditable, ' condition-row__field--clickable', '')}"
+                        >
+                          <lightning:avatar
+                            initials="{!cell.initials}"
+                            variant="square"
+                            src="{!cell.photoUrl}"
+                            alternativeText=""
+                            class="slds-align_absolute-center"
+                          />
+                          <span class="label__grey slds-text-body_small slds-text-align_center">
+                            {!cell.displayValue}
+                          </span>
+                        </div>
+                        <aura:set attribute="else">
+                          <aura:if isTrue="{!cell.isEditable}">
+                            <!-- Editable field -->
+                            <!-- prettier-ignore -->
+                            <span
+                              data-identifier="{!cell.name}"
+                              onclick="{!c.toggleDynamic}"
+                              class="condition-row__field--editable"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <c:formattedField fieldValue="{!cell.displayValue}" fieldType="{!cell.type}" />
+                            </span>
+                            <!-- Read-only field -->
+                            <aura:set attribute="else">
+                              <c:formattedField fieldValue="{!cell.displayValue}" fieldType="{!cell.type}" />
+                            </aura:set>
+                          </aura:if>
+                        </aura:set>
+                      </aura:if>
+                    </aura:set>
+                  </aura:if>
+                </div>
+              </aura:set>
+            </aura:if>
+          </aura:iteration>
+        </div>
+      </aura:if>
+
+      <!-- Expanded sections — full width, outside the grid row -->
+      <aura:if isTrue="{!v.isExpandedNotes}">
+        <div class="{!'condition-row__notes-section slds-p-around_medium' + if(v.isMobileView, ' condition-row__notes-section--mobile', '')}">
+          <div class="condition-row__notes slds-p-around_medium slds-theme_shade slds-theme_alert-texture">
+            <div class="condition-row__notes-field">
+              <span class="slds-text-title_bold">UWM Description:</span>
+              <div class="textField slds-text-body_small">
+                <lightning:recordEditForm recordId="" objectApiName="Condition__c">
+                  <!-- prettier-ignore -->
+                  <lightning:inputField
+                    variant="label-hidden"
+                    value="{!v.condition.data.UWM_Description__c}"
+                    onchange="{!c.saveFieldValue}"
+                    fieldName="UWM_Description__c"
+                  />
+                </lightning:recordEditForm>
+              </div>
+            </div>
+            <div class="condition-row__notes-field">
+              <span class="slds-text-title_bold">Underwriter Notes:</span>
+              <div class="textField slds-text-body_small">
+                <lightning:recordEditForm recordId="" objectApiName="Condition__c">
+                  <!-- prettier-ignore -->
+                  <lightning:inputField
+                    variant="label-hidden"
+                    value="{!v.condition.data.UW_Notes__c}"
+                    onchange="{!c.saveFieldValue}"
+                    fieldName="UW_Notes__c"
+                  />
+                </lightning:recordEditForm>
+              </div>
+            </div>
+          </div>
+          <div class="condition-row__buttons slds-m-top_small slds-m-bottom_small">
+            <!-- prettier-ignore -->
+            <c:actionButton label="Save" variant="success" iconName="check" onclick="{!c.saveNotesRow}" />
+            <!-- prettier-ignore -->
+            <c:actionButton label="Cancel" variant="destructive" iconName="x" onclick="{!c.cancelSaveNotes}" />
+          </div>
+        </div>
+      </aura:if>
+      <aura:if isTrue="{!v.isExpandedComments}">
+        <div class="slds-m-top_xx-small slds-p-top_small">
+          <c:conditionComments ontoggleread="{!c.toggleRead}" conditionId="{!v.initialCondition.data.Id}" isPortal="false" />
+        </div>
+      </aura:if>
+      <aura:if isTrue="{!v.isFieldEdit}">
+        <div class="condition-row__buttons slds-m-bottom_small">
+          <!-- prettier-ignore -->
+          <c:actionButton label="Save" variant="success" iconName="check" onclick="{!c.saveRow}" />
+          <!-- prettier-ignore -->
+          <c:actionButton label="Cancel" variant="destructive" iconName="x" onclick="{!c.cancelSave}" />
+        </div>
+      </aura:if>
+    </div>
+  </div>
+</aura:component>

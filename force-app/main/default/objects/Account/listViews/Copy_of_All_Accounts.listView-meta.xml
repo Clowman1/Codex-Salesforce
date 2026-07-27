@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Copy_of_All_Accounts</fullName>
+    <columns>ACCOUNT.CREATED_DATE</columns>
+    <columns>CORE.USERS.LAST_NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>PC_FIRST_NAME</columns>
+    <columns>PC_LAST_NAME</columns>
+    <columns>ACCOUNT.TYPE</columns>
+    <columns>Stage__pc</columns>
+    <columns>Closing_Date__pc</columns>
+    <columns>ACCOUNT.PHONE1</columns>
+    <columns>ACCOUNT.ADDRESS1_STATE</columns>
+    <columns>PC_LEAD_SOURCE</columns>
+    <columns>Loan_Anniversary_Date__pc</columns>
+    <columns>Loan_Officer__pc</columns>
+    <columns>PC_ADDRESS2_STATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>PC_LEAD_SOURCE</field>
+        <operation>equals</operation>
+        <value>InIt Webinar</value>
+    </filters>
+    <label>InIT Realtor Accounts</label>
+    <sharedTo>
+        <group>Admins</group>
+        <role>Management</role>
+    </sharedTo>
+</ListView>

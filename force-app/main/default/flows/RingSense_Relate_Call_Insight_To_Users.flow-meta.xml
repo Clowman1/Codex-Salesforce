@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Resolve_Relationships</name>
+        <label>Resolve Relationships</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>RingSenseRelateCallInsightInvocable</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Assign_Related_Records</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>callInsightId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>recipientPhoneNumber</name>
+            <value>
+                <elementReference>$Record.Recipient_Phone_Number__c</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>RingSenseRelateCallInsightInvocable</nameSegment>
+        <outputParameters>
+            <assignToReference>ResolvedLeadId</assignToReference>
+            <name>leadId</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>ResolvedAccountId</assignToReference>
+            <name>accountId</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>ResolvedTransactionId</assignToReference>
+            <name>transactionId</name>
+        </outputParameters>
+    </actionCalls>
+    <apiVersion>55.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_Related_Records</name>
+        <label>Assign Related Records</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Lead__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ResolvedLeadId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.Account__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ResolvedAccountId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.Transaction__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ResolvedTransactionId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.Force_Reassign__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Triggering_Record</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_SF_User</name>
+        <label>Assign SF User</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Salesforce_User__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_User.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Check_If_Recipient_Phone_Number_Set</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Check_If_Extension_Id_Set</name>
+        <label>Check If Extension Id Set</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Check_If_Recipient_Phone_Number_Set</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Relate_to_SF_User</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Salesforce_User_Extension_Id__c</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_User</targetReference>
+            </connector>
+            <label>Relate to SF User</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_If_Recipient_Phone_Number_Set</name>
+        <label>Check If Recipient Phone Number Set</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Update_Triggering_Record</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Relate_To_Lead_Contact_Else</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Recipient_Phone_Number__c</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Resolve_Relationships</targetReference>
+            </connector>
+            <label>Relate To Lead / Contact / Else</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>RingSense: Relate Call Insight To Users {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>RingSense: Relate Call Insight To Users</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_New_Platform_Event</name>
+        <label>Create New Platform Event</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Call_Insight_ID__c</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>RingSense_Entry_Related_To_Record__e</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_User</name>
+        <label>Get User</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Assign_SF_User</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Rc_Extension_Id__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Salesforce_User_Extension_Id__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Triggering_Record</name>
+        <label>Update Triggering Record</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Create_New_Platform_Event</targetReference>
+        </connector>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Check_If_Extension_Id_Set</targetReference>
+        </connector>
+        <filterFormula>AND(
+OR(
+NOT(ISBLANK({!$Record.Recipient_Phone_Number__c})),
+NOT(ISBLANK({!$Record.Salesforce_User_Extension_Id__c}))
+),
+OR(
+ISNEW(),
+ISCHANGED({!$Record.Recipient_Phone_Number__c}),
+ISCHANGED({!$Record.Salesforce_User_Extension_Id__c}),
+AND(
+ISCHANGED({!$Record.Force_Reassign__c}),
+{!$Record.Force_Reassign__c}
+)
+)
+)</filterFormula>
+        <object>Call_Insight__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>ResolvedAccountId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ResolvedLeadId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ResolvedTransactionId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

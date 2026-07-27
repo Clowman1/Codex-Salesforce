@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Consumer_Webinar_CTC_Notified__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Internal guard used by the Consumer Webinar CTC notification flow so Angelina is emailed only the first time the transaction reaches Approval or beyond.</description>
+    <label>Consumer Webinar CTC Notified</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

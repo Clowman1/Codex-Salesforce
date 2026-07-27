@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CD_Review_Pipeline</fullName>
+    <booleanFilter>1 AND 2 AND (3 OR 4)</booleanFilter>
+    <columns>NAME</columns>
+    <columns>Loan_Officer__c</columns>
+    <columns>Processor__c</columns>
+    <columns>Status__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>Rate_Lock_Exp_Date__c</columns>
+    <columns>Lender_lookup__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>CD_Sent_By_Date__c</columns>
+    <columns>CD_Sent_Date__c</columns>
+    <columns>Manager_Notes__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>notEqual</operation>
+        <value>Cancelled,Lost,Post-Closed</value>
+    </filters>
+    <filters>
+        <field>OWNER.FIRST_NAME</field>
+        <operation>notEqual</operation>
+        <value>Reach</value>
+    </filters>
+    <filters>
+        <field>Closing_Date__c</field>
+        <operation>greaterOrEqual</operation>
+        <value>LAST_MONTH</value>
+    </filters>
+    <filters>
+        <field>Closing_Date__c</field>
+        <operation>equals</operation>
+    </filters>
+    <label>CD Review Pipeline</label>
+    <sharedTo>
+        <group>Monica_Quintero</group>
+    </sharedTo>
+</ListView>

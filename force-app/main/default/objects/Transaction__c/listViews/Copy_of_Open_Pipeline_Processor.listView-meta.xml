@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Copy_of_Open_Pipeline_Processor</fullName>
+    <booleanFilter>1 AND (2 OR 3) AND 4 AND 5 AND 6</booleanFilter>
+    <columns>NAME</columns>
+    <columns>Loan_Officer__c</columns>
+    <columns>Processor__c</columns>
+    <columns>Lender_lookup__c</columns>
+    <columns>Status__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>Rate_Lock_Exp_Date__c</columns>
+    <columns>Loan_Commitment_Date__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>Loan_Type_1st_TD__c</columns>
+    <columns>Loan_Amount_1st__c</columns>
+    <columns>Processor_Note__c</columns>
+    <columns>Processor_Note_Date_Time__c</columns>
+    <columns>Last_Processor_RC_Call__c</columns>
+    <columns>Last_Processor_RC_SMS__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Processing,Submitted,Suspended,Waiting On Loan Officer,Conditionally Approved,Re-Submitted,Approved,Closing,Funding</value>
+    </filters>
+    <filters>
+        <field>Closing_Date__c</field>
+        <operation>greaterThan</operation>
+        <value>1/1/2023</value>
+    </filters>
+    <filters>
+        <field>Closing_Date__c</field>
+        <operation>equals</operation>
+    </filters>
+    <filters>
+        <field>NAME</field>
+        <operation>notContain</operation>
+        <value>Test</value>
+    </filters>
+    <filters>
+        <field>OWNER.FIRST_NAME</field>
+        <operation>notContain</operation>
+        <value>Nimbus</value>
+    </filters>
+    <filters>
+        <field>Loan_Officer__c</field>
+        <operation>notContain</operation>
+        <value>Nimbus</value>
+    </filters>
+    <label>Processor Review Pipeline</label>
+    <sharedTo>
+        <group>Management</group>
+        <role>Management</role>
+    </sharedTo>
+</ListView>

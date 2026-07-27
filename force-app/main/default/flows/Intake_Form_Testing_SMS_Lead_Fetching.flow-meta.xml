@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Internal_New_Lead_Notification</name>
+        <label>Send Internal New Lead Notification</label>
+        <locationX>176</locationX>
+        <locationY>278</locationY>
+        <actionName>TwilioSF__TwilioSendSMS</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Copy_2_of_Create_Log</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Create_Log</targetReference>
+        </faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>fromNumber</name>
+            <value>
+                <elementReference>$Label.Twilio_From_Number</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>message</name>
+            <value>
+                <elementReference>InternalSMSBody</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>toNumber</name>
+            <value>
+                <stringValue>8016332214</stringValue>
+            </value>
+        </inputParameters>
+        <nameSegment>TwilioSF__TwilioSendSMS</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+    <apiVersion>57.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <environments>Default</environments>
+    <formulas>
+        <name>SMSInfo</name>
+        <dataType>String</dataType>
+        <expression>&apos;SMS sent from &apos; &amp; {!$Label.Twilio_From_Number} &amp; &apos; to &apos; &amp; {!$Record.Phone__c}</expression>
+    </formulas>
+    <interviewLabel>Intake Form: Testing SMS Lead Fetching {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Intake Form: Testing SMS Lead Fetching</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Copy_2_of_Create_Log</name>
+        <label>Copy 2 of Create Log</label>
+        <locationX>176</locationX>
+        <locationY>386</locationY>
+        <inputAssignments>
+            <field>Data__c</field>
+            <value>
+                <elementReference>InternalSMSBody</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Source__c</field>
+            <value>
+                <stringValue>SMS Log (Stephen Test)</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Custom_Log__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Log</name>
+        <label>Create Log</label>
+        <locationX>440</locationX>
+        <locationY>386</locationY>
+        <inputAssignments>
+            <field>Data__c</field>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Source__c</field>
+            <value>
+                <stringValue>SMS Notification to Preferred LO</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Custom_Log__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_Lead</name>
+        <label>Get Lead</label>
+        <locationX>176</locationX>
+        <locationY>170</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Send_Internal_New_Lead_Notification</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Lead_ID__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Lead</targetReference>
+        </connector>
+        <flowRunAsUser>DefaultWorkflowUser</flowRunAsUser>
+        <object>Intake_Form_New_Lead_Created__e</object>
+        <triggerType>PlatformEvent</triggerType>
+    </start>
+    <status>Draft</status>
+    <textTemplates>
+        <name>InternalSMSBody</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Lead ID: {!$Record.Lead_ID__c}. Separate Copy to see if ID is passing through
+You&apos;ve been chosen as the Loan Officer for - {!Get_Lead.FirstName} {!Get_Lead.LastName}
+https://reachhomeloans.lightning.force.com/lightning/r/Lead/{!Get_Lead.Id}/view
+
+Buyer&apos;s Agent: {!Get_Lead.Realtor_Buying_Agent__r.FirstName} {!Get_Lead.Realtor_Buying_Agent__r.LastName}
+﻿Comments: {!Get_Lead.Comments__c}</text>
+    </textTemplates>
+</Flow>

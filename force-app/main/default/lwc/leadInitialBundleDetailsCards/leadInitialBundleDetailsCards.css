@@ -1,0 +1,122 @@
+.details-shell {
+    background:
+        radial-gradient(circle at top left, rgba(255, 171, 61, 0.16), transparent 30rem),
+        linear-gradient(135deg, #172543 0%, #22365b 55%, #304967 100%);
+    border: 1px solid #9bbce7;
+    border-radius: 22px;
+    box-shadow: 0 20px 42px rgba(23, 37, 67, 0.22);
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+}
+
+.details-header {
+    color: #ffffff;
+}
+
+.eyebrow {
+    color: #ffab3d;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    margin: 0 0 0.3rem;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-size: 1.45rem;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+p {
+    color: #dbe7f7;
+    margin: 0.35rem 0 0;
+}
+
+.group {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 18px;
+    padding: 1rem;
+}
+
+.group-heading {
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.group-heading span {
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.group-heading small {
+    color: #ffcf91;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.card-grid {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.card-grid.two {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.card-grid.three {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.option-card {
+    background: linear-gradient(180deg, #ffffff, #f6f9fe);
+    border: 1px solid #c7d6ea;
+    border-radius: 16px;
+    box-shadow: 0 10px 22px rgba(9, 21, 42, 0.16);
+    color: #172543;
+    cursor: pointer;
+    display: grid;
+    gap: 0.32rem;
+    min-height: 86px;
+    padding: 0.95rem;
+    text-align: left;
+    transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.option-card:hover,
+.option-card-selected {
+    border-color: #ffab3d;
+    box-shadow: 0 16px 34px rgba(245, 143, 31, 0.24);
+    transform: translateY(-2px);
+}
+
+.option-card-selected {
+    background: linear-gradient(135deg, rgba(255, 171, 61, 0.22), #ffffff);
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.card-copy {
+    color: #52627a;
+    font-size: 0.84rem;
+    line-height: 1.35;
+}
+
+.error {
+    background: #fff0f2;
+    border: 1px solid #ffb7c2;
+    border-radius: 12px;
+    color: #b42338;
+    font-weight: 700;
+    padding: 0.75rem;
+}

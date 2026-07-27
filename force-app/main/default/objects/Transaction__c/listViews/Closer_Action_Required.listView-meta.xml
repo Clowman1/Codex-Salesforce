@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Closer_Action_Required</fullName>
+    <columns>NAME</columns>
+    <columns>Closer_Action_Reason__c</columns>
+    <columns>Status__c</columns>
+    <columns>Closing_Move_To_Docs__c</columns>
+    <columns>Closing_Package_Sent__c</columns>
+    <columns>Manager_Notes__c</columns>
+    <columns>Closing_Instructions_Sent__c</columns>
+    <columns>Closing_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Closer_Action_Required__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Closer Action Required</label>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

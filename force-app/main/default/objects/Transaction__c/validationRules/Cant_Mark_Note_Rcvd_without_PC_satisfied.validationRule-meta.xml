@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Cant_Mark_Note_Rcvd_without_PC_satisfied</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    ISNULL(PC_Conditions_Satisfied__c ),
+    NOT(ISNULL(    Purchase_Advice_Date__c  )) 
+  )</errorConditionFormula>
+    <errorMessage>Can not mark Purchase Advice Date until PC Conditions are satisfied</errorMessage>
+</ValidationRule>

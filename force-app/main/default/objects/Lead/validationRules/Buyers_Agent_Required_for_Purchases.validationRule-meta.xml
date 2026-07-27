@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Buyers_Agent_Required_for_Purchases</fullName>
+    <active>false</active>
+    <description>This rule requires the Buyer&apos;s Agent field to be populated when the Loan Purpose is Purchase.</description>
+    <errorConditionFormula>ISBLANK( Realtor_Buying_Agent__c ) &amp;&amp;  INCLUDES( Loan_Purpose__c , &quot;Purchase&quot;)</errorConditionFormula>
+    <errorMessage>Buying Agent is required.</errorMessage>
+</ValidationRule>

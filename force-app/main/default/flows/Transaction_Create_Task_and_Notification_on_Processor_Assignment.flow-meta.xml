@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Email_for_Review_Conditions</name>
+        <label>Send Email for Review Conditions</label>
+        <locationX>176</locationX>
+        <locationY>431</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>recipientAddresses</name>
+            <value>
+                <collectionElements>
+                    <elementReference>Recipients</elementReference>
+                </collectionElements>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderType</name>
+            <value>
+                <inputConfiguratorMode>Custom</inputConfiguratorMode>
+                <stringValue>OrgWideEmailAddress</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <inputConfiguratorMode>Custom</inputConfiguratorMode>
+                <stringValue>reachus@reachhomeloans.com</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>composeEmailContent</name>
+            <value>
+                <stringValue>True</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>Subject</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <inputConfiguratorMode>Custom</inputConfiguratorMode>
+                <stringValue>&lt;p&gt;New file assigned to {!$Record.Processor__r.FirstName} &lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;{!$Record.Processor__r.LastName}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Transaction:&lt;/p&gt;&lt;p&gt;https://reachhomeloans.lightning.force.com/lightning/r/Transaction__c/{!$Record.Id}/view&lt;/p&gt;</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>sendRichBody</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
+        <nameSegment>emailSimple</nameSegment>
+        <offset>0</offset>
+        <versionString>2.0.1</versionString>
+    </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_Recipients</name>
+        <label>Assign Recipients</label>
+        <locationX>176</locationX>
+        <locationY>323</locationY>
+        <assignmentItems>
+            <assignToReference>Recipients</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>$Record.Processor__r.Email</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Recipients</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>anoble@reachhomeloans.com</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Send_Email_for_Review_Conditions</targetReference>
+        </connector>
+    </assignments>
+    <environments>Default</environments>
+    <formulas>
+        <name>formula_10_myRule_30_A1_2056818474</name>
+        <dataType>Date</dataType>
+        <expression>{!$Record.Closing_Date__c}  - 10</expression>
+    </formulas>
+    <formulas>
+        <name>formula_11_myRule_30_A1_8692195853</name>
+        <dataType>Date</dataType>
+        <expression>{!$Record.Closing_Date__c}</expression>
+    </formulas>
+    <formulas>
+        <name>formula_1_myRule_1_A2_0877234119</name>
+        <dataType>Currency</dataType>
+        <expression>((0.0001*{!$Record.BPS__c}) * {!$Record.Loan_Amount_1st__c} ) + {!$Record.Processing_Fee__c}</expression>
+        <scale>18</scale>
+    </formulas>
+    <formulas>
+        <name>formula_2_myRule_4_A1_0340577658</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.Borrower_Name__r.LastName} + &quot; - &quot; + {!$Record.Loan_1st_TD__c}</expression>
+    </formulas>
+    <formulas>
+        <name>formula_3_myRule_7_A1_3167604157</name>
+        <dataType>Currency</dataType>
+        <expression>((0.0001*{!$Record.BPS__c}) * {!$Record.Loan_Amount_1st__c} ) + {!$Record.Processing_Fee__c}</expression>
+        <scale>18</scale>
+    </formulas>
+    <formulas>
+        <name>formula_4_myRule_14_A1_2853342438</name>
+        <dataType>String</dataType>
+        <expression>TEXT(PRIORVALUE({!$Record.Status__c} ))</expression>
+    </formulas>
+    <formulas>
+        <name>formula_5_myRule_17_A1_2932477422</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()+3</expression>
+    </formulas>
+    <formulas>
+        <name>formula_6_myRule_20_A3_9261761004</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()</expression>
+    </formulas>
+    <formulas>
+        <name>formula_7_myRule_20_A2_8969028373</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()</expression>
+    </formulas>
+    <formulas>
+        <name>formula_8_myRule_20_A1_4309008742</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()</expression>
+    </formulas>
+    <formulas>
+        <name>formula_9_myRule_27_A1_3060335789</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()</expression>
+    </formulas>
+    <formulas>
+        <name>formula_TRUE_myRule_1</name>
+        <dataType>Boolean</dataType>
+        <expression>ISNEW() &amp;&amp; {!$Record.Owner:User.ProfileId} != &apos;00eAJ000000LsqrYAC&apos;</expression>
+    </formulas>
+    <formulas>
+        <name>formula_TRUE_myRule_14</name>
+        <dataType>Boolean</dataType>
+        <expression>CASE( {!$Record.Status__c}, 
+&quot;Processing&quot;,1, 
+&quot;Submitted&quot;,2, 
+&quot;Conditionally Approved&quot;,3, 
+&quot;Resubmitted&quot;,3,
+&quot;Approved&quot;,4,10) 
+&lt; 
+CASE(PRIORVALUE( {!$Record.Status__c} ) , 
+&quot;Processing&quot;,1, 
+&quot;Submitted&quot;,2, 
+&quot;Conditionally Approved&quot;,3, 
+&quot;Resubmitted&quot;,3, 
+&quot;Approved&quot;,4, 0)</expression>
+    </formulas>
+    <formulas>
+        <name>formula_TRUE_myRule_30</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(ISCHANGED({!$Record.Closing_Date__c} ) , {!$Record.Gift_Opt_In__c}  = TRUE)</expression>
+    </formulas>
+    <formulas>
+        <name>formula_TRUE_myRule_4</name>
+        <dataType>Boolean</dataType>
+        <expression>ISCHANGED( {!$Record.Loan_1st_TD__c} )</expression>
+    </formulas>
+    <formulas>
+        <name>formula_TRUE_myRule_7</name>
+        <dataType>Boolean</dataType>
+        <expression>OR( ISCHANGED( {!$Record.BPS__c} ) , ISCHANGED( {!$Record.Loan_Amount_1st__c}  ) , ISCHANGED( {!$Record.Processing_Fee__c}) )</expression>
+    </formulas>
+    <formulas>
+        <name>Subject</name>
+        <dataType>String</dataType>
+        <expression>&quot;New File Assigned - &quot; + {!$Record.Name}</expression>
+    </formulas>
+    <interviewLabel>Transaction: Create Task and Notification on Processor Assignment {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Transaction: Create Task and Notification on Processor Assignment</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Assign_Recipients</targetReference>
+        </connector>
+        <filterFormula>OR(
+AND(ISNEW(), NOT(ISBLANK({!$Record.Processor__c}))),
+AND(ISCHANGED({!$Record.Processor__c}), NOT(ISBLANK({!$Record.Processor__c})))
+)</filterFormula>
+        <object>Transaction__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>Recipients</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

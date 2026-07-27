@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assignt_Original_Condition_Count</name>
+        <label>Assignt Original Condition Count</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Original_Condition_Count__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.Outstanding_Conditions__c</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <environments>Default</environments>
+    <interviewLabel>Transaction: Save Original Condition Count {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Transaction: Save Original Condition Count</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Assignt_Original_Condition_Count</targetReference>
+        </connector>
+        <filterFormula>AND(
+ISCHANGED({!$Record.Outstanding_Conditions__c}),
+ISBLANK({!$Record__Prior.Outstanding_Conditions__c}),
+NOT(ISBLANK({!$Record.Outstanding_Conditions__c})),
+ISBLANK({!$Record.Original_Condition_Count__c})
+)</filterFormula>
+        <object>Transaction__c</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loan_Program_1st__c</fullName>
+    <label>Loan Program</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Conventional Fixed</fullName>
+                <default>false</default>
+                <label>Conventional Fixed</label>
+            </value>
+            <value>
+                <fullName>Conventional ARM</fullName>
+                <default>false</default>
+                <label>Conventional ARM</label>
+            </value>
+            <value>
+                <fullName>HomeReady / Home Possible</fullName>
+                <default>false</default>
+                <label>HomeReady / Home Possible</label>
+            </value>
+            <value>
+                <fullName>High Balance Conventional</fullName>
+                <default>false</default>
+                <label>High Balance Conventional</label>
+            </value>
+            <value>
+                <fullName>Jumbo Fixed</fullName>
+                <default>false</default>
+                <label>Jumbo Fixed</label>
+            </value>
+            <value>
+                <fullName>Jumbo ARM</fullName>
+                <default>false</default>
+                <label>Jumbo ARM</label>
+            </value>
+            <value>
+                <fullName>FHA Standard</fullName>
+                <default>false</default>
+                <label>FHA Standard</label>
+            </value>
+            <value>
+                <fullName>FHA Streamline</fullName>
+                <default>false</default>
+                <label>FHA Streamline</label>
+            </value>
+            <value>
+                <fullName>FHA 203(b)</fullName>
+                <default>false</default>
+                <label>FHA 203(b)</label>
+            </value>
+            <value>
+                <fullName>FHA 203(k) Full</fullName>
+                <default>false</default>
+                <label>FHA 203(k) Full</label>
+            </value>
+            <value>
+                <fullName>FHA 203(k) Streamline</fullName>
+                <default>false</default>
+                <label>FHA 203(k) Streamline</label>
+            </value>
+            <value>
+                <fullName>VA Purchase</fullName>
+                <default>false</default>
+                <label>VA Purchase</label>
+            </value>
+            <value>
+                <fullName>VA IRRRL</fullName>
+                <default>false</default>
+                <label>VA IRRRL</label>
+            </value>
+            <value>
+                <fullName>USDA Guaranteed</fullName>
+                <default>false</default>
+                <label>USDA Guaranteed</label>
+            </value>
+            <value>
+                <fullName>Bank Statement</fullName>
+                <default>false</default>
+                <label>Bank Statement</label>
+            </value>
+            <value>
+                <fullName>DSCR</fullName>
+                <default>false</default>
+                <label>DSCR</label>
+            </value>
+            <value>
+                <fullName>Asset Depletion</fullName>
+                <default>false</default>
+                <label>Asset Depletion</label>
+            </value>
+            <value>
+                <fullName>Interest Only</fullName>
+                <default>false</default>
+                <label>Interest Only</label>
+            </value>
+            <value>
+                <fullName>Foreign National</fullName>
+                <default>false</default>
+                <label>Foreign National</label>
+            </value>
+            <value>
+                <fullName>ITIN</fullName>
+                <default>false</default>
+                <label>ITIN</label>
+            </value>
+            <value>
+                <fullName>Community Mortgage</fullName>
+                <default>false</default>
+                <label>Community Mortgage</label>
+            </value>
+            <value>
+                <fullName>Rate &amp; Term Refi</fullName>
+                <default>false</default>
+                <label>Rate &amp; Term Refi</label>
+            </value>
+            <value>
+                <fullName>Cash-Out Refi</fullName>
+                <default>false</default>
+                <label>Cash-Out Refi</label>
+            </value>
+            <value>
+                <fullName>HELOC</fullName>
+                <default>false</default>
+                <label>HELOC</label>
+            </value>
+            <value>
+                <fullName>Closed-End Second</fullName>
+                <default>false</default>
+                <label>Closed-End Second</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

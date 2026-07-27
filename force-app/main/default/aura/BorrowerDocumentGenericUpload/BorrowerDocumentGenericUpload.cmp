@@ -1,0 +1,55 @@
+<aura:component
+  description="BorrowerDocumentGenericUpload"
+  implements="force:hasRecordId,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes"
+  controller="BorrowerDocumentPortalController"
+  access="global"
+>
+  <aura:attribute
+    name="filetypes"
+    type="String"
+    default="['.pdf','.jpeg','.jpg','.png','.doc','.docx','.xls','.xlsx','.txt','.csv','.heic']"
+    access="global"
+  />
+  <aura:attribute name="recordId" type="String" />
+  <aura:attribute name="cardTitle" type="String" default="Can't find your condition?" access="global" />
+  <aura:attribute
+    name="cardDescription"
+    type="String"
+    default="If you do not see a condition that matches a document requested from you please upload here"
+    access="global"
+  />
+  <aura:attribute name="cardText" type="String" default="" access="global" />
+  <aura:attribute name="titleTextColor" type="String" default="rgb(94,65,177)" access="global" />
+  <aura:attribute name="spinner" type="boolean" default="false" />
+  <aura:attribute name="showErrorPrompt" type="boolean" default="false" />
+  <aura:handler name="render" value="{!this}" action="{!c.onRender}" />
+
+  <div class="generic-upload-wrapper slds-p-around_small slds-is-relative">
+    <aura:if isTrue="{!v.spinner}">
+      <lightning:spinner variant="brand" size="large" />
+    </aura:if>
+    <lightning:card title="{!v.cardTitle}" iconName="action:share_file" class="generic-upload-card">
+      <lightning:layout class="slds-grid_vertical-align-center slds-wrap">
+        <lightning:layoutItem size="12" largeDeviceSize="7">
+          <div class="generic-upload-card_description slds-p-around_medium">
+            <span>{!v.cardDescription}</span>
+          </div>
+          <div class="generic-upload-card_text slds-p-horizontal_medium">
+            <span>{!v.cardText}</span>
+          </div>
+        </lightning:layoutItem>
+
+        <lightning:layoutItem size="12" largeDeviceSize="5" class="generic-upload-card__upload-align">
+          <lightning:fileUpload
+            class="slds-p-right_small slds-p-left_small"
+            name="fileUploader"
+            multiple="true"
+            accept="{!v.filetypes}"
+            onuploadfinished="{!c.handleUploadFinished}"
+            recordId="{!v.recordId}"
+          ></lightning:fileUpload>
+        </lightning:layoutItem>
+      </lightning:layout>
+    </lightning:card>
+  </div>
+</aura:component>

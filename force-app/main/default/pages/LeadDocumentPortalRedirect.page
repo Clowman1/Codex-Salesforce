@@ -1,0 +1,17 @@
+<apex:page controller="LeadDocumentPortalRedirectController"
+    action="{!redirect}"
+    showHeader="false"
+    sidebar="false"
+    standardStylesheets="false"
+    applyHtmlTag="false"
+    applyBodyTag="false"
+    cache="false">
+    <html>
+        <head>
+            <title>Redirecting</title>
+        </head>
+        <body>
+            Redirecting...
+        </body>
+    </html>
+</apex:page>

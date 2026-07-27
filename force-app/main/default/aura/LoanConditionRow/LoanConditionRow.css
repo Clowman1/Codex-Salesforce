@@ -1,0 +1,6 @@
+.THIS .slds-form-element__label{
+    display:none !important;
+}
+.THIS th,.THIS td {
+    max-width: 200px;
+}

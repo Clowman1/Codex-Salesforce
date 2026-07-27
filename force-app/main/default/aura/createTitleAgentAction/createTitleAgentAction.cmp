@@ -1,0 +1,50 @@
+<aura:component controller="PipelineCommandCenterController"
+                implements="force:lightningQuickActionWithoutHeader,force:hasRecordId"
+                access="global">
+    <aura:attribute name="recordId" type="String" access="global"/>
+    <aura:attribute name="titleAgentName" type="String"/>
+    <aura:attribute name="phoneNumber" type="String"/>
+    <aura:attribute name="emailAddress" type="String"/>
+    <aura:attribute name="isSaving" type="Boolean" default="false"/>
+    <aura:attribute name="errorMessage" type="String"/>
+
+    <section class="title-agent-shell">
+        <header class="title-agent-header">
+            <p>Reach Home Loans</p>
+            <h2>Create Title Agent</h2>
+            <span>Add a Title Agent account from this Transaction.</span>
+        </header>
+
+        <aura:if isTrue="{!not(empty(v.errorMessage))}">
+            <div class="title-agent-error">{!v.errorMessage}</div>
+        </aura:if>
+
+        <div class="title-agent-section">
+            <h3>Required Details</h3>
+            <div class="title-agent-grid">
+                <lightning:input aura:id="requiredField"
+                                 label="Name"
+                                 value="{!v.titleAgentName}"
+                                 required="true"/>
+                <lightning:input aura:id="requiredField"
+                                 type="tel"
+                                 label="Phone Number"
+                                 value="{!v.phoneNumber}"
+                                 required="true"/>
+                <lightning:input aura:id="requiredField"
+                                 type="email"
+                                 label="Email"
+                                 value="{!v.emailAddress}"
+                                 required="true"/>
+            </div>
+        </div>
+
+        <footer class="title-agent-footer">
+            <lightning:button label="Cancel" onclick="{!c.closeAction}" disabled="{!v.isSaving}"/>
+            <lightning:button variant="brand"
+                              label="Create Title Agent"
+                              onclick="{!c.createTitleAgent}"
+                              disabled="{!v.isSaving}"/>
+        </footer>
+    </section>
+</aura:component>

@@ -1,0 +1,186 @@
+.assistant {
+    background: #f6f9fc;
+    border: 1px solid #d7e2ef;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(10, 31, 68, 0.08);
+    overflow: hidden;
+}
+
+.hero {
+    background: #17243f;
+    color: #ffffff;
+    border-bottom: 4px solid #f5a742;
+    padding: 18px 20px;
+}
+
+.eyebrow {
+    color: #f5a742;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.subcopy {
+    color: #dfe8f4;
+    font-size: 12px;
+    margin: 6px 0 0;
+}
+
+.tabs {
+    display: flex;
+    gap: 8px;
+    padding: 14px 16px 0;
+}
+
+.tab {
+    background: #e8f2fc;
+    border: 1px solid #bfd8f0;
+    border-radius: 999px;
+    color: #12345a;
+    cursor: pointer;
+    font-weight: 800;
+    padding: 8px 14px;
+}
+
+.tab.active {
+    background: #17243f;
+    border-color: #17243f;
+    color: #ffffff;
+}
+
+.form-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 16px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field-full {
+    grid-column: 1 / -1;
+}
+
+.field span {
+    color: #21324d;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.checkbox-field {
+    align-items: flex-start;
+    color: #21324d;
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    font-weight: 800;
+    gap: 8px;
+}
+
+.checkbox-field input {
+    min-height: auto;
+    width: 18px;
+}
+
+.hint {
+    color: #60748f;
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+input,
+select,
+textarea {
+    background: #ffffff;
+    border: 1px solid #bac8d8;
+    border-radius: 6px;
+    color: #091b36;
+    font: inherit;
+    min-height: 38px;
+    padding: 8px 10px;
+}
+
+textarea {
+    min-height: 84px;
+    resize: vertical;
+}
+
+.reminder-card {
+    background: #eaf4ff;
+    border: 1px solid #bfd8f0;
+    border-radius: 8px;
+    color: #12345a;
+    padding: 12px 14px;
+}
+
+.reminder-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.reminder-card strong {
+    display: block;
+    font-size: 14px;
+    margin-top: 3px;
+}
+
+.reminder-card p {
+    color: #4c6280;
+    font-size: 12px;
+    margin: 5px 0 0;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 16px 16px;
+}
+
+.primary {
+    background: #f5a742;
+    border: 0;
+    border-radius: 999px;
+    color: #07172d;
+    cursor: pointer;
+    font-weight: 900;
+    min-width: 120px;
+    padding: 10px 18px;
+}
+
+.primary:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.alert {
+    border-radius: 6px;
+    font-weight: 700;
+    margin: 14px 16px 0;
+    padding: 10px 12px;
+}
+
+.alert-error {
+    background: #fde8ef;
+    border: 1px solid #f5b7c9;
+    color: #b0003a;
+}
+
+.alert-success {
+    background: #e7f6ec;
+    border: 1px solid #b8e2c4;
+    color: #126b33;
+}

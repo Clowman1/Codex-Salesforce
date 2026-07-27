@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rate_Lock_ISNULL_In_Submitted_Status</fullName>
+    <active>false</active>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Status__c,&apos;Submission Form Complete&apos;),
+    ISPICKVAL(Rate_Lock_Status__c, &apos;Locked&apos;),
+    ISNULL(Rate_Lock_Exp_Date__c)
+)</errorConditionFormula>
+    <errorMessage>Rate Lock Expiration is required before moving to Submission</errorMessage>
+</ValidationRule>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loan_Program_2nd__c</fullName>
+    <label>Loan Program (2nd)</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Closed Second</fullName>
+                <default>false</default>
+                <label>Closed Second</label>
+            </value>
+            <value>
+                <fullName>HELOC</fullName>
+                <default>false</default>
+                <label>HELOC</label>
+            </value>
+            <value>
+                <fullName>Money Merge Account</fullName>
+                <default>false</default>
+                <label>Money Merge Account</label>
+            </value>
+            <value>
+                <fullName>40 yr Fixed</fullName>
+                <default>false</default>
+                <label>40 yr Fixed</label>
+            </value>
+            <value>
+                <fullName>40 Yr Adjustable</fullName>
+                <default>false</default>
+                <label>40 Yr Adjustable</label>
+            </value>
+            <value>
+                <fullName>30 yr Fixed</fullName>
+                <default>false</default>
+                <label>30 yr Fixed</label>
+            </value>
+            <value>
+                <fullName>30 yr Interest Only</fullName>
+                <default>false</default>
+                <label>30 yr Interest Only</label>
+            </value>
+            <value>
+                <fullName>20 yr Fixed</fullName>
+                <default>false</default>
+                <label>20 yr Fixed</label>
+            </value>
+            <value>
+                <fullName>15 yr Fixed</fullName>
+                <default>false</default>
+                <label>15 yr Fixed</label>
+            </value>
+            <value>
+                <fullName>10 Year Fixed</fullName>
+                <default>false</default>
+                <label>10 Year Fixed</label>
+            </value>
+            <value>
+                <fullName>3/1 yr ARM</fullName>
+                <default>false</default>
+                <label>3/1 yr ARM</label>
+            </value>
+            <value>
+                <fullName>3/1 yr Interest Only ARM</fullName>
+                <default>false</default>
+                <label>3/1 yr Interest Only ARM</label>
+            </value>
+            <value>
+                <fullName>5/1 yr ARM</fullName>
+                <default>false</default>
+                <label>5/1 yr ARM</label>
+            </value>
+            <value>
+                <fullName>5/1 yr Interest Only ARM</fullName>
+                <default>false</default>
+                <label>5/1 yr Interest Only ARM</label>
+            </value>
+            <value>
+                <fullName>7/1 yr ARM</fullName>
+                <default>false</default>
+                <label>7/1 yr ARM</label>
+            </value>
+            <value>
+                <fullName>7/1 yr Interest Only ARM</fullName>
+                <default>false</default>
+                <label>7/1 yr Interest Only ARM</label>
+            </value>
+            <value>
+                <fullName>10/1 yr ARM</fullName>
+                <default>false</default>
+                <label>10/1 yr ARM</label>
+            </value>
+            <value>
+                <fullName>10/1 yr Interest Only ARM</fullName>
+                <default>false</default>
+                <label>10/1 yr Interest Only ARM</label>
+            </value>
+            <value>
+                <fullName>Option ARM</fullName>
+                <default>false</default>
+                <label>Option ARM</label>
+            </value>
+            <value>
+                <fullName>Reverse Mortgage</fullName>
+                <default>false</default>
+                <label>Reverse Mortgage</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

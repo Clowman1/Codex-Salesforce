@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Consumer_Webinar_Contacted_Webhook_Sent__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Marks a Consumer Webinar lead after its first contacted-status webhook is delivered to Zapier.</description>
+    <label>Consumer Webinar Contacted Webhook Sent</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

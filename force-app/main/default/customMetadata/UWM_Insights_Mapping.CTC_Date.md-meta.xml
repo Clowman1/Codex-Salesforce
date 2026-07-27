@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>CTC Date</label>
+    <protected>false</protected>
+    <values>
+        <field>API_Name__c</field>
+        <value xsi:type="xsd:string">uwm_ClearToCloseDate__c</value>
+    </values>
+    <values>
+        <field>Convert_Datetime_to_Date__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Datatype__c</field>
+        <value xsi:type="xsd:string">Datetime</value>
+    </values>
+    <values>
+        <field>Decimal_Length__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Transaction_Field_API_Name__c</field>
+        <value xsi:type="xsd:string">Clear_to_Close_Date__c</value>
+    </values>
+    <values>
+        <field>Type__c</field>
+        <value xsi:type="xsd:string">LoanPipelineUpdate</value>
+    </values>
+    <values>
+        <field>UWM_Field_Name__c</field>
+        <value xsi:type="xsd:string">CTCDateTime</value>
+    </values>
+</CustomMetadata>

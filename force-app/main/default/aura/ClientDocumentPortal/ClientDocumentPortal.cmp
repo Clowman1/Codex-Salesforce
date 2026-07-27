@@ -1,0 +1,359 @@
+<aura:component controller="BorrowerDocumentPortalController"
+implements="force:appHostable,forceCommunity:availableForAllPageTypes,force:hasRecordId,lightning:isUrlAddressable" access="global">
+	<aura:handler name="init" value="{!this}" action="{!c.init}"/>
+	<aura:handler name="render" value="{!this}" action="{!c.onRender}"/>
+
+	<aura:attribute name="urlHash" type="String"/>
+	<aura:attribute name="recordId" type="String"/>
+	<aura:attribute name="data" type="Object"/>
+	<aura:attribute name="state" type="String"/>
+	<aura:attribute name="showTeamCard" type="Boolean" default="true" access="global"/>
+	<aura:attribute name="hashId" type="String"/>
+	<aura:attribute name="avatarUrl" type="String" default="{!$Resource.PULSEResources + '/img/user-avatar.png'}"/>
+	<aura:attribute name="yourTeamTitle" type="String" default="Your Loan Team" access="global"/>
+	<aura:attribute name="genericUploadTitle" type="String" default="Can't find your condition?" access="global"/>
+	<aura:attribute name="documentStatusSubtitle" type="String" default="Make sure to stay up to date with your loan documents to help speed up the process as much as possible!" access="global"/>
+	<aura:attribute name="primaryTextColor" type="String" default="rgb(0,0,0)" access="global"/>
+	<aura:attribute name="secondaryTextColor" type="String" default="rgb(255,255,255)" access="global"/>
+	<aura:attribute name="primaryColor" type="String" default="rgb(255,255,255)" access="global"/>
+	<aura:attribute name="brandColor" type="String" default="rgb(94,65,177)" access="global"/>
+	<aura:attribute name="transparentBrandColor" type="String" default=""/>
+	<aura:attribute name="yourTeamBackroundImageUrl" type="String" default="" access="global"/>
+	<aura:attribute name="conditionFiltersByStatus"  type="String" access="global"/>
+
+	<aura:if isTrue="{!or(v.state == 'ERROR',empty(v.recordId))}">
+		<div class="link-error-message">
+			<h1>Uh oh something went wrong please click the link and try again.</h1>
+		</div>
+
+		<aura:set attribute="else">
+			<!--Phone View-->
+			<aura:if isTrue="{!$Browser.isPhone}">
+
+				<aura:if isTrue="{!v.showTeamCard}">
+					<aura:set attribute="else">
+						<div class="slds-text-heading_medium slds-p-bottom_small">{!v.yourTeamTitle}</div>
+					</aura:set>
+				<lightning:layout verticalAlign="center" multipleRows="true" class="profileCard">
+					<lightning:layoutItem size="12">
+						<div class="slds-text-heading_medium slds-p-bottom_small">
+							{!v.yourTeamTitle}
+						</div>
+					</lightning:layoutItem>
+					<lightning:layoutItem size="12">
+						<lightning:layout class="mobile-team-member">
+							<lightning:layoutItem size="6">
+								<p class="mobile-team-member_role">
+									Loan Officer
+								</p>
+							
+								<aura:if isTrue="{!v.data.photoUrl == null}">
+									<img src="{!v.avatarUrl}" alt="Avatar" class="avatar avatar_mobile avatar_personal"/>
+									<aura:set attribute="else">
+										<img src="{!v.data.photoUrl}" alt="Avatar" class="avatar avatar_mobile"/>
+									</aura:set>
+								</aura:if>
+							</lightning:layoutItem>
+							<lightning:layoutItem size="6" class="team-member_info">
+								<div>
+									<span class="mobile-team-member_name">
+										{!v.data.name}
+									</span>
+									<br/>
+									<p class="mobile-team-member_contacts">
+										{!v.data.phoneNum}
+									</p>
+									<p class="mobile-team-member_contacts">
+										{!v.data.loanOfficerEmail}
+									</p>
+								</div>
+							</lightning:layoutItem>
+
+						</lightning:layout>
+					</lightning:layoutItem>
+
+					<lightning:layoutItem size="12">
+						<lightning:layout class="mobile-team-member">
+							<aura:if isTrue="{!v.data.processorName != 'null null'}">
+							<lightning:layoutItem size="6">
+								<p class="mobile-team-member_role">
+									Loan Processor
+								</p>
+								<aura:if isTrue="{!v.data.processorPhotoUrl == null}">
+										<img src="{!v.avatarUrl}" alt="Avatar" class="avatar avatar_mobile avatar_personal"/>
+									<aura:set attribute="else">
+										<img src="{!v.data.processorPhotoUrl}" alt="Avatar" class="avatar avatar_mobile"/>
+									</aura:set>
+								</aura:if>
+							</lightning:layoutItem>
+
+								<lightning:layoutItem size="6" class="team-member_info">
+									<div>
+										<span class="mobile-team-member_name">
+											{!v.data.processorName}
+										</span>
+										<br/>
+										<p class="mobile-team-member_contacts">
+											{!v.data.processorNum}
+										</p>
+										<p class="mobile-team-member_contacts">
+											{!v.data.processorEmail}
+										</p>
+									</div>
+								</lightning:layoutItem>
+							</aura:if>
+						</lightning:layout>
+					</lightning:layoutItem>
+				</lightning:layout>
+				</aura:if>
+				<div class="slds-theme_shade slds-p-around_medium">
+					<div class="slds-text-title_bold">
+						<div class="div-5 slds-p-around_small">
+							<div class="slds-card slds-card-boundary avtemplate-radius_large card-box-shadow">
+								<div class="slds-p-top_x-large slds-p-left_medium slds-p-right_medium slds-p-bottom_medium">
+									<div class="slds-text-heading_small slds-m-bottom_small">
+										<span class="brand-text-color">Application Document Status</span>
+									</div>
+									<div class="slds-text-body_regular slds-m-bottom_medium">
+										{!v.documentStatusSubtitle}
+									</div>
+
+									<lightning:layout horizontalAlign="spread" 
+										verticalAlign="center"
+										multipleRows="true" 
+										class="layout-1 slds-m-left_medium"
+									>
+										<lightning:layoutItem size="12" 
+											smallDeviceSize="12" 
+											mediumDeviceSize="8"
+											largeDeviceSize="4" 
+											padding="around-medium"
+										>
+											<lightning:layout pullToBoundary="small" multipleRows="true" verticalAlign="center">
+												<lightning:layoutItem padding="horizontal-medium" flexibility="grow">
+													<div class="slds-text-body_small slds-text-align_left">
+														Requested
+													</div>
+												</lightning:layoutItem>
+
+												<lightning:layoutItem padding="horizontal-large">
+													<div class="slds-text-heading_large slds-textAlign_right avtemplate-color_teal-50">
+														{!v.data.requestedDocuments}
+													</div>
+												</lightning:layoutItem>
+											</lightning:layout>
+										
+											<lightning:layout pullToBoundary="small" multipleRows="true" verticalAlign="center">
+												<lightning:layoutItem class='slds-p-left_medium' flexibility="grow">
+													<div class="slds-text-body_small slds-text-align_left">
+														Review
+													</div>
+												</lightning:layoutItem>
+
+												<lightning:layoutItem padding="horizontal-large">
+													<div class="slds-text-heading_large slds-textAlign_right avtemplate-color_teal-50">
+														{!v.data.pendingReviewDocuments}
+													</div>
+												</lightning:layoutItem>
+											</lightning:layout>
+
+											<lightning:layout pullToBoundary="small" multipleRows="true" verticalAlign="center">
+												<lightning:layoutItem padding="horizontal-medium" flexibility="grow">
+													<div class="slds-text-body_small slds-text-align_left">
+														Approved
+													</div>
+												</lightning:layoutItem>
+
+												<lightning:layoutItem padding="horizontal-large">
+													<div class="slds-text-heading_large slds-textAlign_right avtemplate-color_teal-50">
+														{!v.data.approvedDocuments}
+													</div>
+												</lightning:layoutItem>
+											</lightning:layout>
+										</lightning:layoutItem>
+									</lightning:layout>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<aura:iteration items="{!v.data.conditionSections}" var="section">
+					<div class="slds-theme_shade slds-p-around_medium">
+						<div class="slds-text-title_bold">
+							<div class="div-4 slds-p-around_small">
+								<div class="slds-card slds-card-boundary avtemplate-radius_large card-box-shadow">
+									<div class="slds-p-top_x-large slds-p-left_medium slds-p-right_medium slds-p-bottom_medium">
+										<div class="slds-m-left_x-small slds-text-heading_small slds-m-bottom_small section-name"
+											data-color="{!section.filter.categoryColor}"
+										>
+											{!section.name}
+										</div>
+
+										<aura:iteration indexVar="index" var="condition" items="{!section.conditions}">
+											<c:BorrowerDocumentConditionRow recordId="{!v.recordId}" index="{!index+1}" condition="{!condition}"/>
+										</aura:iteration>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</aura:iteration>
+			</aura:if>
+
+			<!--    Desktop View-->
+			<aura:if isTrue="{!$Browser.formFactor == 'DESKTOP'}">
+				<aura:if isTrue="{!v.showTeamCard}">
+
+					<aura:set attribute="else">
+						<div class="slds-text-heading_large slds-p-around_small slds-text-align_center">{!v.yourTeamTitle}</div>
+					</aura:set>
+				<lightning:layout verticalAlign="center" class="profileCard">
+					<lightning:layoutItem size="12">
+						<div class="slds-text-heading_large">{!v.yourTeamTitle}</div>
+						<lightning:layout class="slds-m-around_small team-member">
+							<lightning:layoutItem size="4">
+								<div class="slds-text-heading_small slds-p-bottom_small team-member_role">
+									Loan Officer
+								</div>
+		
+								<lightning:layout>
+									<lightning:layoutItem>
+										<div class="avatar-container">
+											<aura:if isTrue="{!v.data.photoUrl == null}">
+												<img src="{!v.avatarUrl}" alt="Avatar" class="avatar avatar_personal"/>
+												<aura:set attribute="else">
+													<img src="{!v.data.photoUrl}" alt="Avatar" class="avatar"/>
+												</aura:set>
+											</aura:if>
+										</div>
+									</lightning:layoutItem>
+						
+									<lightning:layoutItem class="slds-p-around_small team-member_info">
+										<p class="team-member_details">{!v.data.name}</p>
+										<p class="team-member_details">{!v.data.phoneNum}</p>
+										<p class="team-member_details">{!v.data.loanOfficerEmail}</p>
+									</lightning:layoutItem>
+								</lightning:layout>
+							</lightning:layoutItem>
+
+							<lightning:layoutItem size="4">
+								<aura:if isTrue="{!v.data.processorName != 'null null'}">
+								<div class="slds-text-heading_small slds-p-bottom_small team-member_role">
+									Loan Processor
+								</div>
+
+								<lightning:layout>
+									<lightning:layoutItem>
+										<div class="avatar-container">
+											<aura:if isTrue="{!v.data.processorPhotoUrl == null}">
+												<img src="{!v.avatarUrl}" alt="Avatar" class="avatar avatar_personal"/>
+												<aura:set attribute="else">
+													<img src="{!v.data.processorPhotoUrl}" alt="Avatar" class="avatar"/>
+												</aura:set>
+											</aura:if>
+										</div>
+									</lightning:layoutItem>
+			
+									<lightning:layoutItem class="team-member_info slds-p-around_small">
+										<p class="team-member_details">{!v.data.processorName}</p>
+										<p class="team-member_details">{!v.data.processorNum}</p>
+										<p class="team-member_details">{!v.data.processorEmail}</p>
+									</lightning:layoutItem>
+								</lightning:layout>
+								</aura:if>
+							</lightning:layoutItem>
+						</lightning:layout>
+					</lightning:layoutItem>
+				</lightning:layout>
+				</aura:if>
+				<div class="slds-theme_shade slds-p-around_medium">
+					<div class="slds-text-title_bold">
+						<div class="div-5 slds-p-around_small">
+							<div class="slds-card slds-card-boundary avtemplate-radius_large card-box-shadow">
+								<div class="slds-p-top_x-large slds-p-left_medium slds-p-right_medium slds-p-bottom_medium">
+									<div class="slds-text-heading_small slds-m-bottom_small">
+										<span class="brand-text-color">Application Document Status</span>
+									</div>
+									<div class="slds-text-body_regular slds-m-bottom_medium">
+										{!v.documentStatusSubtitle}
+									</div>
+
+									<lightning:layout horizontalAlign="spread" 
+										verticalAlign="center"
+										multipleRows="true" 
+										class="layout-1 slds-m-left_medium"
+									>
+										<lightning:layoutItem size="2" smallDeviceSize="12" mediumDeviceSize="3"
+											largeDeviceSize="2" class="ncs-flex-justify_center">
+											<div>
+												<div class="slds-text-heading_small slds-truncate avtemplate-assets-summary__expired-assets slds-text-align_center">
+													Requested
+												</div>
+												<br/>
+												<div class="slds-text-heading_large avtemplate-color_teal-50 slds-text-align_center">
+													{!v.data.requestedDocuments}
+												</div>
+											</div>
+										</lightning:layoutItem>
+					
+										<lightning:layoutItem size="2" 
+											smallDeviceSize="12" 
+											mediumDeviceSize="3"
+											largeDeviceSize="2" 
+											class="ncs-flex-justify_center"
+										>
+											<div>
+												<div class="slds-text-heading_small slds-truncate avtemplate-assets-summary__expired-assets slds-text-align_center">
+													Review
+												</div>
+												<br/>
+												<div class="slds-text-heading_large avtemplate-color_teal-50 slds-text-align_center">
+													{!v.data.pendingReviewDocuments}
+												</div>
+											</div>
+										</lightning:layoutItem>
+									
+										<lightning:layoutItem size="2" smallDeviceSize="12" mediumDeviceSize="3"
+												largeDeviceSize="2" class="ncs-flex-justify_center">
+											<div>
+												<div class="slds-text-heading_small slds-truncate avtemplate-assets-summary__active-assets slds-text-align_center">
+													Approved
+												</div>
+												<br/>
+												<div class="slds-text-heading_large avtemplate-color_teal-50 slds-text-align_center">
+													{!v.data.approvedDocuments}
+												</div>
+											</div>
+										</lightning:layoutItem>
+									</lightning:layout>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<aura:iteration items="{!v.data.conditionSections}" var="section">
+					<div class="slds-theme_shade slds-p-around_medium">
+						<div class="slds-text-title_bold">
+							<div class="div-4 slds-p-around_small">
+								<div class="slds-card slds-card-boundary avtemplate-radius_large card-box-shadow">
+									<div class="slds-p-top_x-large slds-p-left_medium slds-p-right_medium slds-p-bottom_medium">										
+										<div class="slds-m-left_x-small slds-text-heading_small slds-m-bottom_small section-name"
+											data-color="{!section.filter.categoryColor}"
+										>
+											{!section.name}
+										</div>
+										<aura:iteration indexVar="index" var="condition" items="{!section.conditions}">
+											<c:BorrowerDocumentConditionRow recordId="{!v.recordId}" index="{!index+1}" condition="{!condition}"/>
+										</aura:iteration>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</aura:iteration>
+			</aura:if>
+		</aura:set>
+	</aura:if>
+</aura:component>

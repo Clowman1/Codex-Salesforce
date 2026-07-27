@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Production_Board_NEXT_MONTH</fullName>
+    <columns>NAME</columns>
+    <columns>Status__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>Loan_Amount_1st__c</columns>
+    <columns>Loan_Type_1st_TD__c</columns>
+    <columns>Branch__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>Lender_lookup__c</columns>
+    <columns>BPS__c</columns>
+    <columns>Processing_Fee__c</columns>
+    <columns>Loan_Officer__c</columns>
+    <columns>Biz_Dev__c</columns>
+    <columns>Lead_Source__c</columns>
+    <columns>Realtor_Buying_Agent__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>notContain</operation>
+        <value>Lost,Suspended,Cancelled</value>
+    </filters>
+    <filters>
+        <field>Closing_Date__c</field>
+        <operation>equals</operation>
+        <value>NEXT_MONTH</value>
+    </filters>
+    <filters>
+        <field>Loan_Type_1st_TD__c</field>
+        <operation>notEqual</operation>
+        <value>DPA 2nd</value>
+    </filters>
+    <label>Production Board - NEXT MONTH</label>
+    <sharedTo>
+        <group>Adam_and_Brandon</group>
+        <group>Anthony_Noble</group>
+    </sharedTo>
+</ListView>

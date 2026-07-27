@@ -1,0 +1,108 @@
+<template>
+    <section class="ceo-shell">
+        <template if:true={isLoading}>
+            <div class="ceo-loading">Loading CEO intelligence...</div>
+        </template>
+
+        <template if:true={error}>
+            <div class="ceo-error">{error}</div>
+        </template>
+
+        <template if:true={hasData}>
+            <header class="ceo-hero">
+                <div>
+                    <p class="ceo-kicker">{kicker}</p>
+                    <h1>{title}</h1>
+                    <p class="ceo-subtitle">{subtitle}</p>
+                </div>
+                <div class="ceo-generated">
+                    <span>Updated</span>
+                    <strong>{formattedGeneratedAt}</strong>
+                </div>
+            </header>
+
+            <nav class="ceo-nav" aria-label="CEO intelligence pages">
+                <template for:each={data.navItems} for:item="item">
+                    <button key={item.key} class={item.className} data-tab={item.tabApiName} onclick={handleNavClick} type="button">
+                        {item.label}
+                    </button>
+                </template>
+            </nav>
+
+            <section class="ceo-card-grid">
+                <template for:each={data.cards} for:item="card">
+                    <article key={card.key} class={card.className} data-url={card.urlPath} onclick={handleCardClick}>
+                        <span>{card.label}</span>
+                        <strong>{card.value}</strong>
+                        <p>{card.helper}</p>
+                        <template if:true={card.hasBreakdown}>
+                            <div class="ceo-card-breakdown">
+                                <template for:each={card.breakdown} for:item="item">
+                                    <button key={item.key} class="ceo-card-breakdown-pill" data-url={item.urlPath} onclick={handleCardBreakdownClick} type="button">
+                                        <span>{item.label}</span>
+                                        <strong>{item.value}</strong>
+                                    </button>
+                                </template>
+                            </div>
+                        </template>
+                    </article>
+                </template>
+            </section>
+
+            <section class="ceo-section-grid">
+                <template for:each={data.sections} for:item="section">
+                    <article key={section.key} class={section.className}>
+                        <div class="ceo-section-header">
+                            <div>
+                                <h2>{section.title}</h2>
+                                <p>{section.subtitle}</p>
+                            </div>
+                        </div>
+
+                        <div class="ceo-table-wrap">
+                            <table class="ceo-table">
+                                <thead>
+                                    <tr>
+                                        <template for:each={section.columns} for:item="column">
+                                            <th key={column.key}>{column.label}</th>
+                                        </template>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={section.rows} for:item="row">
+                                        <tr key={row.key}>
+                                            <template for:each={row.cells} for:item="cell">
+                                                <td key={cell.key}>
+                                                    <template if:true={cell.isNavigationCell}>
+                                                        <button class="ceo-link-button" data-tab={row.navApiName} onclick={handleCellNavClick} type="button">
+                                                            Open
+                                                        </button>
+                                                    </template>
+                                                    <template if:true={cell.isReportCell}>
+                                                        <button class={cell.reportButtonClass} data-url={cell.urlPath} onclick={handleReportClick} type="button">
+                                                            {cell.value}
+                                                        </button>
+                                                    </template>
+                                                    <template if:false={cell.isNavigationCell}>
+                                                        <template if:false={cell.isReportCell}>
+                                                            <template if:true={cell.isRosterPill}>
+                                                                <span class={cell.rosterPillClass}>{cell.value}</span>
+                                                            </template>
+                                                            <template if:false={cell.isRosterPill}>
+                                                                {cell.value}
+                                                            </template>
+                                                        </template>
+                                                    </template>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                </template>
+            </section>
+        </template>
+    </section>
+</template>

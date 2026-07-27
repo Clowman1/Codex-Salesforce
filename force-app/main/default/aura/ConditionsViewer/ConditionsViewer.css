@@ -1,0 +1,237 @@
+/**
+ * Created by zeyad on 8/11/2022.
+ */
+
+/* Container query setup */
+.THIS.conditions-viewer__wrapper {
+  --table-min-width: 1020px;
+  container-name: conditions-viewer;
+  container-type: inline-size;
+}
+
+/* Status tiles — Raised / Layered card */
+.THIS .conditions-viewer__tiles {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.75rem;
+}
+.THIS .conditions-viewer__tile {
+  position: relative;
+  cursor: pointer;
+  flex: 1 1 120px;
+  max-width: 200px;
+  min-height: 80px;
+  transition: all 0.3s ease-out;
+}
+.THIS .conditions-viewer__tile-bg {
+  position: absolute;
+  inset: 0;
+  background-color: var(--brandColor, #5f43b2);
+  border-radius: 0.75rem;
+  transform: translate(4px, 4px);
+  transition: transform 0.3s ease-out;
+}
+.THIS .conditions-viewer__tile:hover .conditions-viewer__tile-bg {
+  transform: translate(6px, 6px);
+}
+.THIS .conditions-viewer__tile-fg {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+  transition: transform 0.3s ease-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.THIS .conditions-viewer__tile:hover .conditions-viewer__tile-fg {
+  transform: translate(-2px, -2px);
+}
+
+/* Table section header (label + download button) */
+.THIS .conditions-viewer__table-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Toolbar children */
+.THIS .conditions-viewer__toolbar-filters,
+.THIS .conditions-viewer__toolbar-actions {
+  flex: 1 1 auto;
+}
+.THIS .conditions-viewer__toolbar-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Container query: narrow (< 992px) — stacked toolbar */
+@container conditions-viewer (max-width: 991px) {
+  .conditions-viewer__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Container query: mobile — full-width buttons, allow wrap */
+@container conditions-viewer (max-width: 639px) {
+  .conditions-viewer__toolbar-actions {
+    flex-wrap: wrap;
+  }
+  .conditions-viewer__action-btn {
+    width: 100%;
+  }
+}
+
+/* Container query: tablet — buttons inline centered */
+@container conditions-viewer (min-width: 640px) and (max-width: 991px) {
+  .conditions-viewer__toolbar-actions {
+    justify-content: center;
+  }
+}
+
+/* Container query: desktop — side by side */
+@container conditions-viewer (min-width: 992px) {
+  .conditions-viewer__toolbar-filters,
+  .conditions-viewer__toolbar-actions {
+    flex: 0 0 50%;
+  }
+}
+
+/* Grid table row — shared between header and ConditionRow via --table-grid-columns.
+   Individual column widths are driven by --col-N vars set in setStyleVariables,
+   enabling future drag-to-resize by updating a single --col-N property on the wrapper. */
+.THIS .conditions-table__row {
+  display: grid;
+  grid-template-columns: var(--table-grid-columns, 40px repeat(6, minmax(100px, 1fr)) 280px);
+  min-width: var(--table-min-width, 1020px);
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+}
+
+.THIS .conditions-table__cell {
+  min-width: 0;
+  padding: 0 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Header styling */
+.THIS.conditions-viewer__wrapper .conditions-table__wrapper .conditions-table__header {
+  background-color: var(--brandColor, #5f43b2) !important;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+/* Content sizes to its grid children so borders span the full scrollable area */
+.THIS .conditions-table__content {
+  width: fit-content;
+  min-width: 100%;
+}
+
+/* Table body — no overflow; scrolling handled entirely by conditions-table__wrapper */
+.THIS .conditions-table__body {
+  min-height: 300px;
+  background: #fff;
+}
+
+/* Owner avatars */
+.THIS .conditions-viewer__avatar-wrapper {
+  cursor: pointer;
+  margin-right: 0.5rem;
+  display: inline-block;
+}
+.THIS .conditions-viewer__avatar-wrapper * {
+  cursor: pointer;
+}
+.THIS .conditions-viewer__avatar {
+  transition: 0.5s;
+}
+.THIS .conditions-viewer__avatar.conditions-viewer__avatar--highlighted {
+  transition: 0.5s;
+  width: 2.25rem;
+  height: 2.25rem;
+  box-shadow: 0 0 2px 3px #e2875c;
+  cursor: pointer !important;
+}
+.THIS .conditions-viewer__avatar:hover {
+  transition: 0.5s;
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.THIS.conditions-viewer__wrapper .conditions-table__wrapper {
+  width: 100%;
+  overflow: auto;
+  max-height: 900px;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: transparent transparent; /* Firefox — invisible by default */
+}
+.THIS.conditions-viewer__wrapper .conditions-table__wrapper:hover {
+  scrollbar-color: var(--brandColor, #5f43b2) #f0f0f0; /* Firefox — visible on hover */
+}
+/* WebKit — always present, transparent by default */
+.THIS.conditions-viewer__wrapper .conditions-table__wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 16px;
+}
+
+/* Toolbar */
+.THIS.conditions-viewer__wrapper .conditions-viewer__toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Scrollbar — transparent by default */
+.THIS.conditions-viewer__wrapper .conditions-table__wrapper::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 8px;
+}
+.THIS.conditions-viewer__wrapper .conditions-table__wrapper::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 8px;
+}
+/* Scrollbar — visible on hover */
+.THIS.conditions-viewer__wrapper .conditions-table__wrapper:hover::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
+}
+.THIS.conditions-viewer__wrapper .conditions-table__wrapper:hover::-webkit-scrollbar-thumb {
+  background: var(--brandColor, #5f43b2);
+  border: 3px solid #f0f0f0;
+}
+
+/* Popover */
+.THIS .conditions-viewer__popover-wrapper .conditions-viewer__popover {
+  max-width: 340px;
+  min-height: 80px;
+  --slds-c-icon-color-foreground: var(--slds-g-color-brand-base-50);
+}
+
+.THIS .conditions-viewer__popover-wrapper .conditions-viewer__popover-icon .slds-icon {
+  fill: var(--slds-g-color-brand-base-50);
+}
+
+.THIS .conditions-viewer__popover-wrapper .conditions-viewer__popover-text span {
+  font-size: 1rem;
+  color: #333333;
+  line-height: 1rem;
+}
+
+/* Status tile accent */
+.THIS .conditions-viewer__tile-count {
+  color: rgb(21, 137, 238);
+}

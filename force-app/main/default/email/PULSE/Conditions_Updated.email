@@ -1,0 +1,58 @@
+<messaging:emailTemplate subject="You're One Step Closer! Updated Items Needed" recipientType="Contact" relatedToType="Transaction__c">
+<messaging:htmlEmailBody>
+<html>
+<head>
+<style type="text/css">
+body {
+    font-family: Arial, sans-serif;
+    color: #222222;
+    font-size: 15px;
+    line-height: 1.5;
+}
+li {
+    margin-bottom: 8px;
+}
+</style>
+    <title></title>
+</head>
+<body>
+<span class="container"></span>
+<p>Hello,</p>
+
+<p>Great news! Your loan is continuing to move forward.</p>
+
+<p>As part of the review process, a few updated items have been requested for your file. Please review the updated list below and securely upload any requested documents through your Conditions Portal.</p>
+
+<p><strong>Items Needed:</strong></p>
+
+<ul>
+    <apex:repeat var="cx" value="{!relatedTo.Conditions__r}">
+        <apex:outputPanel rendered="{!(cx.Status__c == 'New' || cx.Status__c == 'Requested' || cx.Status__c == 'Review') && cx.Type__c == 'Processor' && cx.Include_In_Email__c == true && cx.Can_Borrower_See__c == true}">
+            <li><strong><span style="color:#2980b9;">{!cx.Name}</span></strong><apex:outputPanel rendered="{!NOT(ISBLANK(cx.Description__c))}"> - {!cx.Description__c}</apex:outputPanel></li>
+        </apex:outputPanel>
+    </apex:repeat>
+</ul>
+
+<p><strong>Secure Conditions Portal:</strong></p>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 16px 0;">
+    <tr>
+        <td bgcolor="#0082cb" style="border-radius:999px;text-align:center;">
+            <a href="{!relatedTo.Portal_Link_As_URL__c}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:14px 30px;font-family:Arial,sans-serif;font-size:16px;line-height:20px;font-weight:bold;color:#ffffff;text-decoration:none;border-radius:999px;background-color:#0082cb;">Open Secure Portal</a>
+        </td>
+    </tr>
+</table>
+
+<p style="font-size:13px;line-height:18px;color:#4b5563;">If the button does not open, copy and paste this secure link into your browser:<br />
+<a href="{!relatedTo.Portal_Link_As_URL__c}" target="_blank" rel="noopener noreferrer" style="color:#0082cb;text-decoration:underline;">{!relatedTo.Portal_Link_As_URL__c}</a></p>
+
+<p>You can upload documents directly through the portal and leave comments or questions on any specific condition item if additional clarification is needed.</p>
+
+<p>To help avoid any delays, please submit the requested items as soon as possible.</p>
+
+<p>All the best,</p>
+<span class="end-container"></span>
+</body>
+</html>
+</messaging:htmlEmailBody>
+</messaging:emailTemplate>

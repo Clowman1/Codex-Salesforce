@@ -1,0 +1,541 @@
+<template>
+    <section class="conditions-viewer">
+        <template lwc:if={isLoading}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </template>
+
+        <div class="manager">
+            <template lwc:if={isConvertedForDisplay}>
+                <div class="converted-banner">
+                    <p class="converted-title">This Lead has been converted.</p>
+                    <p class="converted-message">
+                        Continue document collection from the converted Transaction.
+                    </p>
+                    <template lwc:if={hasConvertedTransaction}>
+                        <a class="transaction-link slds-button slds-button_brand" href={convertedTransactionUrl}>
+                            Open Converted Transaction
+                        </a>
+                    </template>
+                </div>
+            </template>
+            <template lwc:else>
+
+            <template lwc:if={showCreateFlowForOpenLead}>
+                <div class="inline-flow-panel">
+                    <div class="inline-flow-actions">
+                        <lightning-button
+                            label="Exit"
+                            title="Cancel"
+                            icon-name="utility:close"
+                            variant="destructive"
+                            onclick={closeCreateModal}>
+                        </lightning-button>
+                    </div>
+                    <lightning-flow
+                        flow-api-name={createRequestsFlowApiName}
+                        flow-input-variables={createRequestsFlowInputVariables}
+                        onstatuschange={handleCreateFlowStatusChange}>
+                    </lightning-flow>
+                </div>
+            </template>
+            <template lwc:else>
+
+            <div class="toolbar">
+                <div class="toolbar-summary">
+                    <div class="toolbar-info-pill">
+                        <span class="toolbar-label">Borrower</span>
+                        <span class="toolbar-value">{displayLeadName}</span>
+                    </div>
+                    <div class="toolbar-info-pill">
+                        <span class="toolbar-label">Primary Email</span>
+                        <span class="toolbar-value">{borrowerEmail}</span>
+                    </div>
+                    <template lwc:if={portalLink}>
+                        <a class="portal-anchor" href={portalLink} target="_blank">Lead Portal Link</a>
+                    </template>
+                </div>
+                <div class="toolbar-actions">
+                    <lightning-button label="Add Conditions" icon-name="utility:add" onclick={openCreateModal} disabled={isConverted}></lightning-button>
+                    <lightning-button label="Send Request Email" variant="brand" icon-name="utility:send" onclick={handleSendEmail} disabled={isConverted}></lightning-button>
+                </div>
+            </div>
+
+            <div class="tiles">
+                <div class="tile">
+                    <div class="tile-bg"></div>
+                    <div class="tile-fg">
+                        <div class="tile-label">New</div>
+                        <div class="tile-count">{newCount}</div>
+                    </div>
+                </div>
+                <div class="tile">
+                    <div class="tile-bg"></div>
+                    <div class="tile-fg">
+                        <div class="tile-label">Requested</div>
+                        <div class="tile-count">{requestedCount}</div>
+                    </div>
+                </div>
+                <div class="tile">
+                    <div class="tile-bg"></div>
+                    <div class="tile-fg">
+                        <div class="tile-label">Review</div>
+                        <div class="tile-count">{reviewCount}</div>
+                    </div>
+                </div>
+            </div>
+
+            <template for:each={requestTables} for:item="table">
+                <section key={table.key} class="request-table-section">
+                    <div class="table-title">
+                        <span>{table.label} ({table.size})</span>
+                    </div>
+
+                    <div class={table.wrapperClass}>
+                        <div class="request-table-content">
+                            <div class="request-table-row request-table-header">
+                                <div class="request-table-cell">
+                                    <lightning-input
+                                        type="checkbox"
+                                        variant="label-hidden"
+                                        checked={table.allSelected}
+                                        data-table-key={table.key}
+                                        disabled={table.isEmailToggleDisabled}
+                                        onchange={handleToggleTableEmail}>
+                                    </lightning-input>
+                                </div>
+                                <div class="request-table-cell">Condition</div>
+                                <div class="request-table-cell">Description</div>
+                                <div class="request-table-cell">Status</div>
+                                <div class="request-table-cell">Created Date</div>
+                                <div class="request-table-cell">Requested Date</div>
+                                <div class="request-table-cell">ETA</div>
+                                <div class="request-table-cell">Assigned To</div>
+                                <div class="request-table-cell request-actions-header">Action</div>
+                            </div>
+
+                            <template for:each={table.rows} for:item="row">
+                                <section
+                                    key={row.clientKey}
+                                    class="request-table-row request-table-body-row"
+                                    data-row-key={row.clientKey}>
+                                    <div class="request-table-cell">
+                                        <lightning-input
+                                            type="checkbox"
+                                            variant="label-hidden"
+                                            checked={row.includeInEmail}
+                                            data-key={row.clientKey}
+                                            data-field="includeInEmail"
+                                            disabled={isConverted}
+                                            onchange={handleInputChange}>
+                                        </lightning-input>
+                                    </div>
+                                    <div class={row.nameCellClass}>
+                                        <template lwc:if={row.isNameEditing}>
+                                            <lightning-record-edit-form
+                                                object-api-name="Lead_Document_Request__c"
+                                                record-id={row.id}
+                                                data-inline-edit-form="true"
+                                                data-edit-form-key={row.clientKey}
+                                                data-edit-form-field="Name"
+                                                onsuccess={handleInlineEditSuccess}
+                                                onerror={handleInlineEditError}>
+                                                <lightning-input-field
+                                                    field-name="Name"
+                                                    variant="label-hidden">
+                                                </lightning-input-field>
+                                            </lightning-record-edit-form>
+                                        </template>
+                                        <template lwc:else>
+                                            <span
+                                                class={row.inlineEditDisplayClass}
+                                                data-key={row.clientKey}
+                                                data-field="Name"
+                                                onclick={beginInlineEdit}>
+                                                {row.name}
+                                            </span>
+                                        </template>
+                                    </div>
+                                    <div class={row.descriptionCellClass}>
+                                        <template lwc:if={row.isDescriptionEditing}>
+                                            <lightning-record-edit-form
+                                                object-api-name="Lead_Document_Request__c"
+                                                record-id={row.id}
+                                                data-inline-edit-form="true"
+                                                data-edit-form-key={row.clientKey}
+                                                data-edit-form-field="Description__c"
+                                                onsuccess={handleInlineEditSuccess}
+                                                onerror={handleInlineEditError}>
+                                                <lightning-input-field
+                                                    field-name="Description__c"
+                                                    variant="label-hidden">
+                                                </lightning-input-field>
+                                            </lightning-record-edit-form>
+                                        </template>
+                                        <template lwc:else>
+                                            <span
+                                                class={row.inlineEditDisplayClass}
+                                                data-key={row.clientKey}
+                                                data-field="Description__c"
+                                                onclick={beginInlineEdit}>
+                                                {row.description}
+                                            </span>
+                                        </template>
+                                    </div>
+                                    <div class={row.statusCellClass}>
+                                        <template lwc:if={row.isStatusEditing}>
+                                            <lightning-record-edit-form
+                                                object-api-name="Lead_Document_Request__c"
+                                                record-id={row.id}
+                                                data-inline-edit-form="true"
+                                                data-edit-form-key={row.clientKey}
+                                                data-edit-form-field="Status__c"
+                                                onsuccess={handleInlineEditSuccess}
+                                                onerror={handleInlineEditError}>
+                                                <lightning-input-field
+                                                    field-name="Status__c"
+                                                    variant="label-hidden">
+                                                </lightning-input-field>
+                                            </lightning-record-edit-form>
+                                        </template>
+                                        <template lwc:else>
+                                            <span
+                                                class={row.inlineEditDisplayClass}
+                                                data-key={row.clientKey}
+                                                data-field="Status__c"
+                                                onclick={beginInlineEdit}>
+                                                {row.status}
+                                            </span>
+                                        </template>
+                                    </div>
+                                    <div class="request-table-cell date-cell">
+                                        <lightning-formatted-date-time
+                                            value={row.createdDate}
+                                            month="2-digit"
+                                            day="2-digit"
+                                            year="numeric"
+                                            hour="2-digit"
+                                            minute="2-digit">
+                                        </lightning-formatted-date-time>
+                                    </div>
+                                    <div class="request-table-cell date-cell">
+                                        <lightning-formatted-date-time
+                                            value={row.requestedDate}
+                                            month="2-digit"
+                                            day="2-digit"
+                                            year="numeric">
+                                        </lightning-formatted-date-time>
+                                    </div>
+                                    <div class="request-table-cell eta-cell">
+                                        -
+                                    </div>
+                                    <div class="request-table-cell assigned-cell">
+                                        <span class="assigned-avatar">
+                                            <lightning-icon icon-name="standard:user" size="small" alternative-text="Assigned user"></lightning-icon>
+                                        </span>
+                                        <span class="assigned-name">{row.assignedToName}</span>
+                                    </div>
+                                    <div class="request-table-cell request-actions">
+                                        <lightning-button-icon
+                                            class={row.emailActionClass}
+                                            icon-name={row.emailActionIcon}
+                                            alternative-text={row.emailActionTitle}
+                                            title={row.emailActionTitle}
+                                            data-key={row.clientKey}
+                                            disabled={isConverted}
+                                            onclick={handleToggleEmailAction}>
+                                        </lightning-button-icon>
+                                        <lightning-button-icon
+                                            class={row.portalActionClass}
+                                            icon-name={row.portalActionIcon}
+                                            alternative-text={row.portalActionTitle}
+                                            title={row.portalActionTitle}
+                                            data-key={row.clientKey}
+                                            disabled={isConverted}
+                                            onclick={handleTogglePortalAction}>
+                                        </lightning-button-icon>
+                                        <lightning-button-icon
+                                            class="round-action"
+                                            icon-name="utility:upload"
+                                            alternative-text="Upload Files"
+                                            title="Upload Files"
+                                            data-key={row.clientKey}
+                                            disabled={isConverted}
+                                            onclick={openUploadModal}>
+                                        </lightning-button-icon>
+                                        <lightning-button-icon
+                                            class="round-action"
+                                            icon-name="utility:document_preview"
+                                            alternative-text="Preview Documents"
+                                            title="Preview Documents"
+                                            data-key={row.clientKey}
+                                            disabled={isConverted}
+                                            onclick={handlePreviewDocuments}>
+                                        </lightning-button-icon>
+                                        <lightning-button-icon
+                                            class="round-action"
+                                            icon-name="utility:note"
+                                            alternative-text="Notes"
+                                            title="Notes"
+                                            data-key={row.clientKey}
+                                            disabled={isConverted}
+                                            onclick={handleNotesAction}>
+                                        </lightning-button-icon>
+                                        <lightning-button-icon
+                                            class="round-action"
+                                            icon-name="utility:comments"
+                                            alternative-text="Comments"
+                                            title="Comments"
+                                            data-key={row.clientKey}
+                                            disabled={isConverted}
+                                            onclick={handleCommentsAction}>
+                                        </lightning-button-icon>
+                                        <lightning-button-icon
+                                            class="round-action action-delete"
+                                            icon-name="utility:delete"
+                                            alternative-text="Remove"
+                                            title="Remove"
+                                            data-key={row.clientKey}
+                                            disabled={isConverted}
+                                            onclick={removeRow}>
+                                        </lightning-button-icon>
+                                        <template lwc:if={row.hasFiles}>
+                                            <span class="file-count-badge">{row.fileCount}</span>
+                                        </template>
+                                    </div>
+                                    <template lwc:if={row.isInlineEditing}>
+                                        <div class="inline-edit-actions">
+                                            <lightning-button label="Save" variant="success" data-key={row.clientKey} onclick={saveInlineEdit}></lightning-button>
+                                            <lightning-button label="Cancel" variant="destructive" onclick={cancelInlineEdit}></lightning-button>
+                                        </div>
+                                    </template>
+                                    <template lwc:if={row.isNotesExpanded}>
+                                        <div class="expanded-row-panel notes-panel">
+                                            <div class="notes-fields">
+                                                <label class="notes-field">
+                                                    <span class="notes-label">Request Description:</span>
+                                                    <textarea
+                                                        class="request-textarea"
+                                                        value={notesDescriptionDraft}
+                                                        oninput={handleNotesDescriptionChange}>
+                                                    </textarea>
+                                                </label>
+                                                <label class="notes-field">
+                                                    <span class="notes-label">Internal Notes:</span>
+                                                    <textarea
+                                                        class="request-textarea"
+                                                        value={internalNotesDraft}
+                                                        oninput={handleInternalNotesChange}>
+                                                    </textarea>
+                                                </label>
+                                            </div>
+                                            <div class="expanded-row-actions">
+                                                <lightning-button label="Save" variant="success" data-key={row.clientKey} onclick={handleSaveNotes}></lightning-button>
+                                                <lightning-button label="Cancel" variant="destructive" onclick={cancelNotesPanel}></lightning-button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template lwc:if={row.isCommentsExpanded}>
+                                        <div class="expanded-row-panel comments-panel">
+                                            <div class="comments-history">
+                                                <template lwc:if={row.hasComments}>
+                                                    <lightning-formatted-text value={row.comments}></lightning-formatted-text>
+                                                </template>
+                                                <template lwc:else>
+                                                    <span class="empty-comment">No comments yet.</span>
+                                                </template>
+                                            </div>
+                                            <textarea
+                                                class="request-textarea comment-input"
+                                                placeholder="Type your message right here..."
+                                                value={commentDraft}
+                                                oninput={handleCommentDraftChange}>
+                                            </textarea>
+                                            <div class="comment-actions">
+                                                <lightning-button label="Portal" data-key={row.clientKey} data-public="true" onclick={sendComment}></lightning-button>
+                                                <lightning-button label="Internal" data-key={row.clientKey} data-public="false" onclick={sendComment}></lightning-button>
+                                                <lightning-button label="Cancel" onclick={cancelCommentsPanel}></lightning-button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </section>
+                            </template>
+
+                            <template lwc:if={table.isEmpty}>
+                                <div class="empty-state">
+                                    {table.emptyMessage}
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </section>
+            </template>
+
+            </template>
+            </template>
+        </div>
+
+        <template lwc:if={showEmailModal}>
+            <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="send-email-heading" class="slds-modal slds-fade-in-open request-modal">
+                <div class="slds-modal__container request-modal-container email-modal-container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeEmailModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="send-email-heading" class="slds-modal__title slds-hyphenate">Send Lead Document Request Email</h2>
+                        <p class="modal-subtitle">To: {borrowerEmail}</p>
+                    </header>
+                    <div class="slds-modal__content request-modal-content email-modal-content">
+                        <lightning-combobox
+                            label="Select an Email Template"
+                            value={selectedEmailTemplate}
+                            options={emailTemplateOptions}
+                            onchange={handleEmailTemplateChange}>
+                        </lightning-combobox>
+                        <lightning-input
+                            label="Subject"
+                            type="text"
+                            value={emailSubjectLine}
+                            onchange={handleEmailSubjectChange}>
+                        </lightning-input>
+                        <lightning-input-rich-text
+                            class="email-body-editor"
+                            value={emailBody}
+                            formats={emailEditorFormats}
+                            onchange={handleEmailBodyChange}>
+                        </lightning-input-rich-text>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="Cancel" onclick={closeEmailModal}></lightning-button>
+                        <lightning-button class="modal-save-button" label="Send" variant="brand" onclick={sendComposedEmail}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <template lwc:if={showUploadModal}>
+            <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="upload-files-heading" class="slds-modal slds-fade-in-open request-modal">
+                <div class="slds-modal__container request-modal-container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeUploadModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="upload-files-heading" class="slds-modal__title slds-hyphenate">Upload Files</h2>
+                        <p class="modal-subtitle">Upload files for {uploadRequestName}.</p>
+                    </header>
+                    <div class="slds-modal__content request-modal-content upload-modal-content">
+                        <lightning-file-upload
+                            name="fileUploader"
+                            label="Select files"
+                            multiple
+                            record-id={recordId}
+                            data-key={uploadRequestKey}
+                            onuploadfinished={handleUploadFinished}>
+                        </lightning-file-upload>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="Close" onclick={closeUploadModal}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <template lwc:if={showDocumentPreviewModal}>
+            <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="document-preview-heading" class="slds-modal slds-fade-in-open request-modal">
+                <div class="slds-modal__container request-modal-container document-review-modal-container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeDocumentPreviewModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="document-preview-heading" class="slds-modal__title slds-hyphenate">{documentPreviewTitle}</h2>
+                    </header>
+                    <div class="slds-modal__content request-modal-content document-review-content">
+                        <template lwc:if={hasPreviewDocuments}>
+                            <section class="document-preview-pane">
+                                <template lwc:if={hasSelectedPreviewDocument}>
+                                    <template lwc:if={selectedPreviewIsImage}>
+                                        <img class="document-preview-frame document-preview-image" src={selectedPreviewUrl} alt={selectedPreviewTitle} />
+                                    </template>
+                                    <template lwc:else>
+                                        <iframe class="document-preview-frame" src={selectedPreviewUrl} title={selectedPreviewTitle}></iframe>
+                                    </template>
+                                </template>
+                            </section>
+
+                            <aside class="document-review-panel">
+                                <h3 class="review-request-title">{documentPreviewTitle}</h3>
+                                <p class="review-request-description">{previewRequestDescription}</p>
+
+                                <template lwc:if={showRejectPrompt}>
+                                    <section class="reject-form">
+                                        <h4 class="reject-title">Reject Document: {selectedRejectDocumentTitle}</h4>
+                                        <lightning-textarea
+                                            required
+                                            label="Rejection Comment to Client"
+                                            value={rejectionReason}
+                                            onchange={handleRejectionInput}>
+                                        </lightning-textarea>
+                                        <lightning-textarea
+                                            label="Request Description Update"
+                                            value={updatedRequestDescription}
+                                            placeholder="Optional: update what the borrower should provide next."
+                                            onchange={handleUpdatedDescriptionInput}>
+                                        </lightning-textarea>
+                                        <div class="reject-actions">
+                                            <lightning-button label="Cancel" onclick={cancelRejectDocument}></lightning-button>
+                                            <lightning-button label="Reject" variant="destructive" onclick={handleRejectDocument}></lightning-button>
+                                        </div>
+                                    </section>
+                                </template>
+                                <template lwc:else>
+                                    <div class="review-action-block">
+                                        <div class="review-action-label">Take Action on Request</div>
+                                        <div class="review-action-buttons">
+                                            <lightning-button
+                                                label="Approve"
+                                                variant="brand"
+                                                onclick={handleApproveDocument}>
+                                            </lightning-button>
+                                            <lightning-button
+                                                label="Reject"
+                                                variant="destructive"
+                                                onclick={openRejectDocumentPrompt}>
+                                            </lightning-button>
+                                        </div>
+                                    </div>
+
+                                    <div class="review-documents-header">
+                                        <h4>Documents</h4>
+                                        <a href={downloadAllUrl} target="_blank" class="slds-button slds-button_neutral">Download All</a>
+                                    </div>
+                                    <div class="review-documents-list">
+                                        <template for:each={previewDocuments} for:item="document">
+                                            <button key={document.id} class={document.rowClass} data-document-id={document.id} onclick={selectPreviewDocument}>
+                                                <span class="document-preview-name">{document.filename}</span>
+                                                <span class="document-preview-meta">
+                                                    {document.folderName} &bull; {document.createdByName} &bull; {document.sizeLabel}
+                                                </span>
+                                                <span class="document-preview-status">{document.reviewStatusLabel}</span>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </template>
+                            </aside>
+                        </template>
+                        <template lwc:else>
+                            <div class="empty-state">No uploaded documents to preview.</div>
+                        </template>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="Close" onclick={closeDocumentPreviewModal}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </section>
+</template>

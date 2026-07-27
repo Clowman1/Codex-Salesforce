@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>CEO lead source and funnel intelligence.</description>
+    <flexiPage>CEO_Lead_Intelligence</flexiPage>
+    <label>CEO Leads</label>
+    <motif>Custom40: Credit Card</motif>
+</CustomTab>

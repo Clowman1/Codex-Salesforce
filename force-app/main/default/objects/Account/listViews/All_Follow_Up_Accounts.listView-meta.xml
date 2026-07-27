@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Follow_Up_Accounts</fullName>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>of_Closed_Transactions__c</columns>
+    <columns>Most_Recent_Loan_Purpose__c</columns>
+    <columns>Most_Recent_Loan_Program_1st__c</columns>
+    <columns>Most_Recent_Loan_Officer__c</columns>
+    <columns>Most_Recent_Loan_Type_1st_TD__c</columns>
+    <columns>Most_Recent_Closing_Date__c</columns>
+    <columns>Most_Recent_Loan_Amount__c</columns>
+    <columns>Most_Recent_LTV__c</columns>
+    <columns>Most_Recent_Rate__c</columns>
+    <columns>Most_Recent_Rate_BuyDown__c</columns>
+    <columns>Most_Recent_DPA__c</columns>
+    <columns>Most_Recent_Buydown__c</columns>
+    <columns>Most_Recent_Term__c</columns>
+    <columns>Most_Recent_BPS__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Follow_Up_LO__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>All Follow Up Accounts</label>
+    <sharedTo>
+        <group>Admins</group>
+    </sharedTo>
+</ListView>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Branch_Closed_Loans_LAST_WEEK</fullName>
+    <columns>NAME</columns>
+    <columns>Loan_Officer__c</columns>
+    <columns>Borrower_Name__c</columns>
+    <columns>OWNER.FIRST_NAME</columns>
+    <columns>Processor__c</columns>
+    <columns>Status__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>Realtor_Buying_Agent__c</columns>
+    <columns>Realtor_Listing_Agent__c</columns>
+    <columns>Loan_Amount_1st__c</columns>
+    <columns>Loan_Type_1st_TD__c</columns>
+    <columns>Closing_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>contains</operation>
+        <value>Funding,Post-Closed</value>
+    </filters>
+    <filters>
+        <field>Closing_Date__c</field>
+        <operation>equals</operation>
+        <value>LAST_WEEK</value>
+    </filters>
+    <label>Branch Closed Loans (LAST WEEK)</label>
+    <sharedTo>
+        <group>Angelina_Noble</group>
+        <group>Opener</group>
+    </sharedTo>
+</ListView>

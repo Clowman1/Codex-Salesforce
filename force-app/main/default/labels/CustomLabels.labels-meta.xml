@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Zapier_Lead_Status_Webhook_URL</fullName>
+        <categories>Integration</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Zapier Lead Status Webhook URL</shortDescription>
+        <value>https://hooks.zapier.com/hooks/catch/449994/4uh87yx/</value>
+    </labels>
+    <labels>
+        <fullName>Zapier_Linktree_Lead_Status_Webhook_URL</fullName>
+        <categories>Integration</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Zapier Linktree Lead Status Webhook URL</shortDescription>
+        <value>https://hooks.zapier.com/hooks/catch/449994/4urp4d1/</value>
+    </labels>
+</CustomLabels>

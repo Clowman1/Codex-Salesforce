@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Post_Closing_Action_Required</fullName>
+    <columns>NAME</columns>
+    <columns>Post_Closing_Action_Reason__c</columns>
+    <columns>Status__c</columns>
+    <columns>Post_Closed_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Post_Closing_Action_Required__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Post-Closed</value>
+    </filters>
+    <label>Post-Closing Action Required</label>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

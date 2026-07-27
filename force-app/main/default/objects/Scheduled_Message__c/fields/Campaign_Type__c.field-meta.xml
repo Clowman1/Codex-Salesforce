@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campaign_Type__c</fullName>
+    <label>Campaign Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Lead Pre-Approval Message</fullName>
+                <default>false</default>
+                <label>Lead Pre-Approval Message</label>
+            </value>
+            <value>
+                <fullName>Account Pre-Approval Message</fullName>
+                <default>false</default>
+                <label>Account Pre-Approval Message</label>
+            </value>
+            <value>
+                <fullName>Initial Conditions Message</fullName>
+                <default>false</default>
+                <label>Initial Conditions Message</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

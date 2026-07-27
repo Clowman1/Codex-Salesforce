@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loan_Cmmtmnt_date_required</fullName>
+    <active>true</active>
+    <description>The Loan Commitment Date cannot be blank if the status is Submitted or Processing</description>
+    <errorConditionFormula>AND( ISBLANK( Loan_Commitment_Date__c ),  ISPICKVAL(  Loan_Purpose__c  , &quot;Purchase&quot;) , OR( ISPICKVAL( Status__c , &quot;Submitted&quot;),  ISPICKVAL(Status__c, &quot;Processing&quot;)  ) )</errorConditionFormula>
+    <errorMessage>The Loan Commitment Date cannot be blank.  Please enter the date.</errorMessage>
+</ValidationRule>

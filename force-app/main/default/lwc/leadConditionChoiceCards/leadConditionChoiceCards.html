@@ -1,0 +1,26 @@
+<template>
+    <section class="choice-shell">
+        <div class="choice-header">
+            <p class="eyebrow">Pre-Approval Conditions</p>
+            <h2>What would you like to do?</h2>
+            <p>Choose the condition workflow that fits this borrower.</p>
+        </div>
+
+        <div class="choice-grid">
+            <button class={initialClass} type="button" data-value="Create Initial Bundle" onclick={handleSelect}>
+                <span class="card-kicker">Recommended</span>
+                <span class="card-title">Create Initial Bundle</span>
+                <span class="card-copy">Build a guided starter set using loan purpose, income type, assets, and identification.</span>
+            </button>
+            <button class={additionalClass} type="button" data-value="Additional Conditions" onclick={handleSelect}>
+                <span class="card-kicker">Manual Add</span>
+                <span class="card-title">Additional Conditions</span>
+                <span class="card-copy">Add one-off or less common conditions outside the initial package flow.</span>
+            </button>
+        </div>
+
+        <template lwc:if={errorMessage}>
+            <div class="error">{errorMessage}</div>
+        </template>
+    </section>
+</template>

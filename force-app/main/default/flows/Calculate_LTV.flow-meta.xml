@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Calculate_LTV</name>
+        <label>Calculate LTV</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.LTV__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>LTV</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <environments>Default</environments>
+    <formulas>
+        <name>LTV</name>
+        <dataType>Number</dataType>
+        <expression>IF(
+    AND(
+        OR(ISBLANK({!$Record.Appraised_Value__c}), {!$Record.Appraised_Value__c} = 0),
+        OR(ISBLANK({!$Record.Purchase_Price__c}), {!$Record.Purchase_Price__c} = 0)
+    ),
+    0,
+    ({!$Record.Base_Loan_Amount__c} /
+        IF(
+            AND(
+                AND(
+                    NOT(ISBLANK({!$Record.Appraised_Value__c})), {!$Record.Appraised_Value__c} &lt;&gt; 0
+                ),
+                AND(
+                    NOT(ISBLANK({!$Record.Purchase_Price__c})), {!$Record.Purchase_Price__c} &lt;&gt; 0
+                )
+            ),
+            IF(
+                {!$Record.Appraised_Value__c} &lt; {!$Record.Purchase_Price__c},
+                {!$Record.Appraised_Value__c},
+                {!$Record.Purchase_Price__c}
+            ),
+            IF(
+                AND(NOT(ISBLANK({!$Record.Appraised_Value__c})), {!$Record.Appraised_Value__c} &lt;&gt; 0),
+                {!$Record.Appraised_Value__c},
+                {!$Record.Purchase_Price__c}
+            )
+        )
+    ) * 100
+)</expression>
+        <scale>3</scale>
+    </formulas>
+    <interviewLabel>Calculate LTV {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Calculate LTV</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Calculate_LTV</targetReference>
+        </connector>
+        <filterLogic>1 AND (2 OR 3)</filterLogic>
+        <filters>
+            <field>Base_Loan_Amount__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Appraised_Value__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Purchase_Price__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Transaction__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

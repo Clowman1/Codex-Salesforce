@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>CEO operational health intelligence.</description>
+    <flexiPage>CEO_Operational_Health</flexiPage>
+    <label>CEO Operations</label>
+    <motif>Custom62: Chalkboard</motif>
+</CustomTab>

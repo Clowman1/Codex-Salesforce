@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MI_Type__c</fullName>
+    <label>MI Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Borrower Paid Monthly</fullName>
+                <default>false</default>
+                <label>Borrower Paid Monthly</label>
+            </value>
+            <value>
+                <fullName>Borrower Paid Split MI</fullName>
+                <default>false</default>
+                <label>Borrower Paid Split MI</label>
+            </value>
+            <value>
+                <fullName>Borrower Paid Single Premium</fullName>
+                <default>false</default>
+                <label>Borrower Paid Single Premium</label>
+            </value>
+            <value>
+                <fullName>Lender Paid</fullName>
+                <default>false</default>
+                <label>Lender Paid</label>
+            </value>
+            <value>
+                <fullName>Financed MI</fullName>
+                <default>false</default>
+                <label>Financed MI</label>
+            </value>
+            <value>
+                <fullName>GOV MIP</fullName>
+                <default>false</default>
+                <label>GOV MIP</label>
+            </value>
+            <value>
+                <fullName>MI Not Required</fullName>
+                <default>false</default>
+                <label>MI Not Required</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

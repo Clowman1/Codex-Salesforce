@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>56.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>This flow will check the UWM Loan Info Record, if there is only one Borrower and they have signed then it will stamp the Disclosures In Date. If there are two borrowers, the flow will wait until both have signed and then it will stamp the Disclosures In Date.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>DisclosuresReceived</name>
+        <dataType>DateTime</dataType>
+        <expression>IF(
+	AND(
+		ISBLANK({!$Record.uwm_SecondaryBorrower1FullName__c}),
+		NOT(ISBLANK({!$Record.uwm_Borr1SignedAndSubmitted__c}))
+		),
+	{!$Record.uwm_Borr1SignedAndSubmitted__c},
+	IF(
+		AND(
+		NOT(ISBLANK({!$Record.uwm_Borr1SignedAndSubmitted__c})),
+		NOT(ISBLANK({!$Record.uwm_Borr2SignedAndSubmitted__c})),
+		{!$Record.uwm_Borr1SignedAndSubmitted__c} &gt; {!$Record.uwm_Borr2SignedAndSubmitted__c}
+		),
+		{!$Record.uwm_Borr1SignedAndSubmitted__c}, {!$Record.uwm_Borr2SignedAndSubmitted__c}
+	)
+)</expression>
+    </formulas>
+    <interviewLabel>Stamp Disclosures In Date {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Stamp Disclosures In Date</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_Transaction_Disclosures_In</name>
+        <label>Update Transaction Disclosures In</label>
+        <locationX>176</locationX>
+        <locationY>323</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Transaction__c</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Disclosures_Received_Date__c</field>
+            <value>
+                <elementReference>DisclosuresReceived</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Transaction__c</object>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_Transaction_Disclosures_In</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterFormula>OR(
+        AND(
+              NOT(ISBLANK({!$Record.uwm_Borr1SignedAndSubmitted__c})),
+              ISBLANK({!$Record.uwm_SecondaryBorrower1FullName__c})
+                ),
+        AND(
+               NOT(ISBLANK({!$Record.uwm_Borr1SignedAndSubmitted__c})),
+               NOT(ISBLANK({!$Record.uwm_Borr2SignedAndSubmitted__c}))
+               )
+         )</filterFormula>
+        <object>UWM_Loan_Info__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

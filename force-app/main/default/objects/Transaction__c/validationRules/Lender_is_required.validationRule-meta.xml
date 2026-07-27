@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lender_is_required</fullName>
+    <active>true</active>
+    <description>This rule makes the Lender field required when the transaction reaches Processing status.</description>
+    <errorConditionFormula>AND( ISBLANK( Lender_lookup__c ) , ISPICKVAL( Status__c , &quot;Processing&quot;)  )</errorConditionFormula>
+    <errorMessage>The Lender field cannot be blank. Please enter a value.</errorMessage>
+</ValidationRule>

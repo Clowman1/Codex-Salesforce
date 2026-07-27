@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ActiveCamp__ActiveCampaign_Sync_Status__c</fullName>
+    <deprecated>false</deprecated>
+    <label>ActiveCampaign Sync Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Waiting For Next Sync</fullName>
+                <default>false</default>
+                <label>Waiting For Next Sync</label>
+            </value>
+            <value>
+                <fullName>Successfully Synced</fullName>
+                <default>false</default>
+                <label>Successfully Synced</label>
+            </value>
+            <value>
+                <fullName>Does Not Meet Sync Criteria</fullName>
+                <default>false</default>
+                <label>Does Not Meet Sync Criteria</label>
+            </value>
+            <value>
+                <fullName>Waiting For Update</fullName>
+                <default>false</default>
+                <label>Waiting For Update</label>
+            </value>
+            <value>
+                <fullName>Account Deleted in ActiveCampaign</fullName>
+                <default>false</default>
+                <label>Account Deleted in ActiveCampaign</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

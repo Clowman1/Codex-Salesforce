@@ -1,0 +1,92 @@
+<template>
+    <section class="scheduler">
+        <div class="header">
+            <div>
+                <p class="eyebrow">Reach Home Loans</p>
+                <h2>Schedule Lead Event</h2>
+                <p>Set a calendar appointment with a start time, duration, assignee, and reminder.</p>
+            </div>
+        </div>
+
+        <template if:true={errorMessage}>
+            <div class="alert alert-error">{errorMessage}</div>
+        </template>
+        <template if:true={successMessage}>
+            <div class="alert alert-success">{successMessage}</div>
+        </template>
+
+        <div class="form-grid">
+            <label class="field field-full">
+                <span>Subject</span>
+                <input type="text" value={eventSubject} data-field="eventSubject" onchange={handleInput} />
+            </label>
+
+            <label class="field field-full">
+                <span>Assigned To</span>
+                <select value={eventOwnerId} data-field="eventOwnerId" onchange={handleInput}>
+                    <template if:true={hasAssigneeOptions}>
+                        <template for:each={assigneeOptions} for:item="option">
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                        </template>
+                    </template>
+                    <template if:false={hasAssigneeOptions}>
+                        <option value="">Loading assignees...</option>
+                    </template>
+                </select>
+            </label>
+
+            <label class="field">
+                <span>Start Date</span>
+                <input type="date" value={eventStartDate} data-field="eventStartDate" onchange={handleInput} />
+            </label>
+
+            <label class="field">
+                <span>Start Time</span>
+                <select value={eventStartTime} data-field="eventStartTime" onchange={handleInput}>
+                    <option value="">--Select Time--</option>
+                    <template for:each={timeOptions} for:item="option">
+                        <option key={option.value} value={option.value}>{option.label}</option>
+                    </template>
+                </select>
+            </label>
+
+            <label class="field">
+                <span>Duration</span>
+                <select value={eventDuration} data-field="eventDuration" onchange={handleInput}>
+                    <option value="15">15 minutes</option>
+                    <option value="30">30 minutes</option>
+                    <option value="45">45 minutes</option>
+                    <option value="60">60 minutes</option>
+                    <option value="75">75 minutes</option>
+                    <option value="90">90 minutes</option>
+                </select>
+            </label>
+
+            <label class="checkbox-field">
+                <span>Reminder Set</span>
+                <input type="checkbox" checked={eventReminderSet} data-field="eventReminderSet" onchange={handleInput} />
+            </label>
+
+            <label class="field field-full">
+                <span>Time Before Event</span>
+                <select value={eventReminder} data-field="eventReminder" onchange={handleInput} disabled={isReminderDisabled}>
+                    <template for:each={reminderOptions} for:item="option">
+                        <option key={option.value} value={option.value}>{option.label}</option>
+                    </template>
+                </select>
+            </label>
+
+            <label class="field field-full">
+                <span>Description</span>
+                <textarea value={eventDescription} data-field="eventDescription" onchange={handleInput}></textarea>
+            </label>
+        </div>
+
+        <div class="actions">
+            <button class="primary" type="button" onclick={saveEvent} disabled={isSaving}>
+                <template if:true={isSaving}>Saving...</template>
+                <template if:false={isSaving}>Schedule Event</template>
+            </button>
+        </div>
+    </section>
+</template>

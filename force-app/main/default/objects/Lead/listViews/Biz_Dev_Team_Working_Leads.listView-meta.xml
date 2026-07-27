@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Biz_Dev_Team_Working_Leads</fullName>
+    <columns>LEAD.STATUS</columns>
+    <columns>FULL_NAME</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>LEAD.LAST_ACTIVITY</columns>
+    <columns>Last_Call_DateTime__c</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>Appointment_Date_Time__c</columns>
+    <columns>Realtor_Buying_Agent__c</columns>
+    <columns>Realtor_Group_New__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <columns>Last_SMS_Attempt_RingCentral__c</columns>
+    <columns>Last_Call_Attempt_RingCentral__c</columns>
+    <columns>TwilioSF__Last_Message_Status_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notEqual</operation>
+        <value>Qualified</value>
+    </filters>
+    <filters>
+        <field>LEAD.CREATED_DATE</field>
+        <operation>greaterOrEqual</operation>
+        <value>2/1/2021 12:00 AM</value>
+    </filters>
+    <filters>
+        <field>LEAD.CONVERTED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>LEAD.RECORDTYPE</field>
+        <operation>notEqual</operation>
+        <value>Lead.Realtor_Lead_record_type</value>
+    </filters>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notEqual</operation>
+        <value>30 Day + Follow Up,Nurturing,Pre-Approval,Nurture - Preapproval,Nurture-Pre-Approval,Credit Repair,Submitted For Disclosures</value>
+    </filters>
+    <filters>
+        <field>Biz_Dev__c</field>
+        <operation>equals</operation>
+        <value>Biz Dev - Reach,Biz Dev - Cabrera,Biz Dev - SERHANT ORL,Biz Dev - Perrault,Biz Dev - Wemert,Biz Dev - Hsieh,Biz Dev - Hornaday</value>
+    </filters>
+    <filters>
+        <field>Loan_Purpose__c</field>
+        <operation>notEqual</operation>
+        <value>Refinance,Refinance Cash-Out,Refinance Rate &amp; Term,HELOC</value>
+    </filters>
+    <filters>
+        <field>CORE.USERS.ALIAS</field>
+        <operation>notEqual</operation>
+        <value>AStep,clowm,ndeve,jcabr</value>
+    </filters>
+    <filters>
+        <field>LEAD.LEAD_SOURCE</field>
+        <operation>notEqual</operation>
+        <value>Consumer Webinar</value>
+    </filters>
+    <label>Biz Dev Team - Working Leads</label>
+    <sharedTo>
+        <group>Adam_and_Brandon</group>
+        <group>Angelina_Noble</group>
+        <group>Anthony_Noble</group>
+        <group>Bianca_s_Group_For_Sharing</group>
+        <group>Byron_Richie_For_Sharing</group>
+        <group>Chris_Lowman</group>
+        <group>Christian_Marketing</group>
+        <group>Justin_Waters_For_Sharing</group>
+        <group>Lawrence_For_Sharing</group>
+    </sharedTo>
+</ListView>

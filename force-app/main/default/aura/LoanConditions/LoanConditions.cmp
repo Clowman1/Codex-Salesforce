@@ -1,0 +1,152 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" controller="LoanConditionController"  description="LoanConditions"> 
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    <aura:attribute name="showEmailModal" type="Boolean"/>
+    <aura:attribute name="juniorConditions" type="Object[]"/>
+    <aura:attribute name="borrowerConditions" type="Object[]"/>
+    <aura:attribute name="processorConditions" type="Object[]"/>
+    <aura:attribute name="loanOfficerConditions" type="Object[]"/>
+    <aura:attribute name="shouldShowEmailTemplateOptions" type="Boolean" default="true"/>
+    <aura:handler name="conditionUpdated" event="c:ConditionUpdatedEvent" action="{!c.init}"/>
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+    <lightning:quickActionAPI aura:id="quickActionAPI" />
+    <aura:attribute name="options" type="List" default="[{'label':'New','value':'OptionOne'},{'label':'Requested','value':'Requested'},{'label':'Received','value':'Received'}]" />
+    <lightning:card title="" variant="base">
+        <aura:set attribute="actions"> 
+            <lightning:button class="slds-theme" variant="neutral" onclick="{!c.openEmailModal}" label="Send Conditions Email"></lightning:button>
+            <lightning:button class="slds-theme_brand" variant="brand" onclick="{!c.init}" label="Refresh"></lightning:button>
+        </aura:set>
+        <div class="slds-m-around_x-small slds-text-heading_small">Junior Conditions</div>
+        <table class="slds-table slds-table_bordered slds-table_striped">
+            <thead>
+            <tr class="slds-text-title_caps">
+                <th>
+                    <div class="slds-truncate" title="">Type</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Assigned To</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Description</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Notes</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Requested Date</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Received Date</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Status</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">ETA Date</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Include In Email</div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <aura:iteration items="{!v.juniorConditions}" var="condition">
+                <c:LoanConditionRow condition="{!condition}" canBeIncludedInEmail="false" shouldShowEmailTemplateOptions="{!v.shouldShowEmailTemplateOptions}"/>
+            </aura:iteration>
+            </tbody>
+        </table>
+        <aura:if isTrue="{!empty(v.juniorConditions)}">
+            <lightning:layout horizontalAlign="center" class="slds-texts-align_center slds-m-around_xx-large">
+                <p class="slds-text-heading_label"> No Junior Conditions Have Been Created Yet. </p>
+            </lightning:layout>
+        </aura:if>
+        <div class="slds-m-top_medium slds-m-bottom_x-small slds-m-left_x-small slds-text-heading_small">Borrower Conditions</div>
+        <table class="slds-table slds-table_bordered slds-table_striped">
+            <thead>
+            <tr class="slds-text-title_caps">
+                <th>
+                    <div class="slds-truncate" title="">Type</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Assigned To</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Description</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Notes</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Requested Date</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Received Date</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Status</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">ETA Date</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Include In Email</div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <aura:iteration items="{!v.borrowerConditions}" var="condition">
+                <c:LoanConditionRow condition="{!condition}"  canBeIncludedInEmail="true" shouldShowEmailTemplateOptions="{!v.shouldShowEmailTemplateOptions}"/>
+            </aura:iteration>
+            </tbody>
+        </table>
+        <aura:if isTrue="{!empty(v.borrowerConditions)}">
+            <lightning:layout horizontalAlign="center" class="slds-text-align_center slds-m-around_xx-large">
+                <p class="slds-text-heading_label"> No Borrower Conditions Have Been Created Yet. </p>
+            </lightning:layout>
+        </aura:if>
+        <div class="slds-m-top_medium slds-m-bottom_x-small slds-m-left_x-small slds-text-heading_small">Processor Conditions</div>
+        <table class="slds-table slds-table_bordered slds-table_striped">
+            <thead>
+            <tr class="slds-text-title_caps">
+                <th>
+                    <div class="slds-truncate" title="">Type</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Assigned To</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Description</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Notes</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Requested Date</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Received Date</div> 
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Status</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">ETA Date</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" title="">Include In Email</div> 
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <aura:iteration items="{!v.processorConditions}" var="condition">
+                <c:LoanConditionRow condition="{!condition}"  canBeIncludedInEmail="false" shouldShowEmailTemplateOptions="{!v.shouldShowEmailTemplateOptions}"/>
+            </aura:iteration>
+            </tbody>
+        </table>
+        <aura:if isTrue="{!empty(v.processorConditions)}">
+            <lightning:layout horizontalAlign="center" class="slds-text-align_center slds-m-around_xx-large">
+                <p class="slds-text-heading_label"> No Processor Conditions Have Been Created Yet. </p> 
+            </lightning:layout>
+        </aura:if>
+    </lightning:card>
+
+</aura:component>

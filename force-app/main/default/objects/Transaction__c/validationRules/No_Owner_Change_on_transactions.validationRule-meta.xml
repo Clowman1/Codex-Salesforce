@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>No_Owner_Change_on_transactions</fullName>
+    <active>true</active>
+    <description>This rule will return an error if a user with the profile of Loan Officer tries to change record ownership on a transaction.</description>
+    <errorConditionFormula>ISCHANGED( OwnerId ) &amp;&amp;  $User.ProfileId  = &quot;00ef2000001wwBC&quot;  &amp;&amp;  $User.Id  &lt;&gt; &quot;005f2000009NwSs&quot;</errorConditionFormula>
+    <errorMessage>You do not have permission to change record ownership for this record.</errorMessage>
+</ValidationRule>

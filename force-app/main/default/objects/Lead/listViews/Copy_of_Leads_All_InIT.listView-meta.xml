@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Copy_of_Leads_All_InIT</fullName>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>FULL_NAME</columns>
+    <columns>LEAD.PHONE</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>CORE.USERS.FIRST_NAME</columns>
+    <columns>Realtor_Buying_Agent__c</columns>
+    <columns>Realtor_Lead_Source__c</columns>
+    <columns>Loan_Amount__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.RECORDTYPE</field>
+        <operation>notEqual</operation>
+        <value>Lead.Realtor_Lead_record_type</value>
+    </filters>
+    <filters>
+        <field>Realtor_Lead_Source__c</field>
+        <operation>equals</operation>
+        <value>InIT Webinar</value>
+    </filters>
+    <label>InIT Webinar Consumer Leads</label>
+    <sharedTo>
+        <group>Joey_s_Group_For_Sharing</group>
+        <group>John_Cabrera_s_Group_For_Sharing</group>
+        <group>Management</group>
+    </sharedTo>
+</ListView>

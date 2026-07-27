@@ -1,0 +1,86 @@
+.THIS.title-agent-shell {
+    background: #f5f8fc;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.THIS .title-agent-header {
+    background: #172541;
+    border-bottom: 4px solid #f5a742;
+    color: #ffffff;
+    padding: 22px 26px;
+}
+
+.THIS .title-agent-header p {
+    color: #f5a742;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    margin: 0 0 6px;
+    text-transform: uppercase;
+}
+
+.THIS .title-agent-header h2 {
+    color: #ffffff;
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.THIS .title-agent-header span {
+    color: #e4edf8;
+    display: block;
+    margin-top: 8px;
+}
+
+.THIS .title-agent-error {
+    background: #fde8ef;
+    border: 1px solid #f6bfd0;
+    border-radius: 8px;
+    color: #b0003a;
+    font-weight: 700;
+    margin: 18px 24px 0;
+    padding: 14px 16px;
+}
+
+.THIS .title-agent-section {
+    background: #ffffff;
+    border: 1px solid #d6e2f1;
+    border-radius: 8px;
+    margin: 18px 24px;
+    padding: 18px;
+}
+
+.THIS .title-agent-section h3 {
+    color: #172541;
+    font-size: 1rem;
+    font-weight: 800;
+    margin: 0 0 14px;
+}
+
+.THIS .title-agent-grid {
+    display: grid;
+    gap: 14px 18px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.THIS .title-agent-grid lightning-input:first-child {
+    grid-column: 1 / -1;
+}
+
+.THIS .title-agent-footer {
+    align-items: center;
+    background: #eef4fb;
+    border-top: 1px solid #d6e2f1;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 16px 24px;
+}
+
+@media (max-width: 640px) {
+    .THIS .title-agent-grid {
+        grid-template-columns: 1fr;
+    }
+}

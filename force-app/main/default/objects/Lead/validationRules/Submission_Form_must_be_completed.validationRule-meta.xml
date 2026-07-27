@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Submission_Form_must_be_completed</fullName>
+    <active>false</active>
+    <description>In order for a lead to be converted, the Submission Form must be completed.</description>
+    <errorConditionFormula>AND( 
+ISCHANGED(IsConverted),
+IsConverted = True,
+Submission_Form_Completed__c = False)</errorConditionFormula>
+    <errorDisplayField>ActiveCamp__Active_Campaign_Id__c</errorDisplayField>
+    <errorMessage>Please complete the Submission Form before converting this lead.</errorMessage>
+</ValidationRule>

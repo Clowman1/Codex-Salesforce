@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Boca_Raton</name>
+        <label>Boca Raton</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Branch__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Boca Raton</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Triggering_Record</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Orlando</name>
+        <label>Orlando</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Branch__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Orlando</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Triggering_Record</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Check_Realtor_Group</name>
+        <label>Check Realtor Group</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Boca_Raton</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Wemert_Group</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Realtor_Account.Realtor_Group__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Wemert Group</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Boca_Raton</targetReference>
+            </connector>
+            <label>Wemert Group</label>
+        </rules>
+        <rules>
+            <name>Nickley_s_Group</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Realtor_Account.Realtor_Group__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>The Nickley Group</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Realtor_Account.Realtor_Group__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Nickley ISA&apos;s</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Orlando</targetReference>
+            </connector>
+            <label>Nickley&apos;s Group</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Transaction Branch Assignment {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Transaction Branch Assignment</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Realtor_Account</name>
+        <label>Get Realtor Account</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Realtor_Group</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Realtor_Buying_Agent__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Account</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Triggering_Record</name>
+        <label>Update Triggering Record</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Realtor_Account</targetReference>
+        </connector>
+        <filterFormula>OR(
+    AND(
+        ISNEW(),
+        NOT(ISBLANK({!$Record.Realtor_Buying_Agent__c}))
+    ),
+    AND(
+        ISCHANGED({!$Record.Realtor_Buying_Agent__c}),
+        NOT(ISBLANK({!$Record.Realtor_Buying_Agent__c}))
+    )
+)</filterFormula>
+        <object>Transaction__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

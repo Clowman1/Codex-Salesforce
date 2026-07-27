@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>This flow will take information from the most recently added event related to a lead, and update the related lead record with appointment date, appointment time (GMT), and appointment time in Eastern Time.</description>
+    <environments>Default</environments>
+    <formulas>
+        <description>This formula calculates the related event&apos;s time and converts it to Eastern Time, factoring in Daylight Savings Time, for entry in text format on the lead field Appointment Time.</description>
+        <name>EventTimetoleadinEasternTimewithDST</name>
+        <dataType>String</dataType>
+        <expression>IF({!$Record.ActivityDate} &gt;= DATE(YEAR({!$Record.ActivityDate}),3,(2*7+1)) - WEEKDAY(DATE(YEAR({!$Record.ActivityDate}),3,8-1)) &amp;&amp; {!$Record.ActivityDate} &lt;= DATE(YEAR({!$Record.ActivityDate}),11,(1*7+1)) - WEEKDAY(DATE(YEAR({!$Record.ActivityDate}),11,8-1)),
+TEXT(IF( OR( VALUE( MID( TEXT( {!$Record.ActivityDateTime} - 4/24 ), 12, 2 ) ) = 0, VALUE( MID( TEXT( {!$Record.ActivityDateTime} - 4/24  ), 12, 2 ) ) = 12 ), 12, VALUE( MID( TEXT( {!$Record.ActivityDateTime} - 4/24 ), 12, 2 ) ) - IF( VALUE( MID( TEXT( {!$Record.ActivityDateTime} - 4/24 ), 12, 2 ) ) &lt;= 12, 0, 12 ) )) &amp; &quot;:&quot; &amp; MID( TEXT(  {!$Record.ActivityDateTime} - 4/24 ), 15, 2 ) &amp; &quot; &quot; &amp; IF( VALUE( MID( TEXT( {!$Record.ActivityDateTime} - 4/24 ), 12, 2 ) ) &lt; 12, &quot;AM&quot;, &quot;PM&quot; ),
+
+TEXT(IF( OR( VALUE( MID( TEXT( {!$Record.ActivityDateTime} - 5/24 ), 12, 2 ) ) = 0, VALUE( MID( TEXT( {!$Record.ActivityDate} - 5/24  ), 12, 2 ) ) = 12 ), 12, VALUE( MID( TEXT( {!$Record.ActivityDateTime} - 5/24 ), 12, 2 ) ) - IF( VALUE( MID( TEXT( {!$Record.ActivityDateTime} - 5/24 ), 12, 2 ) ) &lt;= 12, 0, 12 ) )) &amp; &quot;:&quot; &amp; MID( TEXT(  {!$Record.ActivityDateTime} - 5/24 ), 15, 2 ) &amp; &quot; &quot; &amp; IF( VALUE( MID( TEXT( {!$Record.ActivityDateTime} - 5/24 ), 12, 2 ) ) &lt; 12, &quot;AM&quot;, &quot;PM&quot; )
+)</expression>
+    </formulas>
+    <interviewLabel>Event to Lead Appointment Update {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Event to Lead Appointment Update</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <description>This flow will take data from the most recently added event related to a lead, and update the lead record with appointment date, appointment time, and appointment time converted to Eastern Time.</description>
+        <name>Event_update_to_Lead</name>
+        <label>Event update to Lead</label>
+        <locationX>179</locationX>
+        <locationY>338</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.WhoId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Appointment_Date_Time__c</field>
+            <value>
+                <elementReference>$Record.ActivityDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Appointment_Date__c</field>
+            <value>
+                <elementReference>$Record.ActivityDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Appointment_Time__c</field>
+            <value>
+                <elementReference>EventTimetoleadinEasternTimewithDST</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Event_Type__c</field>
+            <value>
+                <elementReference>$Record.Event_Type__c</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Lead</object>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>Event_update_to_Lead</targetReference>
+        </connector>
+        <filterLogic>(1 AND 2) OR 3</filterLogic>
+        <filters>
+            <field>WhoId</field>
+            <operator>StartsWith</operator>
+            <value>
+                <stringValue>00Q</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>StartDateTime</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>StartDateTime</field>
+            <operator>IsChanged</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <object>Event</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+</Flow>

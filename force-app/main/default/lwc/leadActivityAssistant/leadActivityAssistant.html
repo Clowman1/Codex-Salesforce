@@ -1,0 +1,179 @@
+<template>
+    <section class="assistant">
+        <div class="hero">
+            <div>
+                <p class="eyebrow">Reach Home Loans</p>
+                <h2>Lead Activity Assistant</h2>
+                <p class="subcopy">Log lead calls, capture notes, message buyer agents, and schedule follow-up events in one place.</p>
+            </div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Lead Activity Assistant">
+            <button class={callTabClass} type="button" data-tab="call" onclick={selectTab}>Log a Call</button>
+            <button class={eventTabClass} type="button" data-tab="event" onclick={selectTab}>New Event</button>
+        </div>
+
+        <template if:true={errorMessage}>
+            <div class="alert alert-error">{errorMessage}</div>
+        </template>
+        <template if:true={successMessage}>
+            <div class="alert alert-success">{successMessage}</div>
+        </template>
+
+        <template if:true={isCallTab}>
+            <div class="form-grid">
+                <label class="field field-full">
+                    <span>Subject</span>
+                    <select value={callSubject} data-field="callSubject" onchange={handleInput}>
+                        <template for:each={callSubjectOptions} for:item="option">
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                        </template>
+                    </select>
+                    <small class="hint">Choose the activity outcome that best matches the conversation.</small>
+                </label>
+                <label class="field field-full">
+                    <span>Internal Note</span>
+                    <textarea value={internalNote} data-field="internalNote" data-clear-on-call-success onchange={handleInput}></textarea>
+                    <small class="hint">This saves to the Task and creates a Lead note in the Notes tab.</small>
+                </label>
+                <label class="field field-full">
+                    <span>Assigned To</span>
+                    <select value={eventOwnerId} data-field="eventOwnerId" onchange={handleInput}>
+                        <template if:true={hasAssigneeOptions}>
+                            <template for:each={assigneeOptions} for:item="option">
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            </template>
+                        </template>
+                        <template if:false={hasAssigneeOptions}>
+                            <option value="">Loading assignees...</option>
+                        </template>
+                    </select>
+                    <small class="hint">Defaults to the Lead Owner. Select the Loan Partner when the event should be assigned there.</small>
+                </label>
+                <label class="field">
+                    <span>Start Date</span>
+                    <input type="date" value={eventStartDate} data-field="eventStartDate" onchange={handleInput} />
+                </label>
+                <label class="field">
+                    <span>Start Time</span>
+                    <select value={eventStartTime} data-field="eventStartTime" onchange={handleInput}>
+                        <option value="">--Select Time--</option>
+                        <template for:each={timeOptions} for:item="option">
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                        </template>
+                    </select>
+                </label>
+                <label class="field">
+                    <span>Duration</span>
+                    <select value={eventDuration} data-field="eventDuration" onchange={handleInput}>
+                        <option value="15">15 minutes</option>
+                        <option value="30">30 minutes</option>
+                        <option value="45">45 minutes</option>
+                        <option value="60">60 minutes</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span>Reminder Set</span>
+                    <select value={eventReminderSetValue} data-field="eventReminderSet" onchange={handleInput}>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </label>
+                <label class="field field-full">
+                    <span>Time Before Event</span>
+                    <select value={eventReminder} data-field="eventReminder" onchange={handleInput} disabled={isReminderDisabled}>
+                        <template for:each={reminderOptions} for:item="option">
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                        </template>
+                    </select>
+                </label>
+                <label class="field field-full">
+                    <span>External Message to Buyer's Agent</span>
+                    <textarea value={buyerAgentMessage} data-field="buyerAgentMessage" data-clear-on-call-success maxlength="255" oninput={handleInput} onchange={handleInput}></textarea>
+                </label>
+                <label class="field field-full">
+                    <span>External Message to Buyer's Agent More</span>
+                    <textarea value={buyerAgentMessageMore} data-field="buyerAgentMessageMore" data-clear-on-call-success maxlength="255" oninput={handleInput} onchange={handleInput}></textarea>
+                </label>
+            </div>
+
+            <div class="actions">
+                <button class="primary" type="button" onclick={saveCall} disabled={isSaving}>
+                    <template if:true={isSaving}>Saving...</template>
+                    <template if:false={isSaving}>Log Call</template>
+                </button>
+            </div>
+        </template>
+
+        <template if:false={isCallTab}>
+            <div class="form-grid">
+                <label class="field field-full">
+                    <span>Subject</span>
+                    <input type="text" value={eventSubject} data-field="eventSubject" onchange={handleInput} />
+                </label>
+                <label class="field field-full">
+                    <span>Assigned To</span>
+                    <select value={eventOwnerId} data-field="eventOwnerId" onchange={handleInput}>
+                        <template if:true={hasAssigneeOptions}>
+                            <template for:each={assigneeOptions} for:item="option">
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            </template>
+                        </template>
+                        <template if:false={hasAssigneeOptions}>
+                            <option value="">Loading assignees...</option>
+                        </template>
+                    </select>
+                    <small class="hint">Defaults to the Lead Owner. Select the Loan Partner when the event should be assigned there.</small>
+                </label>
+                <label class="field">
+                    <span>Start Date</span>
+                    <input type="date" value={eventStartDate} data-field="eventStartDate" onchange={handleInput} />
+                </label>
+                <label class="field">
+                    <span>Start Time</span>
+                    <select value={eventStartTime} data-field="eventStartTime" onchange={handleInput}>
+                        <option value="">--Select Time--</option>
+                        <template for:each={timeOptions} for:item="option">
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                        </template>
+                    </select>
+                </label>
+                <label class="field">
+                    <span>Duration</span>
+                    <select value={eventDuration} data-field="eventDuration" onchange={handleInput}>
+                        <option value="15">15 minutes</option>
+                        <option value="30">30 minutes</option>
+                        <option value="45">45 minutes</option>
+                        <option value="60">60 minutes</option>
+                    </select>
+                </label>
+                <label class="field field-full">
+                    <span>Reminder Set</span>
+                    <select value={eventReminderSetValue} data-field="eventReminderSet" onchange={handleInput}>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </label>
+                <label class="field field-full">
+                    <span>Time Before Event</span>
+                    <select value={eventReminder} data-field="eventReminder" onchange={handleInput} disabled={isReminderDisabled}>
+                        <template for:each={reminderOptions} for:item="option">
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                        </template>
+                    </select>
+                </label>
+                <label class="field field-full">
+                    <span>Description</span>
+                    <textarea value={eventDescription} data-field="eventDescription" onchange={handleInput}></textarea>
+                </label>
+            </div>
+
+            <div class="actions">
+                <button class="primary" type="button" onclick={saveEvent} disabled={isSaving}>
+                    <template if:true={isSaving}>Saving...</template>
+                    <template if:false={isSaving}>Schedule Event</template>
+                </button>
+            </div>
+        </template>
+    </section>
+</template>

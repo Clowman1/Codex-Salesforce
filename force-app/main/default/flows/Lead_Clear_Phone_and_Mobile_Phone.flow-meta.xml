@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_New_Phone_and_Mobile</name>
+        <label>Assign New Phone and Mobile</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Phone</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ClearPhone</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.MobilePhone</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ClearMobile</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <description>Temp helper flow to remove &apos;phone&apos; literal from Phone and Mobile Phone fields</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>ClearMobile</name>
+        <dataType>String</dataType>
+        <expression>IF(NOT(ISBLANK({!$Record.MobilePhone})), SUBSTITUTE({!$Record.MobilePhone}, &apos;phone&apos;, &apos;&apos;), &apos;&apos;)</expression>
+    </formulas>
+    <formulas>
+        <name>ClearPhone</name>
+        <dataType>String</dataType>
+        <expression>IF(NOT(ISBLANK({!$Record.Phone})), SUBSTITUTE({!$Record.Phone}, &apos;phone&apos;, &apos;&apos;), &apos;&apos;)</expression>
+    </formulas>
+    <interviewLabel>Lead: Clear Phone and Mobile Phone {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead: Clear Phone and Mobile Phone</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Assign_New_Phone_and_Mobile</targetReference>
+        </connector>
+        <filterLogic>(1 OR 2) AND 3</filterLogic>
+        <filters>
+            <field>Phone</field>
+            <operator>Contains</operator>
+            <value>
+                <stringValue>phone</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>MobilePhone</field>
+            <operator>Contains</operator>
+            <value>
+                <stringValue>phone</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>LeadSource</field>
+            <operator>Contains</operator>
+            <value>
+                <stringValue>Website</stringValue>
+            </value>
+        </filters>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

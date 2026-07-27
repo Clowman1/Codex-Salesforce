@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CW_Docs_Req_Webhook_Sent__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Marks a Consumer Webinar lead after its first Documents Requested webhook is delivered to Zapier.</description>
+    <label>CW Docs Requested Webhook Sent</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

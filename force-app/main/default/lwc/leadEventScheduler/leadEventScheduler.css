@@ -1,0 +1,128 @@
+.scheduler {
+    background: #f6f9fc;
+    border: 1px solid #d7e2ef;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(10, 31, 68, 0.08);
+    overflow: hidden;
+}
+
+.header {
+    background: #17243f;
+    border-bottom: 4px solid #f5a742;
+    color: #ffffff;
+    padding: 16px 18px;
+}
+
+.eyebrow {
+    color: #f5a742;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+}
+
+p {
+    color: #dfe8f4;
+    font-size: 12px;
+    margin: 6px 0 0;
+}
+
+.form-grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 14px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field-full {
+    grid-column: 1 / -1;
+}
+
+.field span,
+.checkbox-field span {
+    color: #21324d;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.checkbox-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.checkbox-field input {
+    min-height: auto;
+    width: 18px;
+}
+
+input,
+select,
+textarea {
+    background: #ffffff;
+    border: 1px solid #bac8d8;
+    border-radius: 6px;
+    color: #091b36;
+    font: inherit;
+    min-height: 38px;
+    padding: 8px 10px;
+}
+
+textarea {
+    min-height: 74px;
+    resize: vertical;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 14px 14px;
+}
+
+.primary {
+    background: #f5a742;
+    border: 0;
+    border-radius: 999px;
+    color: #07172d;
+    cursor: pointer;
+    font-weight: 900;
+    min-width: 130px;
+    padding: 10px 18px;
+}
+
+.primary:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.alert {
+    border-radius: 6px;
+    font-weight: 700;
+    margin: 12px 14px 0;
+    padding: 10px 12px;
+}
+
+.alert-error {
+    background: #fde8ef;
+    border: 1px solid #f5b7c9;
+    color: #b0003a;
+}
+
+.alert-success {
+    background: #e7f6ec;
+    border: 1px solid #b8e2c4;
+    color: #126b33;
+}

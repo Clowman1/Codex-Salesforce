@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Copy_1_of_Email_alert_for_new_transaction</name>
+        <label>Copy 1 of Email alert for new transaction</label>
+        <locationX>297</locationX>
+        <locationY>731</locationY>
+        <actionName>Transaction__c.Email_when_new_transaction_is_created</actionName>
+        <actionType>emailAlert</actionType>
+        <connector>
+            <targetReference>myRule_4</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>Transaction__c.Email_when_new_transaction_is_created</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+    <actionCalls>
+        <name>myRule_10_A1</name>
+        <label>Closing Move to Docs email</label>
+        <locationX>165</locationX>
+        <locationY>1547</locationY>
+        <actionName>Transaction__c.Email_when_transaction_Closing_Move_to_Docs_is_populated</actionName>
+        <actionType>emailAlert</actionType>
+        <connector>
+            <targetReference>myRule_12</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>Transaction__c.Email_when_transaction_Closing_Move_to_Docs_is_populated</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+    <actionCalls>
+        <name>myRule_12_A1</name>
+        <label>CD Request Date email alert</label>
+        <locationX>165</locationX>
+        <locationY>1847</locationY>
+        <actionName>Transaction__c.Email_when_transaction_CD_Request_Date_is_populated</actionName>
+        <actionType>emailAlert</actionType>
+        <connector>
+            <targetReference>myRule_14</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>Transaction__c.Email_when_transaction_CD_Request_Date_is_populated</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Copy_1_of_Correspondent_File</name>
+        <label>Copy 1 of Correspondent File?</label>
+        <locationX>297</locationX>
+        <locationY>323</locationY>
+        <defaultConnector>
+            <targetReference>Copy_1_of_Revenue_Calculation</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Copy_1_of_Yes_Add_Processing_Fee</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Channel__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Correspondent</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_1_of_Processing_Fee_default</targetReference>
+            </connector>
+            <label>Copy 1 of Yes, Add Processing Fee</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_10</name>
+        <label>Closing Move to Docs notification</label>
+        <locationX>297</locationX>
+        <locationY>1439</locationY>
+        <defaultConnector>
+            <targetReference>myRule_12</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Closing Move to Docs notification</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_10</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Funding</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.RecordType.Name</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Correspondent</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_10_A1</targetReference>
+            </connector>
+            <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+            <label>TRUE_Closing Move to Docs notification</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_12</name>
+        <label>File to Closing Alert</label>
+        <locationX>297</locationX>
+        <locationY>1739</locationY>
+        <defaultConnector>
+            <targetReference>myRule_14</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_File to Closing Alert</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_12</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closing</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Add_to_Closing_Queue__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_12_A1</targetReference>
+            </connector>
+            <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+            <label>TRUE_File to Closing Alert</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_14</name>
+        <label>Status changed backwards</label>
+        <locationX>297</locationX>
+        <locationY>2039</locationY>
+        <defaultConnector>
+            <targetReference>myRule_17</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Status changed backwards</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_14</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_TRUE_myRule_14</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Profile.Name</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>System Administrator</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_14_A1</targetReference>
+            </connector>
+            <label>TRUE_Status changed backwards</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_17</name>
+        <label>Preprocessing Condo</label>
+        <locationX>545</locationX>
+        <locationY>2147</locationY>
+        <defaultConnector>
+            <targetReference>myRule_25</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Preprocessing Condo</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_17</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Pre-Processing</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Property_Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Condo</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_17_A1</targetReference>
+            </connector>
+            <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+            <label>TRUE_Preprocessing Condo</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_25</name>
+        <label>Status is Funding</label>
+        <locationX>776</locationX>
+        <locationY>2255</locationY>
+        <defaultConnector>
+            <targetReference>myRule_27</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Status is Funding</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_25</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Funding</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_25_A1</targetReference>
+            </connector>
+            <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+            <label>TRUE_Status is Funding</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_27</name>
+        <label>Status is Funding, BPS is blank</label>
+        <locationX>776</locationX>
+        <locationY>2663</locationY>
+        <defaultConnector>
+            <targetReference>myRule_30</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Status is Funding, BPS is blank</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_27</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Funding</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.BPS__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_27_A1</targetReference>
+            </connector>
+            <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+            <label>TRUE_Status is Funding, BPS is blank</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_30</name>
+        <label>Closing Date is changed</label>
+        <locationX>974</locationX>
+        <locationY>2771</locationY>
+        <defaultConnectorLabel>FALSE_Closing Date is changed</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_30</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_TRUE_myRule_30</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_30_A1</targetReference>
+            </connector>
+            <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+            <label>TRUE_Closing Date is changed</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_4</name>
+        <label>Loan Number update</label>
+        <locationX>297</locationX>
+        <locationY>839</locationY>
+        <defaultConnector>
+            <targetReference>myRule_7</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Loan Number update</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_4</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_TRUE_myRule_4</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_4_A1</targetReference>
+            </connector>
+            <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+            <label>TRUE_Loan Number update</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_7</name>
+        <label>Change to BPS, Loan Amt or Process Fee</label>
+        <locationX>297</locationX>
+        <locationY>1139</locationY>
+        <defaultConnector>
+            <targetReference>myRule_10</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Change to BPS, Loan Amt or Process Fee</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_7</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>formula_TRUE_myRule_7</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_7_A1</targetReference>
+            </connector>
+            <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+            <label>TRUE_Change to BPS, Loan Amt or Process Fee</label>
+        </rules>
+    </decisions>
+    <description>Migrated from the Transaction CLA Automation process using multiple criteria.
+Add logic for Saludes Biz Dev V2 -Updated subject</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>formula_10_myRule_30_A1_2056818474</name>
+        <dataType>Date</dataType>
+        <expression>{!$Record.Closing_Date__c}  - 10</expression>
+    </formulas>
+    <formulas>
+        <name>formula_11_myRule_30_A1_8692195853</name>
+        <dataType>Date</dataType>
+        <expression>{!$Record.Closing_Date__c}</expression>
+    </formulas>
+    <formulas>
+        <name>formula_1_myRule_1_A2_0877234119</name>
+        <dataType>Currency</dataType>
+        <expression>((0.0001*{!$Record.BPS__c}) * {!$Record.Loan_Amount_1st__c} ) + {!$Record.Processing_Fee__c}</expression>
+        <scale>18</scale>
+    </formulas>
+    <formulas>
+        <name>formula_2_myRule_4_A1_0340577658</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.Borrower_Name__r.LastName} + &quot; - &quot; + {!$Record.Loan_1st_TD__c}</expression>
+    </formulas>
+    <formulas>
+        <name>formula_3_myRule_7_A1_3167604157</name>
+        <dataType>Currency</dataType>
+        <expression>((0.0001*{!$Record.BPS__c}) * {!$Record.Loan_Amount_1st__c} ) + {!$Record.Processing_Fee__c}</expression>
+        <scale>18</scale>
+    </formulas>
+    <formulas>
+        <name>formula_4_myRule_14_A1_2853342438</name>
+        <dataType>String</dataType>
+        <expression>TEXT(PRIORVALUE({!$Record.Status__c} ))</expression>
+    </formulas>
+    <formulas>
+        <name>formula_5_myRule_17_A1_2932477422</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()+3</expression>
+    </formulas>
+    <formulas>
+        <name>formula_6_myRule_20_A3_9261761004</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()</expression>
+    </formulas>
+    <formulas>
+        <name>formula_7_myRule_20_A2_8969028373</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()</expression>
+    </formulas>
+    <formulas>
+        <name>formula_8_myRule_20_A1_4309008742</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()</expression>
+    </formulas>
+    <formulas>
+        <name>formula_9_myRule_27_A1_3060335789</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()</expression>
+    </formulas>
+    <formulas>
+        <name>formula_TRUE_myRule_1</name>
+        <dataType>Boolean</dataType>
+        <expression>ISNEW() &amp;&amp; {!$Record.Owner:User.ProfileId} != &apos;00eAJ000000LsqrYAC&apos;</expression>
+    </formulas>
+    <formulas>
+        <name>formula_TRUE_myRule_14</name>
+        <dataType>Boolean</dataType>
+        <expression>CASE( {!$Record.Status__c}, 
+&quot;Processing&quot;,1, 
+&quot;Submitted&quot;,2, 
+&quot;Conditionally Approved&quot;,3, 
+&quot;Resubmitted&quot;,3,
+&quot;Approved&quot;,4,10) 
+&lt; 
+CASE(PRIORVALUE( {!$Record.Status__c} ) , 
+&quot;Processing&quot;,1, 
+&quot;Submitted&quot;,2, 
+&quot;Conditionally Approved&quot;,3, 
+&quot;Resubmitted&quot;,3, 
+&quot;Approved&quot;,4, 0)</expression>
+    </formulas>
+    <formulas>
+        <name>formula_TRUE_myRule_30</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(ISCHANGED({!$Record.Closing_Date__c} ) , {!$Record.Gift_Opt_In__c}  = TRUE)</expression>
+    </formulas>
+    <formulas>
+        <name>formula_TRUE_myRule_4</name>
+        <dataType>Boolean</dataType>
+        <expression>ISCHANGED( {!$Record.Loan_1st_TD__c} )</expression>
+    </formulas>
+    <formulas>
+        <name>formula_TRUE_myRule_7</name>
+        <dataType>Boolean</dataType>
+        <expression>OR( ISCHANGED( {!$Record.BPS__c} ) , ISCHANGED( {!$Record.Loan_Amount_1st__c}  ) , ISCHANGED( {!$Record.Processing_Fee__c}) )</expression>
+    </formulas>
+    <label>Transaction CLA Automation_1</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>myRule_17_A1</name>
+        <label>Task for Angelina to Follow Up on Docs</label>
+        <locationX>314</locationX>
+        <locationY>2255</locationY>
+        <inputAssignments>
+            <field>ActivityDate</field>
+            <value>
+                <elementReference>formula_5_myRule_17_A1_2932477422</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <stringValue>0055x00000Brk0g</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>Normal</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Open</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Follow up on condo documents</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>myRule_27_A1</name>
+        <label>Task for Brandon to populate BPS</label>
+        <locationX>578</locationX>
+        <locationY>2771</locationY>
+        <inputAssignments>
+            <field>ActivityDate</field>
+            <value>
+                <elementReference>formula_9_myRule_27_A1_3060335789</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <stringValue>005f2000009NwSs</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>Normal</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Open</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Populate BPS field</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordUpdates>
+        <name>Copy_1_of_Processing_Fee_default</name>
+        <label>Copy 1 of Processing Fee default</label>
+        <locationX>165</locationX>
+        <locationY>431</locationY>
+        <connector>
+            <targetReference>Copy_1_of_Revenue_Calculation</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Processing_Fee__c</field>
+            <value>
+                <numberValue>1695.0</numberValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Copy_1_of_Revenue_Calculation</name>
+        <label>Copy 1 of Revenue Calculation</label>
+        <locationX>297</locationX>
+        <locationY>623</locationY>
+        <connector>
+            <targetReference>Copy_1_of_Email_alert_for_new_transaction</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Revenue__c</field>
+            <value>
+                <elementReference>formula_1_myRule_1_A2_0877234119</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>myRule_14_A1</name>
+        <label>Transaction status reverted</label>
+        <locationX>50</locationX>
+        <locationY>2147</locationY>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <elementReference>formula_4_myRule_14_A1_2853342438</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>myRule_25_A1</name>
+        <label>Tasks are Completed</label>
+        <locationX>644</locationX>
+        <locationY>2363</locationY>
+        <connector>
+            <targetReference>myRule_25_A2</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Completed</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record.Tasks</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>myRule_25_A2</name>
+        <label>Update Account fields</label>
+        <locationX>644</locationX>
+        <locationY>2471</locationY>
+        <connector>
+            <targetReference>myRule_27</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Closing_Date__pc</field>
+            <value>
+                <elementReference>$Record.Closing_Date__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Stage__pc</field>
+            <value>
+                <stringValue>Closed Client</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record.Borrower_Name__r</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>myRule_30_A1</name>
+        <label>Update Marketing record</label>
+        <locationX>842</locationX>
+        <locationY>2879</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Gift Box</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Gift_3_Send_Date__c</field>
+            <value>
+                <elementReference>formula_10_myRule_30_A1_2056818474</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Gift_4_Send_Date__c</field>
+            <value>
+                <elementReference>formula_11_myRule_30_A1_8692195853</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record.Borrower_Name__r.Marketing__r</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>myRule_4_A1</name>
+        <label>Update Transaction Name</label>
+        <locationX>165</locationX>
+        <locationY>947</locationY>
+        <connector>
+            <targetReference>myRule_7</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>formula_2_myRule_4_A1_0340577658</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>myRule_7_A1</name>
+        <label>Revenue Calculation</label>
+        <locationX>165</locationX>
+        <locationY>1247</locationY>
+        <connector>
+            <targetReference>myRule_10</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Revenue__c</field>
+            <value>
+                <elementReference>formula_3_myRule_7_A1_3167604157</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>171</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Copy_1_of_Correspondent_File</targetReference>
+        </connector>
+        <filterFormula>OR(
+ISNEW(),
+ISCHANGED({!$Record.Channel__c})
+)</filterFormula>
+        <object>Transaction__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

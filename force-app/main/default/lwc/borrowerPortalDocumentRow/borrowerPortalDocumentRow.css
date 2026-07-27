@@ -1,0 +1,130 @@
+/**
+ * Created by zeyad on 7/14/2024.
+ */
+
+:host {
+    display: block;
+    width: 100%;
+}
+
+.imbus-table-row{
+    display: grid;
+    border-collapse: collapse;
+    min-width: 100%;
+    grid-template-columns: minmax(0, .5fr) minmax(0, .25fr) minmax(0, 1fr) minmax(0, .75fr);
+}
+.imbus-table-row>div{
+    align-items: flex-start;
+    display: flex;
+}
+.imbus-status-text{
+    display: flex;
+    padding: 2px 15px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    text-align: center;
+    width:fit-content;
+    /* Text xs/Medium */
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 18px; /* 150% */
+}
+.imbus-status-text[data-status="Approved"]{
+    background: #ECFDF3;
+    color: var(--Success-700, #027A48);
+}
+.imbus-status-text[data-status="Review"]{
+    background: #e8e1f6;
+    color: var(--Success-700, #6b45ae);
+}
+.imbus-status-text[data-status="Requested"]{
+    background: #f6e8e1;
+    color: var(--Success-700, #bd4f22);
+}
+.imbus-table-row:nth-child(even){
+    background:#F9FAFB;
+}
+
+.condition-name,
+.condition-description {
+    color: #344054;
+    font-size: 13px;
+    line-height: 18px;
+    overflow-wrap: anywhere;
+}
+
+.mobile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.comments-button,
+.upload-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    padding: 6px 8px;
+    border: 1px solid #D0D5DD;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: #344054;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    cursor: pointer;
+}
+
+.comments-button_active,
+.desktop-comments-button_active {
+    border-color: #1a73e8;
+    color: #1a73e8;
+    font-weight: 700;
+}
+
+.desktop-comments-button {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: #344054;
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    gap: 6px;
+    padding: 0;
+    text-align: left;
+}
+
+.comment-new-badge {
+    align-items: center;
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 11px;
+    font-weight: 700;
+    justify-content: center;
+    line-height: 1;
+    min-height: 18px;
+    min-width: 18px;
+    padding: 3px 6px;
+}
+
+.comment-new-badge {
+    background: #1a73e8;
+    color: #ffffff;
+}
+
+.comment-icon-button_active {
+    --slds-c-icon-color-foreground-default: #1a73e8;
+}
+
+@media only screen and (max-width: 768px) {
+    .imbus-table-row{
+        grid-template-columns: minmax(72px, .85fr) minmax(112px, 1.25fr) minmax(118px, .9fr);
+        column-gap: 8px;
+    }
+}

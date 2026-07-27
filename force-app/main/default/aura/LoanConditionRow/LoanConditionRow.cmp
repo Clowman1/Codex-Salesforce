@@ -1,0 +1,45 @@
+<aura:component description="LoanConditionRow">
+    <aura:attribute name="condition" access="global" required="true" type="Object"/>
+    <aura:attribute name="canBeIncludedInEmail" access="global" type="Boolean" default="false"/>
+    <aura:attribute name="shouldShowEmailTemplateOptions" type="Boolean"/>
+    <aura:registerEvent name="conditionUpdated" type="c:ConditionUpdatedEvent"/>
+    <tr class="slds-hint-parent">
+        <td><a target="_blank" class="slds-text-link" onclick="{!c.navigate}" href="">{!v.condition.data.Assigned_Role__c}</a></td>
+        <aura:if isTrue="{!notequals(v.shouldShowEmailTemplateOptions,false)}">
+            <td title="{!v.condition.data.Assigned_To__r.Name}">
+                <div class="slds-text-title slds-text-color_default slds-truncate">{!v.condition.data.Assigned_To__r.Name}</div>
+            </td>
+            <td title="{!v.condition.data.Description__c}">
+                <div class="slds-text-title slds-text-color_default slds-truncate">{!v.condition.data.Description__c}</div>
+            </td>
+            <td title="{!v.condition.data.Notes__c}">
+                <div class="slds-text-title slds-text-color_default slds-truncate">{!v.condition.data.Notes__c}</div>
+            </td> 
+        </aura:if>
+        <td>
+            <div style="font-size: 0.8125rem;">
+                <p><lightning:formattedDateTime value="{!v.condition.data.RequestedDate__c}"/></p>  
+            </div>
+        </td>
+        <td>
+            <div style="font-size: 0.8125rem;">
+                <p><lightning:formattedDateTime value="{!v.condition.data.CompletedDate__c}"/></p>
+            </div>
+        </td>
+        <td>
+            <lightning:recordEditForm onsuccess="{!c.reInit}" aura:id="recordLoader" objectApiName="TransactionCondition__c" recordId="{!v.condition.data.Id}" onerror="{!c.throwError}">
+                <lightning:inputField fieldName="Status__c" onchange="{!c.submit}" />
+            </lightning:recordEditForm>
+        </td>
+        <td>
+            <lightning:recordEditForm onsuccess="{!c.reInit}" aura:id="recordLoader3" objectApiName="TransactionCondition__c" recordId="{!v.condition.data.Id}" onerror="{!c.throwError}">
+                <lightning:inputField fieldName="ETA__c" onchange="{!c.submit3}" />
+            </lightning:recordEditForm>
+        </td>
+        <td>
+            <lightning:recordEditForm aura:id="recordLoader2" objectApiName="TransactionCondition__c" recordId="{!v.condition.data.Id}" onerror="{!c.throwError}">
+                <lightning:inputField class="slds-listbox-toggle" disabled="{!not(v.canBeIncludedInEmail)}" fieldName="IncludeInEmail__c" onchange="{!c.submit2}" />
+            </lightning:recordEditForm>
+        </td>
+    </tr>
+</aura:component>

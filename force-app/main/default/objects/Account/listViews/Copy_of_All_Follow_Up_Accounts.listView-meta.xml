@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Copy_of_All_Follow_Up_Accounts</fullName>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>ACCOUNT.PHONE1</columns>
+    <columns>ACCOUNT.LAST_ACTIVITY</columns>
+    <columns>Most_Recent_Closing_Date__c</columns>
+    <columns>Most_Recent_Rate__c</columns>
+    <columns>PC_BIRTHDATE</columns>
+    <columns>of_Closed_Transactions__c</columns>
+    <columns>Most_Recent_Loan_Purpose__c</columns>
+    <columns>Most_Recent_Loan_Program_1st__c</columns>
+    <columns>Most_Recent_Loan_Officer__c</columns>
+    <columns>Most_Recent_Loan_Type_1st_TD__c</columns>
+    <columns>Most_Recent_Loan_Amount__c</columns>
+    <columns>Most_Recent_LTV__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Follow_Up_LO__c</field>
+        <operation>contains</operation>
+        <value>Joey</value>
+    </filters>
+    <filters>
+        <field>Most_Recent_Loan_Officer__c</field>
+        <operation>notContain</operation>
+        <value>carey,Ellis,Gonzalez</value>
+    </filters>
+    <label>Ben&apos;s Follow Up Account View</label>
+    <sharedTo>
+        <group>Ben_s_Group_For_Sharing</group>
+    </sharedTo>
+</ListView>

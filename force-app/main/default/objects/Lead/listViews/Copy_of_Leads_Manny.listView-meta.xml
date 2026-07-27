@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Copy_of_Leads_Manny</fullName>
+    <columns>CORE.USERS.FIRST_NAME</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <columns>FULL_NAME</columns>
+    <columns>LEAD.LAST_ACTIVITY</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>Biz_Dev__c</columns>
+    <columns>Loan_Amount__c</columns>
+    <columns>Property_State__c</columns>
+    <columns>Realtor_Lead_Source__c</columns>
+    <columns>Appointment_Date_Time__c</columns>
+    <columns>Realtor_Buying_Agent__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>Last_Call_Attempt_RingCentral__c</columns>
+    <columns>Last_SMS_Attempt_RingCentral__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notContain</operation>
+        <value>Nurturing,Nurturing - Meeting Complete</value>
+    </filters>
+    <filters>
+        <field>Owner__c</field>
+        <operation>contains</operation>
+        <value>Anagnostou</value>
+    </filters>
+    <filters>
+        <field>Biz_Dev__c</field>
+        <operation>notEqual</operation>
+        <value>Biz Dev - Anagnostou</value>
+    </filters>
+    <label>Manny&apos;s Active House Leads</label>
+    <sharedTo>
+        <group>Brandon_Brotsky</group>
+        <group>Chris_Lowman</group>
+    </sharedTo>
+</ListView>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contacted_Call_Back_must_have_Appt_Date</fullName>
+    <active>false</active>
+    <description>This rule requires a lead in Contacted/Call Back status to also have an appointment date and time.</description>
+    <errorConditionFormula>AND( ISPICKVAL( Status , &quot;Contacted/Call Back&quot;) , ISNULL(  Appointment_Date_Time__c  ) )</errorConditionFormula>
+    <errorMessage>The Appointment Date Time field cannot be blank.  Please enter the appointment date and time in this field, and a calendar event will be created for you.</errorMessage>
+</ValidationRule>

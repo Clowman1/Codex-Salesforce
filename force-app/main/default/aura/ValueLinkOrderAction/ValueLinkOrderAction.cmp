@@ -1,0 +1,132 @@
+<aura:component controller="ValueLinkController"
+                implements="force:lightningQuickActionWithoutHeader,force:hasRecordId,lightning:availableForFlowScreens"
+                access="global">
+    <aura:attribute name="recordId" type="String" access="global"/>
+    <aura:attribute name="transactionId" type="String"/>
+    <aura:attribute name="isLoading" type="Boolean" default="true"/>
+    <aura:attribute name="isSubmitting" type="Boolean" default="false"/>
+    <aura:attribute name="transactionName" type="String"/>
+    <aura:attribute name="processorOptions" type="List" default="[]"/>
+    <aura:attribute name="processorUserId1" type="String"/>
+    <aura:attribute name="processorUserId2" type="String"/>
+    <aura:attribute name="processorUserId3" type="String"/>
+    <aura:attribute name="loanType" type="String"/>
+    <aura:attribute name="fhaCaseNumber" type="String"/>
+    <aura:attribute name="appraisalType" type="String"/>
+    <aura:attribute name="appraisalTypeOptions" type="List" default="[]"/>
+    <aura:attribute name="generalComment" type="String"/>
+    <aura:attribute name="uploadedFiles" type="List" default="[]"/>
+    <aura:attribute name="errorMessage" type="String"/>
+    <aura:attribute name="successMessage" type="String"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.transactionName}" action="{!c.handleTransactionNameChange}"/>
+
+    <section class="vl-shell">
+        <div class="vl-header">
+            <p class="vl-eyebrow">ValueLink Appraisal</p>
+            <h2>Order Appraisal</h2>
+            <p class="vl-subtitle">{!v.transactionName}</p>
+        </div>
+
+        <aura:if isTrue="{!v.isLoading}">
+            <div class="vl-spinner">
+                <lightning:spinner alternativeText="Loading appraisal order form" size="medium"/>
+            </div>
+        </aura:if>
+
+        <aura:if isTrue="{!not(v.isLoading)}">
+            <aura:if isTrue="{!not(empty(v.errorMessage))}">
+                <div class="vl-alert vl-alert-error">{!v.errorMessage}</div>
+            </aura:if>
+            <aura:if isTrue="{!not(empty(v.successMessage))}">
+                <div class="vl-alert vl-alert-success">{!v.successMessage}</div>
+            </aura:if>
+
+            <div class="vl-section">
+                <div class="vl-section-heading">
+                    <h3>ValueLink Contacts</h3>
+                    <p>Add up to three processor contacts for the ValueLink order.</p>
+                </div>
+                <div class="vl-grid">
+                    <lightning:select aura:id="processor1"
+                                      label="Processor Contact 1"
+                                      value="{!v.processorUserId1}"
+                                      required="true">
+                        <option value="">Select a processor</option>
+                        <aura:iteration items="{!v.processorOptions}" var="option">
+                            <option value="{!option.value}">{!option.label}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                    <lightning:select label="Processor Contact 2"
+                                      value="{!v.processorUserId2}">
+                        <option value="">No additional processor</option>
+                        <aura:iteration items="{!v.processorOptions}" var="option">
+                            <option value="{!option.value}">{!option.label}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                    <lightning:select label="Processor Contact 3"
+                                      value="{!v.processorUserId3}">
+                        <option value="">No additional processor</option>
+                        <aura:iteration items="{!v.processorOptions}" var="option">
+                            <option value="{!option.value}">{!option.label}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                </div>
+            </div>
+
+            <div class="vl-section">
+                <div class="vl-section-heading">
+                    <h3>Order Details</h3>
+                    <p>Confirm the appraisal product and add order notes for ValueLink.</p>
+                </div>
+                <lightning:select aura:id="appraisalType"
+                                  label="Appraisal Product"
+                                  value="{!v.appraisalType}"
+                                  required="true">
+                    <option value="">Select an appraisal product</option>
+                    <aura:iteration items="{!v.appraisalTypeOptions}" var="option">
+                        <option value="{!option.value}">{!option.label}</option>
+                    </aura:iteration>
+                </lightning:select>
+                <aura:if isTrue="{!v.loanType == 'FHA'}">
+                    <lightning:input label="FHA Case Number"
+                                     value="{!v.fhaCaseNumber}"
+                                     class="vl-field-spacer"/>
+                </aura:if>
+                <lightning:textarea label="General Order Comment"
+                                    value="{!v.generalComment}"
+                                    class="vl-field-spacer"
+                                    maxlength="1000"/>
+            </div>
+
+            <div class="vl-section">
+                <div class="vl-section-heading">
+                    <h3>Contract PDF</h3>
+                    <p>Optional. Upload a purchase contract PDF when one should be attached to the ValueLink order.</p>
+                </div>
+                <lightning:fileUpload label="Contract PDF (Optional)"
+                                      name="contractPdf"
+                                      recordId="{!v.transactionId}"
+                                      multiple="true"
+                                      accept=".pdf"
+                                      onuploadfinished="{!c.handleUploadFinished}"/>
+                <aura:if isTrue="{!not(empty(v.uploadedFiles))}">
+                    <ul class="vl-file-list">
+                        <aura:iteration items="{!v.uploadedFiles}" var="file">
+                            <li>{!file.name}</li>
+                        </aura:iteration>
+                    </ul>
+                </aura:if>
+            </div>
+
+            <div class="vl-footer">
+                <lightning:button label="Cancel" onclick="{!c.closeAction}" variant="neutral"/>
+                <lightning:button label="Order Appraisal"
+                                  onclick="{!c.submitOrder}"
+                                  variant="brand"
+                                  disabled="{!v.isSubmitting}"/>
+            </div>
+        </aura:if>
+    </section>
+</aura:component>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Copy_of_Leads_All</fullName>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>LEAD.LAST_ACTIVITY</columns>
+    <columns>CORE.USERS.FIRST_NAME</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>FULL_NAME</columns>
+    <columns>LEAD.PHONE</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>Loan_Amount__c</columns>
+    <columns>Appointment_Date_Time__c</columns>
+    <columns>Realtor_Buying_Agent__c</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notContain</operation>
+        <value>Nurturing,Nurture-Pre-Approval,Submitted For Disclosures,Nurturing - Meeting Complete,Nurture - Preapproval,Pre-Approval,30 Day + Follow Up</value>
+    </filters>
+    <filters>
+        <field>LEAD.CONVERTED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>LEAD.RECORDTYPE</field>
+        <operation>notEqual</operation>
+        <value>Lead.Realtor_Lead_record_type</value>
+    </filters>
+    <filters>
+        <field>Owner__c</field>
+        <operation>equals</operation>
+        <value>Daniel Rubio</value>
+    </filters>
+    <label>Danny&apos;s Active Leads</label>
+    <sharedTo>
+        <role>Loan_Officer</role>
+    </sharedTo>
+</ListView>

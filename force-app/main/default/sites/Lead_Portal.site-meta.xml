@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomSite xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowGuestPaymentsApi>false</allowGuestPaymentsApi>
+    <allowHomePage>false</allowHomePage>
+    <allowStandardAnswersPages>false</allowStandardAnswersPages>
+    <allowStandardIdeasPages>false</allowStandardIdeasPages>
+    <allowStandardLookups>false</allowStandardLookups>
+    <allowStandardPortalPages>true</allowStandardPortalPages>
+    <allowStandardSearch>false</allowStandardSearch>
+    <authorizationRequiredPage>CommunitiesLogin</authorizationRequiredPage>
+    <bandwidthExceededPage>BandwidthExceeded</bandwidthExceededPage>
+    <browserXssProtection>true</browserXssProtection>
+    <cachePublicVisualforcePagesInProxyServers>true</cachePublicVisualforcePagesInProxyServers>
+    <clickjackProtectionLevel>SameOriginOnly</clickjackProtectionLevel>
+    <contentSniffingProtection>true</contentSniffingProtection>
+    <enableAuraRequests>true</enableAuraRequests>
+    <fileNotFoundPage>FileNotFound</fileNotFoundPage>
+    <genericErrorPage>Exception</genericErrorPage>
+    <inMaintenancePage>InMaintenance</inMaintenancePage>
+    <indexPage>CommunitiesLanding</indexPage>
+    <masterLabel>Lead Portal</masterLabel>
+    <redirectToCustomDomain>false</redirectToCustomDomain>
+    <referrerPolicyOriginWhenCrossOrigin>true</referrerPolicyOriginWhenCrossOrigin>
+    <selfRegPage>CommunitiesSelfReg</selfRegPage>
+    <serverIsDown>SNA_l5UJJ_sf_default_cdn_Lead_Portal1</serverIsDown>
+    <siteAdmin>reach@nimbuscloudsolutions.com</siteAdmin>
+    <siteGuestRecordDefaultOwner>reach@nimbuscloudsolutions.com</siteGuestRecordDefaultOwner>
+    <siteRedirectMappings>
+        <action>Temporary</action>
+        <isActive>true</isActive>
+        <isDynamic>false</isDynamic>
+        <source>/s/?id=dd3a2d58db45cbb1a586bb9c1d2328329a20ecfab999ecc9edc1e9f1a82301cb6c8739cb82a8d894d1d5c354b1a3ba99</source>
+        <target>/documents/s?id=78cf5a5a43085d385bf7f2e3b1ac1cb84e6255e194f4edda301796d8a14c8088a6ee27cabd0b22e9e98597a41f43191b</target>
+    </siteRedirectMappings>
+    <siteType>ChatterNetwork</siteType>
+    <subdomain>reachhomeloanscommunity</subdomain>
+    <urlPathPrefix>leaddocuments</urlPathPrefix>
+</CustomSite>

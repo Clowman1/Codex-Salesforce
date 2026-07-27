@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>56.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Is_WhoId_a_Lead</name>
+        <label>Is WhoId a Lead</label>
+        <locationX>380</locationX>
+        <locationY>287</locationY>
+        <defaultConnectorLabel>WhoId Is Contact</defaultConnectorLabel>
+        <rules>
+            <name>WhoId_is_Lead</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.WhoId</leftValueReference>
+                <operator>StartsWith</operator>
+                <rightValue>
+                    <stringValue>00Q</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Lead</targetReference>
+            </connector>
+            <label>WhoId is Lead</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Transaction_Type</name>
+        <label>Transaction Type?</label>
+        <locationX>182</locationX>
+        <locationY>503</locationY>
+        <defaultConnectorLabel>Refinance</defaultConnectorLabel>
+        <rules>
+            <name>Buyer_s_Agent_is_Filled_In</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Is_Consumer_Lead_Type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Lead.Realtor_Buying_Agent__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Validation_Error</targetReference>
+            </connector>
+            <label>Buyer&apos;s Agent is Filled In?</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>Is_Consumer_Lead_Type</name>
+        <dataType>Boolean</dataType>
+        <expression>NOT(CONTAINS(LOWER(BLANKVALUE({!Get_Lead_Record_Type.DeveloperName}, &quot;&quot;)), &quot;realtor&quot;))</expression>
+    </formulas>
+    <interviewLabel>Custom Task Validation Rules {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Custom Task Validation Rules</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Lead</name>
+        <label>Get Lead</label>
+        <locationX>182</locationX>
+        <locationY>395</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Lead_Record_Type</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.WhoId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Lead_Record_Type</name>
+        <label>Get Lead Record Type</label>
+        <locationX>182</locationX>
+        <locationY>449</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Transaction_Type</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Lead.RecordTypeId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>RecordType</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Validation_Error</name>
+        <label>Update Validation Error</label>
+        <locationX>50</locationX>
+        <locationY>611</locationY>
+        <inputAssignments>
+            <field>Custom_Validation_Exception__c</field>
+            <value>
+                <stringValue>External_Message_Validation</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>254</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Is_WhoId_a_Lead</targetReference>
+        </connector>
+        <filterFormula>AND(
+ISBLANK({!$Record.External_Message_to_Buyer_s_Agent__c} ),
+OR(
+{!$Record.Subject} = &quot;Call - No Contact&quot;,
+{!$Record.Subject} = &quot;Call - Contacted/Call Back&quot;,
+{!$Record.Subject} = &quot;Call - Working&quot;,
+{!$Record.Subject} = &quot;Call - Application&quot;,
+{!$Record.Subject} = &quot;Call - Docs Requested&quot;,
+{!$Record.Subject} = &quot;Call - Docs Received&quot;,
+{!$Record.Subject} = &quot;Call - Nurturing&quot;,
+{!$Record.Subject} = &quot;Document follow up&quot;
+)
+)</filterFormula>
+        <object>Task</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+    <triggerOrder>300</triggerOrder>
+</Flow>

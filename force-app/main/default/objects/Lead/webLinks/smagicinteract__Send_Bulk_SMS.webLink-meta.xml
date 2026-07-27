@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>smagicinteract__Send_Bulk_SMS</fullName>
+    <availability>online</availability>
+    <description>Send bulk sms to number of leads</description>
+    <displayType>massActionButton</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>Send Bulk SMS</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <requireRowSelection>true</requireRowSelection>
+    <url>{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/14.0/apex.js&quot;)}
+
+function loadJqueryDynamically(){
+
+var newscript = document.createElement(&apos;script&apos;);
+     newscript.type = &apos;text/javascript&apos;;
+     newscript.async = false;
+     newscript.src = &apos;{!URLFOR(&apos;/resource/smagicinteract__smJQuery/js/jquery-1.10.2.js&apos;)}&apos;;
+  (document.getElementsByTagName(&apos;head&apos;)[0]||document.getElementsByTagName(&apos;body&apos;)[0]).appendChild(newscript);
+ 
+var newscript1 = document.createElement(&apos;script&apos;);
+     newscript1.type = &apos;text/javascript&apos;;
+     newscript1.async = false;
+     newscript1.src = &apos;{!URLFOR(&apos;/resource/smagicinteract__smJQuery/js/jquery-ui-1.10.4.custom.min.js&apos;)} &apos;;
+  (document.getElementsByTagName(&apos;head&apos;)[0]||document.getElementsByTagName(&apos;body&apos;)[0]).appendChild(newscript1);
+ 
+var newscript2 = document.createElement(&apos;script&apos;);
+     newscript2.type = &apos;text/javascript&apos;;
+     newscript2.async = false;
+     newscript2.src = &apos;{!URLFOR(&apos;/resource/smagicinteract__sendSMSJS&apos;)}&apos;;
+  (document.getElementsByTagName(&apos;head&apos;)[0]||document.getElementsByTagName(&apos;body&apos;)[0]).appendChild(newscript2);
+     	newscript2.onload = showPage;
+ 
+}
+
+
+loadJqueryDynamically();
+
+function showPage() {
+  
+var records = {!GETRECORDIDS($ObjectType.Lead)};
+if (records[0] == null)
+{
+alert(&quot;Please select at least one lead&quot;)
+}
+else{
+var packagePrefix = &quot;smagicinteract__&quot;;
+var recordIds = &quot;&quot;;
+var userId = &apos;{!$User.Id}&apos;;
+var elementIdVar = &apos;&apos;;
+var dialogTitle = &apos;&apos;;
+var queryString = &apos;&apos;;
+var showUserDropDown = false;
+var recordType = &quot;Lead&quot;; // Enter the API name of an object
+var nameField = &apos;Name&apos;; // Enter the API Name of a Name Field
+var mobileField = &apos;MobilePhone&apos;;           // Enter the API Name of a Mobile Field. For multiple mobile fields, add API Names of Mobile Fields comma separated (Max 3 allowed)  
+var optOutField = &apos;smagicinteract__SMSOptOut__c&apos;; // Enter the API Name of Optout field
+var unrelatedObjectAPIName = &apos;&apos;;   // Enter API name of unrelated Object  
+var optOutDefaultValue = &apos;no&apos;;            // Enter the default OptOut Value 
+var smsType = &apos;&apos;;                          // Enter type as &apos;popup&apos; if you want to send message from popup
+for (var n in records) {
+if(n == &apos;remove&apos; || n == &apos;indexOf&apos;) continue;
+recordIds = recordIds + records[n];
+
+if (n != records.length-1) {
+recordIds = recordIds + &quot;,&quot;;
+}
+}
+var cssUrl = &apos;{!URLFOR(&apos;/resource/smagicinteract__smJQuery/css/sm-theme/jquery-ui-1.10.4.custom.min.css&apos;)}&apos;;
+
+if({!$Permission.smagicinteract__AllowToSendBulkMessage}) { 
+sendSMS(recordType, recordIds, userId, nameField, mobileField, optOutField, optOutDefaultValue, smsType, elementIdVar, packagePrefix, showUserDropDown, dialogTitle, cssUrl, unrelatedObjectAPIName);
+}
+else { 
+alert(&apos;You cannot Send SMS. Please contact system admin&apos;); 
+} 
+
+}
+
+}</url>
+</WebLink>

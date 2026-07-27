@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loan_Officers_Cannot_Change_Owner</fullName>
+    <active>true</active>
+    <description>Prevents Loan Officer profiles from changing Lead ownership.</description>
+    <errorConditionFormula>ISCHANGED(OwnerId) &amp;&amp;
+CONTAINS($Profile.Name, &quot;Loan Officer&quot;) &amp;&amp;
+NOT($Permission.Lead_Owner_Reassignment)</errorConditionFormula>
+    <errorMessage>Loan Officers cannot change the owner of a Lead. Please contact an Admin if this Lead needs to be reassigned.</errorMessage>
+</ValidationRule>

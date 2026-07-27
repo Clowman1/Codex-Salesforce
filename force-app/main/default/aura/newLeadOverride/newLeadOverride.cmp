@@ -1,0 +1,13 @@
+<aura:component implements="lightning:actionOverride,flexipage:availableForAllPageTypes" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <section class="new-lead-override">
+        <header class="override-hero">
+            <p>Reach Home Loans</p>
+            <h1>Create a New Lead</h1>
+            <span>Add a Consumer Lead without the old record type selection screen.</span>
+        </header>
+        <div class="override-body">
+            <lightning:flow aura:id="leadFlow" onstatuschange="{!c.handleStatusChange}"/>
+        </div>
+    </section>
+</aura:component>

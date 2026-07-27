@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <environments>Default</environments>
+    <formulas>
+        <name>LoanTransactionAssignee</name>
+        <dataType>String</dataType>
+        <expression>IF(TEXT({!$Record.Transaction_Condition_Reference__r.Type__c}) = &apos;Loan Officer&apos;, {!$Record.Transaction__r.Loan_Officer__c}, {!$Record.Transaction__r.OwnerId})</expression>
+    </formulas>
+    <formulas>
+        <name>Status</name>
+        <dataType>String</dataType>
+        <expression>IF(OR(TEXT({!$Record.Transaction_Condition_Reference__r.Condition_Group_Key__c}) = &apos;Closing (PTF)&apos;,TEXT({!$Record.Transaction_Condition_Reference__r.Condition_Group_Key__c}) = &apos;Underwriter To Obtain And Clear&apos;), &apos;Received&apos;, &apos;Requested&apos;)</expression>
+    </formulas>
+    <interviewLabel>Update Transaction Condition Reference {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Update Transaction Condition with UWM Reference Data</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_Transaction_Condition</name>
+        <label>Update Transaction Condition</label>
+        <locationX>176</locationX>
+        <locationY>323</locationY>
+        <inputAssignments>
+            <field>Assigned_To__c</field>
+            <value>
+                <elementReference>LoanTransactionAssignee</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <elementReference>Status</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Type__c</field>
+            <value>
+                <elementReference>$Record.Transaction_Condition_Reference__r.Type__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_Transaction_Condition</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Transaction_Condition_Reference__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>TransactionCondition__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

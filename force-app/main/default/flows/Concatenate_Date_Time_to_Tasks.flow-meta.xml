@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>56.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <environments>Default</environments>
+    <formulas>
+        <name>FormatDateTime</name>
+        <dataType>String</dataType>
+        <expression>IF(OR(
+    VALUE(MID(TEXT({!$Flow.CurrentDateTime} - {!NY_Offset}), 12, 2)) = 0,
+    VALUE(MID(TEXT({!$Flow.CurrentDateTime} - {!NY_Offset}), 12, 2)) = 12
+    ),
+    &quot;12&quot;, 
+    TEXT(VALUE(MID(TEXT({!$Flow.CurrentDateTime} - {!NY_Offset}), 12, 2)) - IF(VALUE(MID( TEXT({!$Flow.CurrentDateTime} - {!NY_Offset}), 12, 2 )) &lt; 12, 0, 12)) 
+) &amp; 
+&quot;:&quot; &amp; 
+MID(TEXT({!$Flow.CurrentDateTime}), 15, 2) &amp; 
+&quot;:&quot; &amp; 
+MID(TEXT({!$Flow.CurrentDateTime}), 18, 2) &amp; 
+&quot; &quot; &amp; 
+IF(VALUE(MID(TEXT({!$Flow.CurrentDateTime} - {!NY_Offset}), 12, 2 )) &lt; 12, &quot;AM&quot;, &quot;PM&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>NY_Offset</name>
+        <dataType>Number</dataType>
+        <expression>IF(
+    AND(
+        MONTH({!$Flow.CurrentDate}) &gt;= 3,
+        MONTH({!$Flow.CurrentDate}) &lt;= 10
+    ),
+    4/24, 
+    5/24  
+)</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>Subject</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.Subject} + &quot; on &quot; + TEXT(MONTH({!$Flow.CurrentDate})) + &quot;/&quot; + TEXT(DAY({!$Flow.CurrentDate})) + &quot;/&quot; + TEXT(YEAR({!$Flow.CurrentDate})) + &quot; &quot; + {!FormatDateTime}</expression>
+    </formulas>
+    <interviewLabel>Concatenate Date/Time to Tasks {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Concatenate Date/Time to Tasks</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Concatenate_Current_Date_Time</name>
+        <label>Concatenate Current Date/Time</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <elementReference>Subject</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Concatenate_Current_Date_Time</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>InteractionType__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <object>Task</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

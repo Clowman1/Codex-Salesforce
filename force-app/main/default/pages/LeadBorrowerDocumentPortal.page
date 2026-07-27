@@ -1,0 +1,40 @@
+<apex:page showHeader="false"
+    sidebar="false"
+    standardStylesheets="false"
+    applyHtmlTag="false"
+    applyBodyTag="false"
+    cache="false">
+    <html>
+        <head>
+            <title>Borrower Document Portal</title>
+            <apex:includeLightning />
+            <style>
+                html,
+                body,
+                #leadBorrowerPortal {
+                    min-height: 100%;
+                    margin: 0;
+                }
+            </style>
+        </head>
+        <body>
+            <div id="leadBorrowerPortal"></div>
+            <script>
+                (function () {
+                    var portalHash = "{!JSENCODE($CurrentPage.parameters.id)}";
+                    $Lightning.use("c:LeadBorrowerPortalOutApp", function () {
+                        $Lightning.createComponent(
+                            "c:leadBorrowerPortalDocuments",
+                            {
+                                portalHash: portalHash,
+                                tableHeaderColor: "#172847",
+                                tableHeaderTextColor: "#ffffff"
+                            },
+                            "leadBorrowerPortal"
+                        );
+                    });
+                }());
+            </script>
+        </body>
+    </html>
+</apex:page>

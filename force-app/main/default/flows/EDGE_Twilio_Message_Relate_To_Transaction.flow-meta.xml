@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Relate_Twilio_Message</name>
+        <label>Relate Twilio Message</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <actionName>TwilioMessageRelateRecordsInvocable</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>twilioMessageId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TwilioMessageRelateRecordsInvocable</nameSegment>
+    </actionCalls>
+    <apiVersion>55.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>EDGE: Stamps TwilioSF__SF_Parent_Record_Id__c / Account / Contact from converted Lead or phone match so SMS tab works on Transaction. Owner: platform team.</description>
+    <environments>Default</environments>
+    <interviewLabel>EDGE Twilio Message Relate To Transaction {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>EDGE: Twilio Message Relate To Transaction</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Relate_Twilio_Message</targetReference>
+        </connector>
+        <filterFormula>AND(
+OR(
+ISNEW(),
+ISCHANGED({!$Record.TwilioSF__Lead__c}),
+ISCHANGED({!$Record.TwilioSF__Account__c}),
+ISCHANGED({!$Record.TwilioSF__Contact__c}),
+ISCHANGED({!$Record.TwilioSF__From_Number_Unformatted__c}),
+ISCHANGED({!$Record.TwilioSF__To_Number_Unformatted__c}),
+ISCHANGED({!$Record.TwilioSF__SF_Parent_Record_Id__c}),
+ISCHANGED({!$Record.TwilioSF__Direction__c})
+),
+OR(
+ISBLANK({!$Record.TwilioSF__SF_Parent_Record_Id__c}),
+AND(
+NOT(ISBLANK({!$Record.TwilioSF__SF_Parent_Record_Id__c})),
+LEFT({!$Record.TwilioSF__SF_Parent_Record_Id__c}, 3) = &quot;00Q&quot;
+)
+)
+)</filterFormula>
+        <object>TwilioSF__Message__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <triggerOrder>1200</triggerOrder>
+</Flow>

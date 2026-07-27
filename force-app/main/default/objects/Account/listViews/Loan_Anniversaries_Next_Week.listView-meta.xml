@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loan_Anniversaries_Next_Week</fullName>
+    <columns>Closing_Date__pc</columns>
+    <columns>Loan_Officer__pc</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>ACCOUNT.PHONE1</columns>
+    <columns>PC_PHONE3</columns>
+    <columns>PC_PHONE5</columns>
+    <columns>PC_EMAIL</columns>
+    <columns>CORE.USERS.LAST_NAME</columns>
+    <columns>Loan_Anniversary_Date__pc</columns>
+    <columns>Stage__pc</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Loan_Anniversary_Date__pc</field>
+        <operation>equals</operation>
+        <value>NEXT_WEEK</value>
+    </filters>
+    <filters>
+        <field>Stage__pc</field>
+        <operation>equals</operation>
+        <value>Closed Client</value>
+    </filters>
+    <label>Loan Anniversaries Next Week</label>
+    <sharedTo>
+        <group>Opener</group>
+    </sharedTo>
+</ListView>

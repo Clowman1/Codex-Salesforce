@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lead_already_claimed</fullName>
+    <active>true</active>
+    <description>This rule will prohibit a user from changing a record owner when the lead record is already claimed (owner is not Adam) and the Lead Source is &quot;Facebook - Landing Refi&quot;.</description>
+    <errorConditionFormula>AND( ISCHANGED( OwnerId ) , NOT($Permission.Lead_Owner_Reassignment), PRIORVALUE( OwnerId ) &lt;&gt; &quot;005f2000009Buua&quot; , ISPICKVAL( LeadSource , &quot;Facebook - Landing Refi&quot;),  $User.UserRoleId &lt;&gt;&quot;00E5x000002OGkS&quot;)</errorConditionFormula>
+    <errorMessage>This record has already been claimed. You cannot change the record owner.</errorMessage>
+</ValidationRule>

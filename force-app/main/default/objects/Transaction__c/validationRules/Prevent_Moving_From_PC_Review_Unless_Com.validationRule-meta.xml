@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prevent_Moving_From_PC_Review_Unless_Com</fullName>
+    <active>false</active>
+    <errorConditionFormula>AND(
+   Skip_Post_Closed_Validation__c = FALSE,
+   ISCHANGED(Status__c),
+   ISPICKVAL(Status__c, &quot;Post-Closed&quot;),
+      OR(
+         AND(ISBLANK(Update_Data_From_UWM__c), Lender_lookup__c = &quot;0015x00002GLWu9AAH&quot;),
+         AND(ISBLANK(Update_all_Loan_Data_from_Investor_LOS__c), Transaction_is_UWM_File__c = &quot;No&quot;),
+         AND(ISBLANK(Add_Client_to_Home_Bot__c), Show_HomeBot_Checklist__c = &quot;Yes&quot;),
+         AND(ISBLANK(Send_Client_Review_Request_Call_Text__c)),
+         AND(ISBLANK(Move_OneDrive_File_into_Closed_Loans__c))
+      )
+)</errorConditionFormula>
+    <errorMessage>Please complete Post-Closing checklist before moving to Post-Closed</errorMessage>
+</ValidationRule>

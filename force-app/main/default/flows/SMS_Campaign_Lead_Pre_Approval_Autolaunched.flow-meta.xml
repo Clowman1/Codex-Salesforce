@@ -1,0 +1,1011 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_SMS</name>
+        <label>Send SMS</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>RingCentralSMSService</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Check_if_Sent_and_if_there_is_a_next_one</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Error_sending_SMS</targetReference>
+        </faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>scheduledMessageIds</name>
+            <value>
+                <elementReference>Get_Scheduled_Message.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>RingCentralSMSService</nameSegment>
+        <offset>0</offset>
+        <outputParameters>
+            <assignToReference>IsSent</assignToReference>
+            <name>output</name>
+        </outputParameters>
+    </actionCalls>
+    <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Dummy_Assignment</name>
+        <label>Dummy Assignment</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>DummyVar</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Just In Case</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Check_Email_Date</name>
+        <label>Check Email Date</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Postponed_Email_Activity_on_Lead_or_simillar_Contact</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>More_Than_7_Days_Ago</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Lead_Get_Email_Message_Relation.CreatedDate</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <elementReference>X7DaysAgo</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_SMS</targetReference>
+            </connector>
+            <label>More Than 7 Days Ago</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_If_Contact_Found</name>
+        <label>Check If Contact Found</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Lead_Get_Email_Message_Relation</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Contact_Found</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Contact</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Contact_Get_Email_Message_Relation</targetReference>
+            </connector>
+            <label>Contact Found</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_If_Email_Relation_Found_On_Contact</name>
+        <label>Check If Email Relation Found On Contact</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Lead_Get_Email_Message_Relation</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Found_Don_t_Send</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Contact_Get_Email_Message_Relation</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <isGoTo>true</isGoTo>
+                <targetReference>Postponed_Email_Activity_on_Lead_or_simillar_Contact</targetReference>
+            </connector>
+            <label>Found - Don&apos;t Send</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_If_Lead_Still_In_Pre_Approval_Status</name>
+        <label>Check If Lead Still In Pre-Approval Status</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Blocked_and_Excluded_No_Longer_In_Pre_Approved</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Longer</defaultConnectorLabel>
+        <rules>
+            <name>Opted_Out_From_SMS_Automation</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Lead.Opt_Out_from_SMS_Automation__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Blocked_and_Excluded_Lead_Marked_as_Opt_Out</targetReference>
+            </connector>
+            <label>Opted-Out From SMS Automation</label>
+        </rules>
+        <rules>
+            <name>Yes_In_Pre_Approval</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Lead.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Pre-Approval</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_Status_and_Last_Activity</targetReference>
+            </connector>
+            <label>Yes, In Pre-Approval</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_If_Recent_Sch_Message_Exists</name>
+        <label>Check If Recent Sch Message Exists</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Check_If_Lead_Still_In_Pre_Approval_Status</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Recent_Sch_Message_Exists_Postpone</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Recent_Scheduled_Message</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Postponed_Recent_Scheduled_Message</targetReference>
+            </connector>
+            <label>Recent Sch Message Exists - Postpone</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_if_Sent_and_if_there_is_a_next_one</name>
+        <label>Check if Sent and if there is a next one</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes_Schedule_The_Next_One</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>NextSMSTemplate</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>IsSent</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Message</targetReference>
+            </connector>
+            <label>Yes, Schedule The Next One</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_If_Today_Is_Holiday</name>
+        <label>Check If Today Is Holiday</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Get_Scheduled_Message</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not a Holiday</defaultConnectorLabel>
+        <rules>
+            <name>Today_Is_Holiday_Quit</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Holiday_Today</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Postponed_Holiday_Today</targetReference>
+            </connector>
+            <label>Today Is Holiday - Quit</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Status_and_Last_Activity</name>
+        <label>Check Status and Last Activity</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Postponed_Ring_Central_Activity</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Requirement_Satisfied</name>
+            <conditionLogic>1 AND (2 OR 3) AND (4 OR 5)</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Lead.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Pre-Approval</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Lead.Last_Call_Attempt_RingCentral__c</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Lead.Last_Call_Attempt_RingCentral__c</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <elementReference>X7DaysAgo</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Lead.Last_SMS_Attempt_RingCentral__c</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Lead.Last_SMS_Attempt_RingCentral__c</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <elementReference>X7DaysAgo</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Contact</targetReference>
+            </connector>
+            <label>Status = Pre-Approval and No Activity</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>HolidayInfoMessage</name>
+        <dataType>String</dataType>
+        <expression>&apos;Postponed. Today is a holiday: &apos; &amp; {!Get_Holiday_Today.Name}</expression>
+    </formulas>
+    <formulas>
+        <name>In7Days</name>
+        <dataType>DateTime</dataType>
+        <expression>NOW() + 7</expression>
+    </formulas>
+    <formulas>
+        <name>NextDay</name>
+        <dataType>Date</dataType>
+        <expression>TODAY() + 1</expression>
+    </formulas>
+    <formulas>
+        <name>NextSendDateTimeAfterEmailActivity</name>
+        <dataType>DateTime</dataType>
+        <expression>IF(
+    AND(
+        ISBLANK({!Lead_Get_Email_Message_Relation.Id}),
+        ISBLANK({!Contact_Get_Email_Message_Relation.Id})
+    ),
+    {!In7Days},
+    IF(
+        ISBLANK({!Contact_Get_Email_Message_Relation.Id}),
+        {!Lead_Get_Email_Message_Relation.CreatedDate} + 7,
+        IF(
+            ISBLANK({!Lead_Get_Email_Message_Relation.Id}),
+            {!Contact_Get_Email_Message_Relation.CreatedDate} + 7,
+            IF(
+                {!Contact_Get_Email_Message_Relation.CreatedDate} &gt; {!Lead_Get_Email_Message_Relation.CreatedDate},
+                {!Contact_Get_Email_Message_Relation.CreatedDate} + 7,
+                {!Lead_Get_Email_Message_Relation.CreatedDate} + 7
+            )
+        )
+    )
+)</expression>
+    </formulas>
+    <formulas>
+        <name>NextSendDateTimeAfterRecentScheduledMessage</name>
+        <dataType>DateTime</dataType>
+        <expression>IF(
+    OR(
+        ISBLANK({!Get_Recent_Scheduled_Message.Id}),
+        ISBLANK({!Get_Recent_Scheduled_Message.Sent_DateTime__c})
+    ),
+    {!In7Days},
+    {!Get_Recent_Scheduled_Message.Sent_DateTime__c} + 7
+)</expression>
+    </formulas>
+    <formulas>
+        <name>NextSendDateTimeAfterRingCentralActivity</name>
+        <dataType>DateTime</dataType>
+        <expression>IF(
+    AND(
+        ISBLANK({!Get_Lead.Last_Call_Attempt_RingCentral__c}),
+        ISBLANK({!Get_Lead.Last_SMS_Attempt_RingCentral__c})
+    ),
+    {!In7Days},
+    IF(
+        ISBLANK({!Get_Lead.Last_Call_Attempt_RingCentral__c}),
+        {!Get_Lead.Last_SMS_Attempt_RingCentral__c} + 7,
+        IF(
+            ISBLANK({!Get_Lead.Last_SMS_Attempt_RingCentral__c}),
+            {!Get_Lead.Last_Call_Attempt_RingCentral__c} + 7,
+            IF(
+                {!Get_Lead.Last_Call_Attempt_RingCentral__c} &gt; {!Get_Lead.Last_SMS_Attempt_RingCentral__c},
+                {!Get_Lead.Last_Call_Attempt_RingCentral__c} + 7,
+                {!Get_Lead.Last_SMS_Attempt_RingCentral__c} + 7
+            )
+        )
+    )
+)</expression>
+    </formulas>
+    <formulas>
+        <name>NextSMSTemplate</name>
+        <dataType>String</dataType>
+        <expression>CASE(
+    {!Get_Scheduled_Message.Template_ID__c},
+    &apos;00XQi000008PhA1MAK&apos;, &apos;00XQi000008PhDFMA0&apos;,
+    &apos;00XQi000008PhDFMA0&apos;, &apos;00XQi000008PhGTMA0&apos;,
+    &apos;00XQi000008PhGTMA0&apos;, &apos;00XQi000008PhI5MAK&apos;,
+    &apos;00XQi000008PhI5MAK&apos;, &apos;00XQi000008PhLJMA0&apos;,
+    &apos;00XQi000008PhLJMA0&apos;, &apos;00XQi000008PhQ9MAK&apos;,
+    &apos;00XQi000008PhQ9MAK&apos;, &apos;00XQi000008PhbRMAS&apos;,
+    &apos;00XQi000008PhbRMAS&apos;, &apos;00XQi000008PhefMAC&apos;,
+    &apos;00XQi000008PhefMAC&apos;, &apos;00XQi000008PhhtMAC&apos;,
+    &apos;00XQi000008PhhtMAC&apos;, &apos;00XQi000008Phl7MAC&apos;,
+    &apos;00XQi000008Phl7MAC&apos;, &apos;00XQi000008PhmjMAC&apos;,
+    &apos;00XQi000008PhmjMAC&apos;, &apos;00XQi000008PhoLMAS&apos;,
+    null
+)</expression>
+    </formulas>
+    <formulas>
+        <name>TaskDescription</name>
+        <dataType>String</dataType>
+        <expression>&apos;Scheduled Message Record ID: &apos; &amp; {!Get_Scheduled_Message.Id}</expression>
+    </formulas>
+    <formulas>
+        <name>TaskSubject</name>
+        <dataType>String</dataType>
+        <expression>&apos;Automated SMS sent at &apos; &amp; TEXT({!$Flow.CurrentDateTime})</expression>
+    </formulas>
+    <formulas>
+        <name>TodayDayOfMonth</name>
+        <dataType>Number</dataType>
+        <expression>DAY({!$Flow.CurrentDate})</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>TodayMonthOfYear</name>
+        <dataType>Number</dataType>
+        <expression>MONTH({!$Flow.CurrentDate})</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>TodayMonthOfYearName</name>
+        <dataType>String</dataType>
+        <expression>CASE(
+    MONTH({!$Flow.CurrentDate}),
+    1, &quot;January&quot;,
+    2, &quot;February&quot;,
+    3, &quot;March&quot;,
+    4, &quot;April&quot;,
+    5, &quot;May&quot;,
+    6, &quot;June&quot;,
+    7, &quot;July&quot;,
+    8, &quot;August&quot;,
+    9, &quot;September&quot;,
+    10, &quot;October&quot;,
+    11, &quot;November&quot;,
+    12, &quot;December&quot;,
+    &quot;&quot;
+)</expression>
+    </formulas>
+    <formulas>
+        <name>X7DaysAgo</name>
+        <dataType>DateTime</dataType>
+        <expression>NOW() - 7</expression>
+    </formulas>
+    <interviewLabel>SMS Campaign: Lead Pre-Approval {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>SMS Campaign: Lead Pre-Approval</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Message</name>
+        <label>Schedule Next Message</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Create_Task</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Campaign_Type__c</field>
+            <value>
+                <stringValue>Lead Pre-Approval Message</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Execution_Flow__c</field>
+            <value>
+                <stringValue>SMS_Campaign_Lead_Pre_Approval_Autolaunched</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Lead__c</field>
+            <value>
+                <elementReference>Get_Scheduled_Message.Lead__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Recipient_Phone_Number__c</field>
+            <value>
+                <elementReference>Get_Scheduled_Message.Recipient_Phone_Number__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Scheduled_Send_DateTime__c</field>
+            <value>
+                <elementReference>In7Days</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Sender__c</field>
+            <value>
+                <elementReference>Get_Scheduled_Message.Sender__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Template_ID__c</field>
+            <value>
+                <elementReference>NextSMSTemplate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Type__c</field>
+            <value>
+                <stringValue>RingCentral SMS</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Scheduled_Message__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Task</name>
+        <label>Create Task</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Dummy_Assignment</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>TaskDescription</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>Get_Scheduled_Message.Sender__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>Normal</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Completed</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <elementReference>TaskSubject</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhoId</field>
+            <value>
+                <elementReference>Get_Lead.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Contact_Get_Email_Message_Relation</name>
+        <label>Contact: Get Email Message Relation</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_If_Email_Relation_Found_On_Contact</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>RelationId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Contact.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>EmailMessageRelation</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Contact</name>
+        <label>Get Contact</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_If_Contact_Found</targetReference>
+        </connector>
+        <filterLogic>(1 AND 3) OR (2 AND 4) AND 5</filterLogic>
+        <filters>
+            <field>Corrected_Phone__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Lead.Corrected_Phone__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Corrected_Mobile__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Lead.Corrected_Mobile__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Phone</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>MobilePhone</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CreatedDate</field>
+            <operator>GreaterThanOrEqualTo</operator>
+            <value>
+                <elementReference>X7DaysAgo</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Contact</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Holiday_Today</name>
+        <label>Get Holiday Today</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_If_Today_Is_Holiday</targetReference>
+        </connector>
+        <filterLogic>1 OR (2 AND 3 AND (4 OR 6) AND 5)</filterLogic>
+        <filters>
+            <field>ActivityDate</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>IsRecurrence</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>RecurrenceType</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Yearly</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>RecurrenceMonthOfYear</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>TodayMonthOfYearName</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>RecurrenceDayOfMonth</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>TodayDayOfMonth</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>RecurrenceMonthOfYear</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>TodayMonthOfYear</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Holiday</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Lead</name>
+        <label>Get Lead</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Recent_Scheduled_Message</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Scheduled_Message.Lead__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Recent_Scheduled_Message</name>
+        <label>Get Recent Scheduled Message</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_If_Recent_Sch_Message_Exists</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Sent_DateTime__c</field>
+            <operator>GreaterThanOrEqualTo</operator>
+            <value>
+                <elementReference>X7DaysAgo</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Lead__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Lead.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Scheduled_Message__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Scheduled_Message</name>
+        <label>Get Scheduled Message</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Lead</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Scheduled_Message__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Lead_Get_Email_Message_Relation</name>
+        <label>Lead: Get Email Message Relation</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Email_Date</targetReference>
+        </connector>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>RelationId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Lead.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>EmailMessageRelation</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Blocked_and_Excluded_Lead_Marked_as_Opt_Out</name>
+        <label>Blocked and Excluded: Lead Marked as Opt Out</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Scheduled_Message.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Blocked__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Info_Message__c</field>
+            <value>
+                <stringValue>Opted Out</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Scheduled_Message__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Blocked_and_Excluded_No_Longer_In_Pre_Approved</name>
+        <label>Blocked and Excluded: No Longer In Pre-Approved</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Scheduled_Message.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Blocked__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Info_Message__c</field>
+            <value>
+                <stringValue>Lead no longer in Pre-Approval</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Scheduled_Message__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Error_sending_SMS</name>
+        <label>Error sending SMS</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Scheduled_Message.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Info_Message__c</field>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Scheduled_Message__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Postponed_Email_Activity_on_Lead_or_simillar_Contact</name>
+        <label>Postponed: Email Activity on Lead or simillar Contact</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Scheduled_Message.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Info_Message__c</field>
+            <value>
+                <stringValue>Postponed. Email activity detected within last 7 days on this Lead or Contact with same Phones/Email</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Scheduled_Send_DateTime__c</field>
+            <value>
+                <elementReference>NextSendDateTimeAfterEmailActivity</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Scheduled_Message__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Postponed_Holiday_Today</name>
+        <label>Postponed: Holiday Today</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Info_Message__c</field>
+            <value>
+                <elementReference>HolidayInfoMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Scheduled_Send_DateTime__c</field>
+            <value>
+                <elementReference>NextDay</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Scheduled_Message__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Postponed_Recent_Scheduled_Message</name>
+        <label>Postponed: Recent Scheduled Message</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_Current_SM_SendDt_From_Recent_SM</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Recent_Scheduled_Message.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Info_Message__c</field>
+            <value>
+                <stringValue>Postponed. Activity detected within last 7 days</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Scheduled_Message__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Postponed_Ring_Central_Activity</name>
+        <label>Postponed: Ring-Central Activity</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Scheduled_Message.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Info_Message__c</field>
+            <value>
+                <stringValue>Postponed. Activity detected within last 7 days</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Scheduled_Send_DateTime__c</field>
+            <value>
+                <elementReference>NextSendDateTimeAfterRingCentralActivity</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Scheduled_Message__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Current_SM_SendDt_From_Recent_SM</name>
+        <label>Update Current Scheduled Message: Scheduled Send DateTime (From Recent Scheduled Message)</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Scheduled_Message.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Scheduled_Send_DateTime__c</field>
+            <value>
+                <elementReference>NextSendDateTimeAfterRecentScheduledMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Scheduled_Message__c</object>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Holiday_Today</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>DummyVar</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>IsSent</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

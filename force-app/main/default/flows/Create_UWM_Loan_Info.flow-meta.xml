@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Get_UWM_Loan_Info_0</name>
+        <label>Get UWM Loan Info</label>
+        <locationX>490</locationX>
+        <locationY>408</locationY>
+        <actionName>UWM_Insights_Invocable</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>ids</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>UWM_Insights_Invocable</nameSegment>
+    </actionCalls>
+    <apiVersion>55.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Is_Lender_UWM</name>
+        <label>Is Lender UWM?</label>
+        <locationX>182</locationX>
+        <locationY>288</locationY>
+        <defaultConnectorLabel>No, Not UWM</defaultConnectorLabel>
+        <rules>
+            <name>Yes_UWM_is_Lender</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Lender_lookup__r.Name</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>UWM</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_UWM_Loan_Info_0</targetReference>
+            </connector>
+            <label>Yes UWM is Lender</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Is_Lender_UWM_0</name>
+        <label>Is Lender UWM?</label>
+        <locationX>622</locationX>
+        <locationY>288</locationY>
+        <defaultConnectorLabel>No, Not UWM</defaultConnectorLabel>
+        <rules>
+            <name>Yes_UWM_is_Lender_0</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Lender_lookup__r.Name</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>UWM</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_UWM_Loan_Info_0</targetReference>
+            </connector>
+            <label>Yes UWM is Lender</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Create UWM Loan Info {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Create UWM Loan Info</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_UWM_Loan_Info_0</name>
+        <label>Create UWM Loan Info</label>
+        <locationX>50</locationX>
+        <locationY>408</locationY>
+        <inputAssignments>
+            <field>Transaction__c</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>uwm_LoanNumber__c</field>
+            <value>
+                <elementReference>$Record.Loan_Number__c</elementReference>
+            </value>
+        </inputAssignments>
+        <object>UWM_Loan_Info__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <start>
+        <locationX>276</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Is_Lender_UWM</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Loan_Number__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Transaction__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <scheduledPaths>
+            <connector>
+                <targetReference>Is_Lender_UWM_0</targetReference>
+            </connector>
+            <pathType>AsyncAfterCommit</pathType>
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

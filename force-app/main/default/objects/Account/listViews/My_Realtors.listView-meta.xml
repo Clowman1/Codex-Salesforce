@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>My_Realtors</fullName>
+    <columns>ACCOUNT.CREATED_DATE</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Status__pc</columns>
+    <columns>PC_TITLE</columns>
+    <columns>ACCOUNT.RECORDTYPE</columns>
+    <columns>PC_PHONE3</columns>
+    <columns>PC_EMAIL</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <filterScope>Mine</filterScope>
+    <filters>
+        <field>Group__pc</field>
+        <operation>equals</operation>
+        <value>Realtor,Realtor Prospect</value>
+    </filters>
+    <label>My Realtors</label>
+</ListView>

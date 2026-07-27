@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Calls_Required_for_Status_Change</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+				ISCHANGED(Status),
+				NOT(ISCHANGED(Number_of_Calls__c)),
+				$Profile.Name &lt;&gt; &apos;System Administrator&apos;,	
+				OR(
+        CONTAINS(Record_Type__c, &apos;Consumer Purchase&apos;),
+								CONTAINS(Record_Type__c, &apos;Consumer Refinance&apos;)
+				)
+)</errorConditionFormula>
+    <errorMessage>Please Log an Activity to Update the Lead’s Status</errorMessage>
+</ValidationRule>

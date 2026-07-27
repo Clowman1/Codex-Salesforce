@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>First_Reassignment_Occured_Today</name>
+        <label>First Reassignment Occured Today</label>
+        <locationX>270</locationX>
+        <locationY>647</locationY>
+        <defaultConnector>
+            <targetReference>Loop_T_History</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Occured_w_Another_User</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Loop_T_History.OldValue</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Intake Form Queue</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Loop_T_History.NewValue</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>UserFullName</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_User_with_Found_Name</targetReference>
+            </connector>
+            <label>Occured w Another User</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>History_Found</name>
+        <label>History Found</label>
+        <locationX>182</locationX>
+        <locationY>431</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Found</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Field_History</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Field_History</leftValueReference>
+                <operator>IsEmpty</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Loop_T_History</targetReference>
+            </connector>
+            <label>Found</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>TODAY</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()</expression>
+    </formulas>
+    <formulas>
+        <name>UserFullName</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.Owner:User.FirstName} &amp; &apos; &apos; &amp; {!$Record.Owner:User.LastName}</expression>
+    </formulas>
+    <interviewLabel>Lead: Keep First Owner Assignment {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead: Keep First Owner Assignment</label>
+    <loops>
+        <name>Loop_T_History</name>
+        <label>Loop T History</label>
+        <locationX>50</locationX>
+        <locationY>539</locationY>
+        <collectionReference>Get_Field_History</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>First_Reassignment_Occured_Today</targetReference>
+        </nextValueConnector>
+    </loops>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Field_History</name>
+        <label>Get Field History</label>
+        <locationX>182</locationX>
+        <locationY>323</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>History_Found</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Field</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Owner</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>LeadId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>CreatedDate</field>
+            <operator>GreaterThanOrEqualTo</operator>
+            <value>
+                <elementReference>TODAY</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>LeadHistory</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_User_with_Found_Name</name>
+        <label>Get User with Found Name</label>
+        <locationX>138</locationX>
+        <locationY>755</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Assign_Previous_Owner</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Loop_T_History.NewValue</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Assign_Previous_Owner</name>
+        <label>Assign Previous Owner</label>
+        <locationX>138</locationX>
+        <locationY>863</locationY>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>Get_User_with_Found_Name.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Field_History</targetReference>
+        </connector>
+        <filterFormula>AND(
+ISCHANGED({!$Record.OwnerId}),
+{!$User.ProfileId} &lt;&gt; &apos;00ef2000000tTPaAAM&apos;
+)</filterFormula>
+        <object>Lead</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

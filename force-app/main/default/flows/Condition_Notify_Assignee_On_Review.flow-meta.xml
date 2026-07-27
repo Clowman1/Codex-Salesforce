@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Review_Notification</name>
+        <label>Send Review Notification</label>
+        <locationX>176</locationX>
+        <locationY>288</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>$Record.Assigned_To__r.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>EmailSubject</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>EmailBody</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>sendRichBody</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
+        <nameSegment>emailSimple</nameSegment>
+    </actionCalls>
+    <apiVersion>58.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>Sends an email notification to the Condition&apos;s Assigned To user whenever a Condition moves to the Review status. The email includes the condition name and a link to the parent Transaction.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>EmailBody</name>
+        <dataType>String</dataType>
+        <expression>&quot;&lt;p&gt;Hello &quot; &amp; BLANKVALUE({!$Record.Assigned_To__r.FirstName}, &quot;&quot;) &amp; &quot;,&lt;/p&gt;&quot; &amp;
+&quot;&lt;p&gt;Condition &lt;strong&gt;&quot; &amp; {!$Record.Name} &amp; &quot;&lt;/strong&gt; has moved to &lt;strong&gt;Review&lt;/strong&gt; and is awaiting your attention.&lt;/p&gt;&quot; &amp;
+IF(
+    ISBLANK({!$Record.Subject__c}),
+    &quot;&quot;,
+    &quot;&lt;p&gt;&lt;strong&gt;Subject:&lt;/strong&gt; &quot; &amp; {!$Record.Subject__c} &amp; &quot;&lt;/p&gt;&quot;
+) &amp;
+&quot;&lt;p&gt;Please open the Transaction to continue processing:&lt;/p&gt;&quot; &amp;
+&quot;&lt;p&gt;&lt;a href=\&quot;https://reachhomeloans.lightning.force.com/lightning/r/Transaction__c/&quot; &amp; {!$Record.Transaction__c} &amp; &quot;/view\&quot;&gt;View Transaction&lt;/a&gt;&lt;/p&gt;&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>EmailSubject</name>
+        <dataType>String</dataType>
+        <expression>&quot;Condition &quot; &amp; {!$Record.Name} &amp; &quot; has moved to Review&quot;</expression>
+    </formulas>
+    <interviewLabel>Condition Notify Assignee On Review {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Condition Notify Assignee On Review</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterFormula>AND(
+    ISPICKVAL({!$Record.Status__c}, &quot;Review&quot;),
+    NOT(ISBLANK({!$Record.Assigned_To__c})),
+    NOT(ISBLANK({!$Record.Assigned_To__r.Email})),
+    NOT(ISBLANK({!$Record.Transaction__c}))
+)</filterFormula>
+        <object>Condition__c</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <scheduledPaths>
+            <connector>
+                <targetReference>Send_Review_Notification</targetReference>
+            </connector>
+            <pathType>AsyncAfterCommit</pathType>
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

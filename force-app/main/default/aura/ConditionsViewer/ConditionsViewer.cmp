@@ -1,0 +1,274 @@
+<!--
+ - Created by zeyad on 8/11/2022.
+ -->
+<aura:component
+  description="ConditionsViewer"
+  controller="LoanConditionController"
+  implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId"
+  access="global"
+>
+  <aura:attribute name="showFlow" type="Boolean" default="false" />
+  <aura:attribute name="spinner" type="boolean" default="false" />
+  <aura:attribute name="conditionsTypeNotSet" type="boolean" default="false" />
+  <aura:attribute name="isAllSelected" type="boolean" default="false" />
+  <aura:attribute name="filteredOwner" type="String" />
+  <aura:attribute name="conditionsType" type="String" access="global" />
+  <aura:attribute name="conditionsTypes" type="String" access="global" />
+  <aura:attribute name="conditionFiltersByStatus" type="String" access="global" />
+  <aura:attribute name="emailTemplates" type="String" access="global" />
+  <aura:attribute name="brandColor" type="String" access="global" />
+  <aura:attribute name="createConditionsFlowAPIName" type="String" default="Conditions_Creator" access="global" />
+  <aura:attribute name="updateConditionsFlowAPIName" type="String" default="Conditions_Mass_Update" access="global" />
+  <aura:attribute name="emailSendersClassAPIName" type="String" access="global" />
+  <aura:attribute name="application" type="Object" access="global" />
+  <aura:attribute name="initialConditions" type="Object" />
+  <aura:attribute name="conditionTables" type="List" />
+  <aura:attribute name="uniqueOwners" type="Object[]" />
+  <aura:attribute
+    name="columnsToShow"
+    type="String"
+    access="global"
+    default="Name,Status__c,CreatedDate,Requested_Date__c,ETA__c,Assigned_To__c"
+  />
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+  <aura:handler name="render" value="{!this}" action="{!c.onRender}" />
+  <aura:handler event="c:ConditionsInit" action="{!c.reInit}" />
+  <aura:handler event="c:RefreshEvent" action="{!c.doInit}" />
+  <aura:handler name="conditionRowEvent" event="c:ConditionRowEvent" action="{!c.handleConditionRowEvent}" />
+  <aura:handler event="lightning:tabRefreshed" action="{! c.onTabRefreshed }" />
+  <aura:attribute name="modalComponent" type="String" access="global" default="c:ConditionsEmailModal" />
+  <aura:attribute name="allLoanFiles" type="List" />
+  <!-- Field metadata (apiName, label, type, isEditable) for admin-selected columns.
+       Populated from FieldDescribeService via getConditionFieldDescriptions. -->
+  <aura:attribute name="conditionFieldDescriptions" type="Object" default="[]" />
+  <aura:attribute name="showErrorNotification" type="Boolean" default="false" />
+  <aura:attribute name="errorMessage" type="String" />
+  <aura:attribute name="showWarningNotification" type="Boolean" default="false" />
+  <aura:attribute name="warningMessage" type="String" />
+  <aura:attribute name="isMobileView" type="Boolean" default="false" />
+  <aura:attribute name="resizeObserver" type="Object" />
+
+  <ltng:require scripts="{!$Resource.PULSEResources + '/js/consoleLogger.js'}" />
+
+  <lightning:workspaceAPI aura:id="workspace" />
+  <lightning:overlayLibrary aura:id="overlayLib" />
+  <div aura:id="conditions-viewer__wrapper" class="conditions-viewer__wrapper">
+    <aura:if isTrue="{!v.showErrorNotification}">
+      <!-- prettier-ignore -->
+      <c:messageNotification
+        label="Error"
+        variant="error"
+        isRelativeModal="true"
+        onclose="{!c.closeErrorNotification}"
+        message="{!v.errorMessage}"
+      >
+      </c:messageNotification>
+    </aura:if>
+    <aura:if isTrue="{!v.showWarningNotification}">
+      <!-- prettier-ignore -->
+      <c:messageNotification
+        label="Warning"
+        variant="warning"
+        isRelativeModal="true"
+        onclose="{!c.closeWarningNotification}"
+        message="{!v.warningMessage}"
+      >
+      </c:messageNotification>
+    </aura:if>
+
+    <aura:if isTrue="{!v.spinner}">
+      <lightning:spinner alternativeText="Loading" size="large" variant="brand" />
+    </aura:if>
+
+    <aura:if isTrue="{!v.conditionsTypeNotSet}">
+      <!-- prettier-ignore -->
+      <c:messageNotification
+        label="Info"
+        variant="info"
+        isInlineModal="true"
+        onclose="{!c.closeInfoNotification}"
+        message="Condition type is not set. Please go to the edit page and select a condition type to filter conditions."
+      >
+      </c:messageNotification>
+    </aura:if>
+
+    <aura:if isTrue="{!not(v.showFlow)}">
+      <aura:set attribute="else">
+        <div class="slds-p-around_x-large">
+          <div class="slds-text-align_right">
+            <!-- prettier-ignore -->
+            <lightning:button
+              variant="destructive"
+              class="ncs-cancel-button"
+              label="Exit"
+              title="Cancel"
+              iconName="utility:close"
+              iconPosition="left"
+              onclick="{!c.handleCancel}"
+            />
+          </div>
+          <lightning:flow aura:id="updateConditionsFlow" onstatuschange="{!c.flowStatusChange}" />
+        </div>
+        <div class="slds-p-around_x-large">
+          <lightning:flow aura:id="createConditionsFlow" onstatuschange="{!c.flowStatusChange}" />
+        </div>
+      </aura:set>
+      <div class="conditions-viewer__main">
+        <div class="conditions-viewer__toolbar slds-p-around_medium">
+          <div class="slds-p-around_medium conditions-viewer__toolbar-filters">
+            <div>
+              <span class="slds-text-heading_label"> Filter by Assigned: </span>
+              <aura:iteration items="{!v.uniqueOwners}" var="owner">
+                <!-- prettier-ignore -->
+                <span
+                  class="conditions-viewer__avatar-wrapper"
+                  onclick="{!c.filterOwner}"
+                  data-owner-id="{!owner.id}"
+                >
+                  <lightning:avatar
+                    class="{!concat('conditions-viewer__avatar',if(owner.id == v.filteredOwner,'conditions-viewer__avatar--highlighted',''))}"
+                    alternativeText="{!owner.name}"
+                    variant="circle"
+                    src="{!owner.url}"
+                    initials="{!owner.initials}"
+                    fallbackIconName="standard:user"
+                  /></span>
+              </aura:iteration>
+            </div>
+          </div>
+          <div class="slds-p-around_medium conditions-viewer__toolbar-actions">
+            <!-- prettier-ignore -->
+            <c:actionButton
+              class="conditions-viewer__action-btn"
+              label="Add Condition(s)"
+              variant="neutral"
+              iconName="circle-plus"
+              onclick="{!c.createConditions}"
+            />
+            <!-- prettier-ignore -->
+            <c:actionButton
+              class="conditions-viewer__action-btn"
+              label="Mass Update"
+              variant="neutral"
+              iconName="list-checks"
+              onclick="{!c.updateConditions}"
+            />
+            <!-- prettier-ignore -->
+            <c:actionButton
+              class="conditions-viewer__action-btn"
+              label="Send Conditions Email"
+              variant="brand"
+              iconName="send"
+              onclick="{!c.openEmailModal}"
+            />
+          </div>
+        </div>
+
+        <aura:if isTrue="{! !empty(v.conditionTables)}">
+          <aura:iteration items="{!v.conditionTables}" var="table" indexVar="tableIndex">
+            <div class="slds-p-around_small">
+              <!-- Outstanding conditions numbers start -->
+              <div class="conditions-viewer__tiles">
+                <aura:if isTrue="{! not(empty(table.new))}">
+                  <!-- prettier-ignore -->
+                  <div
+                    class="conditions-viewer__tile"
+                    onclick="{!c.filterSection}"
+                    data-identifier="New"
+                  >
+                    <div class="conditions-viewer__tile-bg"></div>
+                    <div class="conditions-viewer__tile-fg">
+                      <div class="slds-text-align_center slds-text-title slds-text-color_default">New</div>
+                      <div class="slds-text-align_center slds-text-heading_large conditions-viewer__tile-count">{!table.new}</div>
+                    </div>
+                  </div>
+                </aura:if>
+
+                <aura:if isTrue="{! not(empty(table.requested))}">
+                  <!-- prettier-ignore -->
+                  <div
+                    class="conditions-viewer__tile"
+                    onclick="{!c.filterSection}"
+                    data-identifier="Requested"
+                  >
+                    <div class="conditions-viewer__tile-bg"></div>
+                    <div class="conditions-viewer__tile-fg">
+                      <div class="slds-text-align_center slds-text-title slds-text-color_default">Requested</div>
+                      <div class="slds-text-align_center slds-text-heading_large conditions-viewer__tile-count">{!table.requested}</div>
+                    </div>
+                  </div>
+                </aura:if>
+
+                <aura:if isTrue="{! not(empty(table.review))}">
+                  <!-- prettier-ignore -->
+                  <div
+                    class="conditions-viewer__tile"
+                    onclick="{!c.filterSection}"
+                    data-identifier="Review"
+                  >
+                    <div class="conditions-viewer__tile-bg"></div>
+                    <div class="conditions-viewer__tile-fg">
+                      <div class="slds-text-align_center slds-text-title slds-text-color_default">Review</div>
+                      <div class="slds-text-align_center slds-text-heading_large conditions-viewer__tile-count">{!table.review}</div>
+                    </div>
+                  </div>
+                </aura:if>
+              </div>
+              <!-- Outstanding conditions numbers end -->
+
+              <div class="conditions-viewer__table-header">
+                <span class="slds-text-heading_medium"> {!table.label + ' (' + table.size + ')'} </span>
+                <!-- Conditional rendering for the button -->
+                <aura:if isTrue="{!table.label == 'Ready for Lender Conditions'}">
+                  <div class="slds-p-horizontal_small">
+                    <!-- prettier-ignore -->
+                    <lightning:button
+                      label="Download Submission Documents"
+                      onclick="{!c.handleDownload}"
+                      variant="brand"
+                      disabled="{!table.size == 0}"
+                      iconName="utility:download"
+                    />
+                  </div>
+                </aura:if>
+              </div>
+              <div class="slds-m-top_medium conditions-table__wrapper">
+                <div class="slds-p-around_small conditions-table__content">
+                  <div class="conditions-table__header conditions-table__row">
+                    <div class="conditions-table__cell">
+                      <!-- prettier-ignore -->
+                      <lightning:input
+                        type="checkbox"
+                        class="select-checkbox"
+                        checked="{!table.allSelected}"
+                        name="{!tableIndex}"
+                        label=""
+                        onchange="{!c.handleSelectAll}"
+                      />
+                    </div>
+                    <aura:iteration items="{!table.columns}" var="column">
+                      <aura:if isTrue="{!column.label.length}">
+                        <div class="{!'conditions-table__cell ' + (column.classy != null ? column.classy : '')}">{!column.label}</div>
+                      </aura:if>
+                    </aura:iteration>
+                  </div>
+                  <div class="conditions-table__body">
+                    <aura:iteration items="{!table.rows}" var="row">
+                      <c:ConditionRow
+                        initialCondition="{!row}"
+                        recordId="{!v.recordId}"
+                        applicationId="{!v.application.Id}"
+                        columns="{!table.columns}"
+                        isMobileView="{!v.isMobileView}"
+                      />
+                    </aura:iteration>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aura:iteration>
+        </aura:if>
+      </div>
+    </aura:if>
+  </div>
+</aura:component>

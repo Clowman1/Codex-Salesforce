@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Notify_Buying_Agent</name>
+        <label>Notify Buying Agent</label>
+        <locationX>50</locationX>
+        <locationY>575</locationY>
+        <actionName>TwilioSF__TwilioSendSMS</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>message</name>
+            <value>
+                <elementReference>Message</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>recordId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>toNumber</name>
+            <value>
+                <elementReference>$Record.Realtor_Buying_Agent__r.PersonMobilePhone</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TwilioSF__TwilioSendSMS</nameSegment>
+    </actionCalls>
+    <apiVersion>55.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>buying_agent_has_mobile</name>
+        <label>buying agent has mobile?</label>
+        <locationX>182</locationX>
+        <locationY>455</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>has_mobile</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Realtor_Buying_Agent__r.PersonMobilePhone</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Notify_Buying_Agent</targetReference>
+            </connector>
+            <label>has mobile</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>Message</name>
+        <dataType>String</dataType>
+        <expression>&quot;Disclosures for &quot; + {!$Record.Borrower_Name__r.FirstName} + &quot; &quot;  + {!$Record.Borrower_Name__r.LastName} + &quot; have been received.&quot; + &quot;  - Reach Home Loans&quot;</expression>
+    </formulas>
+    <interviewLabel>Disclosclosures in {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Disclosures in Message to Buying Agent</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_CommSent</name>
+        <label>Update CommSent</label>
+        <locationX>182</locationX>
+        <locationY>335</locationY>
+        <connector>
+            <targetReference>buying_agent_has_mobile</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>CommSent_Disclosures_Received__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_CommSent</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterFormula>OR(
+AND(
+{!$Record.Lender_lookup__r.Name} != &apos;UWM&apos;,
+NOT(ISBLANK({!$Record.Disclosures_Received_Date__c}))
+),
+AND(
+ISBLANK({!$Record.UWM_Loan_Info__r.uwm_SecondaryBorrower1FullName__c}),
+NOT(ISBLANK({!$Record.Borrower_Signed_And_Submitted__c})),
+NOT(ISBLANK({!$Record.Realtor_Buying_Agent__c})),
+NOT(ISBLANK({!$Record.Disclosures_Received_Date__c})),
+{!$Record.CommSent_Disclosures_Received__c} = FALSE
+),
+AND(
+NOT(ISBLANK({!$Record.UWM_Loan_Info__r.uwm_SecondaryBorrower1FullName__c})),
+NOT(ISBLANK({!$Record.Borrower_Signed_And_Submitted__c})),
+NOT(ISBLANK({!$Record.UWM_Loan_Info__r.uwm_Borr2SignedAndSubmitted__c})),
+NOT(ISBLANK({!$Record.Realtor_Buying_Agent__c})),
+NOT(ISBLANK({!$Record.Disclosures_Received_Date__c})),
+{!$Record.CommSent_Disclosures_Received__c} = FALSE
+)
+)</filterFormula>
+        <object>Transaction__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>55.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Is_Prior_Value_Null</name>
+        <label>Is Prior Value Null?</label>
+        <locationX>176</locationX>
+        <locationY>311</locationY>
+        <defaultConnector>
+            <targetReference>Buying_Agent_has_Changed_to_true</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Prior Value not Null</defaultConnectorLabel>
+        <rules>
+            <name>Yes_Prior_Value_was_Null</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior.Realtor_Buying_Agent__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue></stringValue>
+                </rightValue>
+            </conditions>
+            <label>Yes, Prior Value was Null</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Buying Agent is Changed on Realtor Referral {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Buying Agent is Changed on Realtor Referral</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Buying_Agent_has_Changed_to_true</name>
+        <label>Buying Agent has Changed to true</label>
+        <locationX>264</locationX>
+        <locationY>431</locationY>
+        <inputAssignments>
+            <field>Buying_Agent_has_Changed__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Is_Prior_Value_Null</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Realtor_Buying_Agent__c</field>
+            <operator>IsChanged</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>LeadSource</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Realtor Referral</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Loan_Purpose__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Purchase</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Buying_Agent_has_Changed__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+</Flow>

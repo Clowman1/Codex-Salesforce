@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>55.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>This flow will prevent Transaction Status from moving backwards to Closing from Post Closed or Funding.  This is intended to stop UWM integration from moving the Status incorrectly.</description>
+    <environments>Default</environments>
+    <interviewLabel>Prevent Status moving back to Closing {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Prevent Status moving back to Closing</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Set_Status_to_Prior_Status</name>
+        <label>Set Status to Prior Status</label>
+        <locationX>176</locationX>
+        <locationY>311</locationY>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <elementReference>$Record__Prior.Status__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_Status_to_Prior_Status</targetReference>
+        </connector>
+        <filterFormula>AND(
+       CONTAINS({!$Label.UWM_Excluded_Statuses}, TEXT({!$Record__Prior.Status__c})),
+       ISPICKVAL({!$Record.Status__c} , &apos;Closing&apos;),
+      {!$Record.Revert_To_Closing__c} = FALSE  
+       )</filterFormula>
+        <object>Transaction__c</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contact_Made__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Indicates whether contact has been made with the client to request docs, when the transaction is in CLA status.</description>
+    <label>Processor CLA Contact Made</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

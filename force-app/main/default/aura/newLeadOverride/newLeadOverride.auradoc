@@ -1,0 +1,3 @@
+<aura:documentation>
+    <aura:description>Overrides Lead New to launch the clean Consumer Lead flow.</aura:description>
+</aura:documentation>

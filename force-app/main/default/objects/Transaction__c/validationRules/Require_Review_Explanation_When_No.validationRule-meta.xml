@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Review_Explanation_When_No</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+  ISPICKVAL(ReviewCallCompleted__c, &quot;No&quot;),
+  ISBLANK(Review_Explanation__c)
+)</errorConditionFormula>
+    <errorDisplayField>Review_Explanation__c</errorDisplayField>
+    <errorMessage>Review Explanation is required when Review Call Completed is No.</errorMessage>
+</ValidationRule>

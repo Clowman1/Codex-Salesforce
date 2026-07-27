@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Realtor_Group__c</fullName>
+    <label>Realtor Group</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>The Nickley Group</fullName>
+                <default>false</default>
+                <label>The Nickley Group</label>
+            </value>
+            <value>
+                <fullName>EXP Realty Melbourne</fullName>
+                <default>false</default>
+                <label>EXP Realty Melbourne</label>
+            </value>
+            <value>
+                <fullName>Coastal Real Estate Professionals</fullName>
+                <default>false</default>
+                <label>Coastal Real Estate Professionals</label>
+            </value>
+            <value>
+                <fullName>Nickley ISA&apos;s</fullName>
+                <default>false</default>
+                <label>Nickley ISA&apos;s</label>
+            </value>
+            <value>
+                <fullName>SERHANT - ORL</fullName>
+                <default>false</default>
+                <label>SERHANT - ORL</label>
+            </value>
+            <value>
+                <fullName>Wemert Group</fullName>
+                <default>false</default>
+                <label>Wemert Group</label>
+            </value>
+            <value>
+                <fullName>Premier Group At Compass</fullName>
+                <default>false</default>
+                <label>Premier Group At Compass</label>
+            </value>
+            <value>
+                <fullName>Homes by Cusi</fullName>
+                <default>false</default>
+                <label>Homes by Cusi</label>
+            </value>
+            <value>
+                <fullName>Champagne &amp; Parisi Real Estate</fullName>
+                <default>false</default>
+                <label>Champagne &amp; Parisi Real Estate</label>
+            </value>
+            <value>
+                <fullName>Rinker Realty</fullName>
+                <default>false</default>
+                <label>Rinker Realty</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

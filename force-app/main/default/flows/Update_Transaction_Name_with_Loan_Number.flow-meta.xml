@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>55.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>When the Loan Number is filled in or changed, the Transaction Name will be updated with the new Loan Number.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>TransactionName</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!$Record.Borrower_Name__c}), {!$Record.Borrower_Last_Name__c} + &quot; - &quot; + {!$Record.Loan_Number__c}, {!$Record.Borrower_Name__r.LastName} + &quot; - &quot; + {!$Record.Loan_Number__c})</expression>
+    </formulas>
+    <interviewLabel>Update Transaction Name {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Update Transaction Name with Loan Number</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_Transaction_Name</name>
+        <label>Update Transaction Name</label>
+        <locationX>1096</locationX>
+        <locationY>392</locationY>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>TransactionName</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>970</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>Update_Transaction_Name</targetReference>
+        </connector>
+        <filterFormula>OR(
+AND(ISNEW(), NOT(ISBLANK({!$Record.Loan_Number__c}))),
+ISCHANGED({!$Record.Loan_Number__c}),
+ISCHANGED({!$Record.Borrower_Name__c}),
+ISCHANGED({!$Record.Borrower_Last_Name__c})
+)</filterFormula>
+        <object>Transaction__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

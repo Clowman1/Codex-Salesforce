@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>CEO realtor partner intelligence.</description>
+    <flexiPage>CEO_Realtor_Partners</flexiPage>
+    <label>CEO Realtor Partners</label>
+    <motif>Custom53: Bell</motif>
+</CustomTab>

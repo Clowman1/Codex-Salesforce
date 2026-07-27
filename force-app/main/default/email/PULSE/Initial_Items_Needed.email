@@ -1,0 +1,142 @@
+<messaging:emailTemplate subject="Conditional Approval for Your Mortgage – Next Steps" recipientType="Contact" relatedToType="Transaction__c">
+<messaging:htmlEmailBody >
+<html style="overflow-y: hidden;">
+<head>
+<style type="text/css">
+ .myButton {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 12px 24px;
+    border-radius: 8px;
+    background: #0082cb;
+    font: normal normal bold 20px arial;
+    color: #ffffff !important;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.myButton > div{
+   opacity: 0;
+}
+.myButton:hover,
+.myButton:focus {
+background: #142850;
+cursor: pointer;
+}
+</style>
+    <title></title>
+</head>
+<body style="height: auto; min-height: auto;">
+<span class="container"></span>
+<p>Good afternoon!<br />
+<br />
+I appreciate you taking the time to speak with me today!<br />
+As discussed, your loan is out of underwriting, everything is on track, and we are looking great! Below is a short list of items needed by the Underwriter before they can issue your final loan approval (Clear to Close). These are the same items mentioned on our call, but I've itemized them to make things easier for you.<br />
+<br />
+It's important we have everything from you as soon as possible to meet your closing date, so if you foresee any issues, please let me know right away so we can work on a solution together.<br />
+The items needed are:
+</p>
+
+<ul>
+  <apex:repeat var="cx" value="{!relatedTo.Conditions__r}">
+    
+   <apex:outputPanel rendered="{!(cx.Status__c == 'New' || cx.Status__c == 'Requested' || cx.Status__c == 'Review') && cx.Type__c == 'Processor' && cx.Include_In_Email__c == true}">
+        <li><b><span style="color:#2980b9;"> {!cx.Name} </span></b> - {!cx.Description__c}  </li>
+        
+        </apex:outputPanel>
+    </apex:repeat>
+</ul>
+  
+<br />
+Items sent thru DocuSign, in which your signature is required:<br />
+<ol>
+    <li>&nbsp;</li>
+    <li>&nbsp;</li>
+</ol>
+<br />
+Please upload any requested documentation to this secure portal:<br />
+<div ><a class="myButton" href="{!relatedTo.Portal_Link_As_URL__c}">Upload Files</a></div><br />
+Please remember that I'm here to assist you every step of the way, and if you need help with gathering any documents or have questions, please don't hesitate to reach out to me.<br />
+I look forward to your prompt response and working together to get you into your new home!<br />
+<br />
+<strong><span style="color:#ff0000;">Please keep in mind that you should not open any new lines of credit while completing the mortgage underwriting process without first speaking with your loan officer.</span></strong><br />
+<br />
+All the best,<br />
+<span class="end-container"></span>
+<style type="text/css"><!--
+ /* Font Definitions */
+ @font-face
+    {font-family:"Cambria Math";
+    panose-1:2 4 5 3 5 4 6 3 2 4;
+    mso-font-charset:0;
+    mso-generic-font-family:roman;
+    mso-font-pitch:variable;
+    mso-font-signature:-536869121 1107305727 33554432 0 415 0;}
+@font-face
+    {font-family:Calibri;
+    panose-1:2 15 5 2 2 2 4 3 2 4;
+    mso-font-charset:0;
+    mso-generic-font-family:swiss;
+    mso-font-pitch:variable;
+    mso-font-signature:-469750017 -1073732485 9 0 511 0;}
+@font-face
+    {font-family:Avenir;
+    mso-font-alt:Calibri;
+    mso-font-charset:0;
+    mso-generic-font-family:auto;
+    mso-font-pitch:auto;
+    mso-font-signature:0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+    {mso-style-unhide:no;
+    mso-style-qformat:yes;
+    mso-style-parent:"";
+    margin:0in;
+    margin-bottom:.0001pt;
+    mso-pagination:widow-orphan;
+    font-size:11.0pt;
+    font-family:"Calibri",sans-serif;
+    mso-fareast-font-family:Calibri;
+    mso-fareast-theme-font:minor-latin;}
+p
+    {mso-style-noshow:yes;
+    mso-style-priority:99;
+    mso-margin-top-alt:auto;
+    margin-right:0in;
+    mso-margin-bottom-alt:auto;
+    margin-left:0in;
+    mso-pagination:widow-orphan;
+    font-size:11.0pt;
+    font-family:"Calibri",sans-serif;
+    mso-fareast-font-family:Calibri;
+    mso-fareast-theme-font:minor-latin;}
+.MsoChpDefault
+    {mso-style-type:export-only;
+    mso-default-props:yes;
+    font-family:"Calibri",sans-serif;
+    mso-ascii-font-family:Calibri;
+    mso-ascii-theme-font:minor-latin;
+    mso-fareast-font-family:Calibri;
+    mso-fareast-theme-font:minor-latin;
+    mso-hansi-font-family:Calibri;
+    mso-hansi-theme-font:minor-latin;
+    mso-bidi-font-family:"Times New Roman";
+    mso-bidi-theme-font:minor-bidi;}
+.MsoPapDefault
+    {mso-style-type:export-only;
+    margin-bottom:8.0pt;
+    line-height:107%;}
+@page WordSection1
+    {size:8.5in 11.0in;
+    margin:1.0in 1.0in 1.0in 1.0in;
+    mso-header-margin:.5in;
+    mso-footer-margin:.5in;
+    mso-paper-source:0;}
+div.WordSection1
+    {page:WordSection1;}
+-->
+</style>
+</body>
+</html>
+
+</messaging:htmlEmailBody>
+</messaging:emailTemplate>

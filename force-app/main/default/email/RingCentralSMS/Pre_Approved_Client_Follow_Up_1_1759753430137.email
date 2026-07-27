@@ -1,0 +1,6 @@
+<html>
+<head>
+	<title></title>
+</head>
+<body style="height: auto; min-height: auto;">Hi {{{Recipient.FirstName}}}, circling back to see how the search is coming along. Have you come across any homes or neighborhoods that feel like a good fit so far?</body>
+</html>

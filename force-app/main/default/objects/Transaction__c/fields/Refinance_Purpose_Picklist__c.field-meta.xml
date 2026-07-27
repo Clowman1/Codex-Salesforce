@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Refinance_Purpose_Picklist__c</fullName>
+    <label>Refinance Purpose</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Cash Out Refinance</fullName>
+                <default>false</default>
+                <label>Cash Out Refinance</label>
+            </value>
+            <value>
+                <fullName>Cash-Out Debt Consolidation</fullName>
+                <default>false</default>
+                <label>Cash-Out Debt Consolidation</label>
+            </value>
+            <value>
+                <fullName>Rate &amp; Term</fullName>
+                <default>false</default>
+                <label>Rate &amp; Term</label>
+            </value>
+            <value>
+                <fullName>Rate And Term Reduction-FHA</fullName>
+                <default>false</default>
+                <label>Rate And Term Reduction-FHA</label>
+            </value>
+            <value>
+                <fullName>Streamline Refinance</fullName>
+                <default>false</default>
+                <label>Streamline Refinance</label>
+            </value>
+            <value>
+                <fullName>VA Interest Rate Reduction</fullName>
+                <default>false</default>
+                <label>VA Interest Rate Reduction</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

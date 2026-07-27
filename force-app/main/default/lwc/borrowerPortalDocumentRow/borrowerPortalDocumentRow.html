@@ -1,0 +1,68 @@
+<template>
+    <template lwc:if={isPhone}>
+        <div  class="imbus-table-row" >
+            <div class="condition-name">{condition.name}</div>
+            <div class="condition-description">{condition.description}</div>
+            <div class="mobile-actions">
+                <button class={commentsButtonClass} type="button" onclick={toggleCommentsVisibility}>
+                    <lightning-icon icon-name="utility:comments" size="x-small" alternative-text=""></lightning-icon>
+                    <template lwc:if={condition.hasActiveComments}>
+                        <span class="comment-new-badge">New</span>
+                    </template>
+                    <span>Comment</span>
+                </button>
+                <button class="upload-button" type="button" onclick={openUploadModal}>
+                    <lightning-icon icon-name="utility:upload" size="x-small" alternative-text=""></lightning-icon>
+                    <span>Upload</span>
+                </button>
+            </div>
+        </div>
+    </template>
+    <template lwc:else>
+        <div  class="imbus-table-row slds-grid slds-grid_vertical-align-center" >
+            <div class="slds-col">{condition.name}</div>
+            <div class="imbus-status-text slds-col" data-status={condition.status}>{condition.status}</div>
+            <div class="slds-col">{condition.description}</div>
+            <div class="slds-col" style="display:flex; gap:16px;">
+
+                <div class="slds-grid slds-grid_vertical">
+                    <div class="slds-col slds-6-of-12">
+                        <button class={desktopCommentsButtonClass} type="button" onclick={toggleCommentsVisibility}>
+                            <span>Comments</span>
+                            <template lwc:if={condition.hasActiveComments}>
+                                <span class="comment-new-badge">New</span>
+                            </template>
+                        </button>
+                    </div>
+                    <div class="slds-col slds-6-of-12">
+                        <lightning-button-icon class={commentIconClass}
+                            variant="bare" label="Comments" 
+                            size="large"
+                            onclick={toggleCommentsVisibility}
+                            icon-name="utility:comments" >
+                        </lightning-button-icon>
+                    </div>
+                </div>
+                
+                <div class="slds-grid slds-grid_vertical">
+                    <div class="slds-col slds-6-of-12">
+                        <lightning-file-upload
+                            label=""
+                            name="fileUploader"
+                            accept='.pdf,.png,.jpg,.jpeg,.doc'
+                            record-id={loanId}
+                            data-id="fileUploader"
+                            onuploadfinished={handleUploadFinished}
+                            multiple
+                            variant="label-hidden"
+                        >
+                        </lightning-file-upload>
+                    </div>
+                    <div class="slds-col slds-size_6-of-12">
+                        <br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Community_List_View</fullName>
+    <columns>NAME</columns>
+    <columns>Status__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>Loan_Amount_1st__c</columns>
+    <columns>Loan_Type_1st_TD__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>Lender_lookup__c</columns>
+    <columns>Lead_Source__c</columns>
+    <columns>Processor__c</columns>
+    <columns>Realtor_Buying_Agent__c</columns>
+    <filterScope>Mine</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>TRID Application,Open,Disclosures Out,Pre-Processing,Processing,Submitted,Conditionally Approved,Re-Submitted,Approved,Waiting On Loan Officer,Closing,Funding,PC Review</value>
+    </filters>
+    <label>Active</label>
+    <sharedTo>
+        <allCustomerPortalUsers></allCustomerPortalUsers>
+        <group>Admins</group>
+    </sharedTo>
+</ListView>

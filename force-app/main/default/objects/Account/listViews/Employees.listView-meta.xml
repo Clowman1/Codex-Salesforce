@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Employees</fullName>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Title__c</columns>
+    <columns>ACCOUNT.PHONE1</columns>
+    <columns>PC_PHONE3</columns>
+    <columns>PC_EMAIL</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>ACCOUNT.TYPE</field>
+        <operation>equals</operation>
+        <value>Employee</value>
+    </filters>
+    <label>Employees</label>
+    <sharedTo>
+        <group>Admins</group>
+        <portalRole>CustomerCommunityUserCustomerUser</portalRole>
+    </sharedTo>
+</ListView>

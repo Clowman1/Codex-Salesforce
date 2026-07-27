@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Makes the standard Leads tab visible for Adam Stephens' Reach app navigation.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Adam Lead Tab Access</label>
+    <tabSettings>
+        <tab>standard-Lead</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+</PermissionSet>

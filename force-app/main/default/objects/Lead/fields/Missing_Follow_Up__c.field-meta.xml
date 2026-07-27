@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Missing_Follow_Up__c</fullName>
+    <formula>AND
+(
+   OR(ISPICKVAL(Status, &apos;Contact Attempt 1&apos;), ISPICKVAL(Status, &apos;Contact Attempt 2&apos;), ISPICKVAL(Status, &apos;Contact Attempt 3&apos;)),
+   Last_Call_Attempt_RingCentral__c &gt; Last_SMS_Attempt_RingCentral__c
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>In Missing Follow Up List</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

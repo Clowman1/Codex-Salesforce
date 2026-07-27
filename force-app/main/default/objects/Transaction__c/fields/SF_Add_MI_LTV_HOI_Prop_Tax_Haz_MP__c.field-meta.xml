@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SF_Add_MI_LTV_HOI_Prop_Tax_Haz_MP__c</fullName>
+    <label>SF - Add MI, LTV, HOI, Prop Tax, Haz, MP</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

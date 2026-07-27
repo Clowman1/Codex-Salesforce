@@ -1,0 +1,5 @@
+SELECT Id, Name, PersonEmail, CreatedDate, Owner.Name, IsPersonAccount
+FROM Account
+WHERE Name LIKE '%Test%'
+AND Name NOT IN ('Travis Teston', 'Craig Malatesta', 'Karin Jo Syftestad')
+ORDER BY CreatedDate DESC

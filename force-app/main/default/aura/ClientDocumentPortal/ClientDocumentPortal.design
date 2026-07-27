@@ -1,0 +1,31 @@
+<design:component >
+	<design:attribute label="Show Team Card?" name="showTeamCard" />
+    <design:attribute label="Your team title" name="yourTeamTitle" />
+    <design:attribute label="No condition upload title" name="genericUploadTitle" />
+    <design:attribute label="Document Status " name="documentStatusSubtitle" />
+	<design:attribute label="Primary text color" type="Color" name="primaryTextColor" />
+	<design:attribute label="Secondary text color" type="Color" name="secondaryTextColor" />
+	<design:attribute label="Primary color" type="Color" name="primaryColor" />
+	<design:attribute label="Brand color" type="Color" name="brandColor" />
+	<design:attribute label="Your Team background picture url" name="yourTeamBackroundImageUrl" 
+		description="Place the url of a picked picture. 
+			Please ensure that website with a picture is included in Content Security Policy."
+	/>
+	<design:attribute
+		label='Condition filters by status'
+		name='conditionFiltersByStatus'
+		description='String with filters for condition statuses. Include order number
+            to place conditions in an appropriate order. Object keys must begin in lower case.
+            categoryColor is used in styles to colorize condition category.
+            An example of a string:
+            [
+                {"status" : "New", "order": 0, "categoryColor": "orange"},
+                {"status" : "Requested", "order": 1, "categoryColor": "grey"},
+                {"status" : "Review", "order": 2, "categoryColor": "red"},
+                {"status" : "Approved", "order": 3, "categoryColor": "green"},
+				{"status" : "Cleared", "order": 4, "categoryColor": "blue"},
+				{"status" : "Submitted", "order": 5, "categoryColor": "green"}
+            ]. '
+		default='[{"status" : "New", "order": 0, "categoryColor": "orange"},{"status" : "Requested", "order": 1, "categoryColor": "grey"},{"status" : "Review", "order": 2, "categoryColor": "red"},{"status" : "Approved", "order": 3, "categoryColor": "green"},{"status" : "Cleared", "order": 4, "categoryColor": "blue"},{"status" : "Submitted", "order": 5, "categoryColor": "green"}]'
+	/>
+</design:component>

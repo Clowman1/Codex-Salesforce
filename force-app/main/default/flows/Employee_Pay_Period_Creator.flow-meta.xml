@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_Period_To_List</name>
+        <label>Assign Period To List</label>
+        <locationX>138</locationX>
+        <locationY>792</locationY>
+        <assignmentItems>
+            <assignToReference>EmployeePayPeriods</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>TempPayPeriod</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>For_Each_Enabled_User</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Temp_Pay_Period</name>
+        <label>Assign Temp Pay Period</label>
+        <locationX>138</locationX>
+        <locationY>684</locationY>
+        <assignmentItems>
+            <assignToReference>TempPayPeriod.Pay_Period__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Create_Pay_Period</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>TempPayPeriod.Team_Member__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>For_Each_Enabled_User.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>TempPayPeriod.Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>PayPeriodType</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>TempPayPeriod.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>PPName</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Assign_Period_To_List</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>End_Of_The_Month</name>
+        <label>End Of The Month?</label>
+        <locationX>182</locationX>
+        <locationY>252</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>X27</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>DayOfTheMonth</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <numberValue>7.0</numberValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Pay_Period</targetReference>
+            </connector>
+            <label>27</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>DayOfTheMonth</name>
+        <dataType>Number</dataType>
+        <expression>DAY({!$Flow.CurrentDate})</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>EndDate</name>
+        <dataType>Date</dataType>
+        <expression>ADDMONTHS(DATE(YEAR(TODAY()), MONTH(TODAY()), 1), 2) - 1</expression>
+    </formulas>
+    <formulas>
+        <name>MonthName</name>
+        <dataType>String</dataType>
+        <expression>CASE(MONTH({!StartDate}),
+    1, &apos;January&apos;,
+    2, &apos;February&apos;,
+    3, &apos;March&apos;,
+    4, &apos;April&apos;,
+    5, &apos;May&apos;,
+    6, &apos;June&apos;,
+    7, &apos;July&apos;,
+    8, &apos;August&apos;,
+    9, &apos;September&apos;,
+    10, &apos;October&apos;,
+    11, &apos;November&apos;,
+    12, &apos;December&apos;,
+    &apos;&apos;)</expression>
+    </formulas>
+    <formulas>
+        <name>PayPeriodName</name>
+        <dataType>String</dataType>
+        <expression>{!MonthName} + &apos; &apos; + TEXT(YEAR({!$Flow.CurrentDate})) + &apos; Pay Period&apos;</expression>
+    </formulas>
+    <formulas>
+        <name>PayPeriodType</name>
+        <dataType>String</dataType>
+        <expression>IF(ISPICKVAL({!For_Each_Enabled_User.UserType}, &apos;Standard&apos;), &apos;Inside Loan Officer&apos;, &apos;Outside Loan Officer&apos;)</expression>
+    </formulas>
+    <formulas>
+        <name>PPName</name>
+        <dataType>String</dataType>
+        <expression>{!For_Each_Enabled_User.FirstName} &amp; &apos; &apos; &amp; {!For_Each_Enabled_User.LastName} &amp; &apos; - &apos; &amp; CASE(
+  MONTH(ADDMONTHS(TODAY(), 1)),
+  1, &quot;January&quot;,
+  2, &quot;February&quot;,
+  3, &quot;March&quot;,
+  4, &quot;April&quot;,
+  5, &quot;May&quot;,
+  6, &quot;June&quot;,
+  7, &quot;July&quot;,
+  8, &quot;August&quot;,
+  9, &quot;September&quot;,
+  10, &quot;October&quot;,
+  11, &quot;November&quot;,
+  12, &quot;December&quot;,
+  &quot;Unknown&quot;
+) &amp; &quot; &quot; &amp; TEXT(YEAR(TODAY()))</expression>
+    </formulas>
+    <formulas>
+        <name>StartDate</name>
+        <dataType>Date</dataType>
+        <expression>ADDMONTHS(DATE(YEAR(TODAY()), MONTH(TODAY()), 1), 1)</expression>
+    </formulas>
+    <interviewLabel>Employee Pay Period Creator {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Employee Pay Period Creator</label>
+    <loops>
+        <name>For_Each_Enabled_User</name>
+        <label>For Each Enabled User</label>
+        <locationX>50</locationX>
+        <locationY>576</locationY>
+        <collectionReference>Get_User_Accounts</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Assign_Temp_Pay_Period</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Create_Employee_Pay_Periods</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Employee_Pay_Periods</name>
+        <label>Create Employee Pay Periods</label>
+        <locationX>50</locationX>
+        <locationY>984</locationY>
+        <inputReference>EmployeePayPeriods</inputReference>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Pay_Period</name>
+        <label>Create Pay Period</label>
+        <locationX>50</locationX>
+        <locationY>360</locationY>
+        <connector>
+            <targetReference>Get_User_Accounts</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>End_Date__c</field>
+            <value>
+                <elementReference>EndDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>PayPeriodName</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Start_Date__c</field>
+            <value>
+                <elementReference>StartDate</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Pay_Period__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_User_Accounts</name>
+        <label>Get User Accounts</label>
+        <locationX>50</locationX>
+        <locationY>468</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>For_Each_Enabled_User</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Commission_Management__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>End_Of_The_Month</targetReference>
+        </connector>
+        <schedule>
+            <frequency>Daily</frequency>
+            <startDate>2025-05-26</startDate>
+            <startTime>00:00:00.000Z</startTime>
+        </schedule>
+        <triggerType>Scheduled</triggerType>
+    </start>
+    <status>Draft</status>
+    <variables>
+        <name>EmployeePayPeriods</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Employee_Pay_Period__c</objectType>
+    </variables>
+    <variables>
+        <name>TempPayPeriod</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Employee_Pay_Period__c</objectType>
+    </variables>
+</Flow>

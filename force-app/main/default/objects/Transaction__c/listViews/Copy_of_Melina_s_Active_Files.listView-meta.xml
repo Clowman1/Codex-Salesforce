@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Copy_of_Melina_s_Active_Files</fullName>
+    <booleanFilter>1 AND 2 AND (3 OR 4) AND 5</booleanFilter>
+    <columns>NAME</columns>
+    <columns>Property_Address__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>Loan_Commitment_Date__c</columns>
+    <columns>Lender_lookup__c</columns>
+    <columns>Status__c</columns>
+    <columns>Add_to_Closing_Queue__c</columns>
+    <columns>CD_Sent_Date__c</columns>
+    <columns>CD_Signed_Date__c</columns>
+    <columns>Processor_Note__c</columns>
+    <columns>Outstanding_Conditions__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>Loan_Officer__c</columns>
+    <columns>Rate_Lock_Exp_Date__c</columns>
+    <columns>Loan_Type_1st_TD__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>notEqual</operation>
+        <value>Cancelled,Lost,Post-Closed</value>
+    </filters>
+    <filters>
+        <field>OWNER.FIRST_NAME</field>
+        <operation>notEqual</operation>
+        <value>Reach</value>
+    </filters>
+    <filters>
+        <field>Closing_Date__c</field>
+        <operation>greaterOrEqual</operation>
+        <value>LAST_MONTH</value>
+    </filters>
+    <filters>
+        <field>Closing_Date__c</field>
+        <operation>equals</operation>
+    </filters>
+    <filters>
+        <field>Processor__c</field>
+        <operation>equals</operation>
+        <value>Melina Munne</value>
+    </filters>
+    <label>Melina&apos;s Active Files</label>
+</ListView>

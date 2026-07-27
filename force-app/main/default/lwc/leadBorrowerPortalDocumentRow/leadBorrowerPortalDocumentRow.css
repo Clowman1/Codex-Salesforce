@@ -1,0 +1,68 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+.imbus-table-row {
+    border-collapse: collapse;
+    display: grid;
+    grid-template-columns: minmax(0, .5fr) minmax(0, .25fr) minmax(0, 1fr) minmax(0, .75fr);
+    min-width: 100%;
+}
+
+.imbus-table-row > div {
+    align-items: flex-start;
+    display: flex;
+}
+
+.imbus-status-text {
+    align-items: center;
+    border-radius: 16px;
+    display: flex;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    justify-content: center;
+    line-height: 18px;
+    padding: 2px 15px;
+    text-align: center;
+    width: fit-content;
+}
+
+.imbus-status-text[data-status="Approved"],
+.imbus-status-text[data-status="Cleared"] {
+    background: #ECFDF3;
+    color: #027A48;
+}
+
+.imbus-status-text[data-status="Review"] {
+    background: #e8e1f6;
+    color: #6b45ae;
+}
+
+.imbus-status-text[data-status="Requested"],
+.imbus-status-text[data-status="New"] {
+    background: #f6e8e1;
+    color: #bd4f22;
+}
+
+.request-name,
+.request-description {
+    color: #344054;
+    font-size: 13px;
+    line-height: 18px;
+    overflow-wrap: anywhere;
+}
+
+.upload-actions,
+.mobile-actions {
+    display: flex;
+    gap: 16px;
+}
+
+@media only screen and (max-width: 768px) {
+    .imbus-table-row {
+        column-gap: 8px;
+        grid-template-columns: minmax(72px, .85fr) minmax(112px, 1.25fr) minmax(118px, .9fr);
+    }
+}

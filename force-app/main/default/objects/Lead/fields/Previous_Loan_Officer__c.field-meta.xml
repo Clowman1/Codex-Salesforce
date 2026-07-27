@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Previous_Loan_Officer__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(ISBLANK(Follow_Up_Account__r.Most_Recent_Loan_Officer__c), null, Follow_Up_Account__r.Most_Recent_Loan_Officer__r.FirstName &amp; &apos; &apos; &amp; Follow_Up_Account__r.Most_Recent_Loan_Officer__r.LastName)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Previous Loan Officer</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

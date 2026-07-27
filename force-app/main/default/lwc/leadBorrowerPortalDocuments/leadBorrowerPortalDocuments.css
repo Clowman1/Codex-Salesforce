@@ -1,0 +1,348 @@
+:host {
+    --sds-c-button-radius-border: 8px;
+    --dxp-s-button-line-height: 20px;
+    --dxp-s-button-font-weight: 600;
+    --dxp-s-button-font-size: 14px;
+    --sds-c-button-text-color: #344054;
+    --sds-c-button-neutral-color-border: #D0D5DD;
+    --slds-c-button-spacing-block-start: 10px;
+    --slds-c-button-spacing-block-end: 10px;
+    --slds-c-button-spacing-inline-end: 16px;
+    --slds-c-button-spacing-inline-start: 16px;
+    --lwc-borderWidthThin: 0;
+    --portal-table-row-header-color: #fff;
+    --portal-table-row-header-text-color: #fff;
+    display: block;
+    min-height: 100vh;
+}
+
+h1 {
+    color: #101828;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 38px;
+}
+
+h2 {
+    color: #101828;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 38px;
+    word-wrap: break-word;
+}
+
+h3,
+h4 {
+    color: #475467;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    word-wrap: break-word;
+}
+
+.portal-shell {
+    background: linear-gradient(180deg, #334f8e 0%, #172847 100%);
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr) 210px;
+    min-height: 100vh;
+}
+
+.brand-rail,
+.team-rail {
+    background: linear-gradient(180deg, #375799 0%, #182746 100%);
+}
+
+.brand-rail {
+    padding-top: 28px;
+    text-align: center;
+}
+
+.brand-logo {
+    display: block;
+    margin: 0 auto;
+    max-width: 52px;
+    width: 52px;
+}
+
+.team-rail {
+    padding: 48px 14px;
+}
+
+.team-card {
+    align-items: center;
+    background: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0 18px 36px rgba(12, 28, 56, 0.22);
+    color: #172847;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 12px;
+    text-align: center;
+}
+
+.team-card-label {
+    align-self: stretch;
+    color: #98A2B3;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.team-photo {
+    border-radius: 999px;
+    height: 54px;
+    object-fit: cover;
+    width: 54px;
+}
+
+.team-photo-placeholder {
+    align-items: center;
+    background: #EEF4FF;
+    border-radius: 999px;
+    color: #375799;
+    display: flex;
+    font-size: 0;
+    font-weight: 800;
+    height: 54px;
+    justify-content: center;
+    width: 54px;
+}
+
+.team-photo-placeholder::first-letter {
+    font-size: 20px;
+}
+
+.team-name {
+    font-size: 16px;
+    font-weight: 800;
+    margin-top: 14px;
+}
+
+.team-title {
+    color: #7B61FF;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.team-detail {
+    color: #475467;
+    font-size: 13px;
+    line-height: 20px;
+    margin-top: 6px;
+}
+
+.team-email {
+    color: #1B6FD8;
+    font-size: 12px;
+    line-height: 18px;
+    margin-top: 6px;
+    max-width: 156px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.imbus-main-container {
+    align-items: flex-start;
+    background: #FFFFFF;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    height: 100%;
+    padding: 44px 32px 56px;
+}
+
+.hero-header {
+    margin-bottom: -2px;
+}
+
+.imbus-main-container-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.imbus-stats-container {
+    align-items: flex-start;
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+}
+
+.imbus-stat-card {
+    align-items: center;
+    background: #FFFFFF;
+    border: 1px solid #E4E7EC;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+    display: flex;
+    flex: 1 0 0;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+}
+
+.imbus-stat-title {
+    align-items: flex-start;
+    display: inline-flex;
+    gap: 8px;
+    justify-content: flex-start;
+}
+
+.imbus-stat-text {
+    color: #101828;
+    font-family: "Inter", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 24px;
+    word-wrap: break-word;
+}
+
+.imbus-stat-number-container {
+    align-items: flex-end;
+    align-self: stretch;
+    display: inline-flex;
+    gap: 16px;
+    justify-content: flex-start;
+}
+
+.imbus-stat-number {
+    align-items: flex-start;
+    display: inline-flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: flex-start;
+}
+
+.imbus-stat-number-text {
+    align-self: center;
+    color: #101828;
+    font-family: "Inter", sans-serif;
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 44px;
+    word-wrap: break-word;
+}
+
+.imbus-document-table {
+    align-items: flex-start;
+    background: #FFFFFF;
+    border: 1px solid #E4E7EC;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.10), 0 1px 2px 0 rgba(16, 24, 40, 0.06);
+    display: flex;
+    flex-direction: column;
+    max-height: 550px;
+    overflow: scroll;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.imbus-document-table > div {
+    padding: 12px 24px;
+}
+
+.imbus-table-header {
+    background: var(--portal-table-row-header-color, #fff);
+    border-bottom: 1px solid #E4E7EC;
+    color: var(--portal-table-row-header-text-color, #fff);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.imbus-table-row {
+    border-collapse: collapse;
+    display: grid;
+    grid-template-columns: minmax(0, .5fr) minmax(0, .25fr) minmax(0, 1fr) minmax(0, .75fr);
+    min-width: 100%;
+}
+
+.imbus-table-row > div {
+    align-items: center;
+    display: flex;
+}
+
+c-lead-borrower-portal-document-row {
+    box-sizing: border-box;
+    padding: 12px 24px;
+    width: 100%;
+}
+
+.column-title {
+    font-size: 18px;
+}
+
+@media only screen and (max-width: 768px) {
+    .portal-shell {
+        display: block;
+    }
+
+    .brand-rail {
+        min-height: 42px;
+        padding-top: 12px;
+    }
+
+    .team-rail {
+        padding: 16px;
+    }
+
+    .team-card {
+        margin: 0 auto;
+        max-width: 320px;
+    }
+
+    .imbus-main-container {
+        padding: 24px 16px;
+    }
+
+    .imbus-title .imbus-title-greeting {
+        font-size: 18px;
+    }
+
+    .imbus-title .imbus-title-description {
+        font-size: 14px;
+    }
+
+    .imbus-stats-container {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .imbus-stat-number-container {
+        width: 200px;
+    }
+
+    .column-title {
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    .imbus-table-row {
+        column-gap: 8px;
+        grid-template-columns: minmax(72px, .85fr) minmax(112px, 1.25fr) minmax(118px, .9fr);
+    }
+
+    .imbus-document-table {
+        max-height: none;
+        overflow: visible;
+    }
+
+    .imbus-table-header {
+        position: static;
+        z-index: auto;
+    }
+}

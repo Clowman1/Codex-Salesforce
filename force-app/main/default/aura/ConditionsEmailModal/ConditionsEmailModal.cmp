@@ -1,0 +1,147 @@
+<aura:component controller="LoanConditionController" description="ConditionsEmailModal" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:hasRecordId" access="global">
+    <aura:attribute name="recordId" type="String" access="global"/>
+    <aura:registerEvent name="refreshEvent" type="c:RefreshEvent"/>
+    <aura:attribute name="email" type="String"/>
+    <aura:attribute name="emailBody" type="String"/>
+    <aura:attribute name="conditionType" type="String" access="global"/>
+    <aura:attribute name="application" type="Object" access="global"/>
+    <aura:attribute name="templateId" type="String"/>
+    <aura:attribute name="sectionOneHtml" type="String"/>
+    <aura:attribute name="lastSectionHtml" type="String"/>
+    <aura:attribute name="emailSubjectLine" type="String"/>
+    <aura:attribute name="emailTemplates"  type="String" access="global"/>
+    <aura:attribute name="emailSendersClassAPIName" type="String" access="global"/>
+    <aura:attribute name="ccAddresses" type="String" />
+    <aura:attribute name="bccAddresses" type="String" />
+    <aura:attribute name="senderEmail" type="String" />
+    <aura:attribute name="emailTemplatesParsed"  type="List" />
+    <aura:attribute name="emailSenders"  type="List" />
+    <aura:attribute name="pdfAttachments" type="List" default="[]" />
+    <aura:attribute name="isLoadingAttachments" type="Boolean" default="false" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <lightning:overlayLibrary aura:id="overlayLib2"/>
+
+    <div class="email-conditions-wrapper">
+        <aura:if isTrue="{! !empty(v.emailTemplatesParsed)}">
+            <lightning:select name="selectItem" label="Select an Email Template" value="{!v.templateId}" onchange="{!c.getEmailHtmlBody}">
+                <option value="">Choose one...</option>
+                <aura:iteration items="{!v.emailTemplatesParsed}" var="template">
+                    <option value="{!template.developerName}">{!template.label}</option>
+                </aura:iteration>
+            </lightning:select>
+
+            <!--Email Senders-->
+            <aura:if isTrue="{! !empty(v.emailSenders)}">
+                <div>
+                    <div class="slds-form-element__label">Sender Email</div>
+                    <lightning:helptext
+                            content="Select the email to send from. If none is selected,
+                            then the email will be sent from the current user email address" />
+                </div>
+                <lightning:select
+                    aura:id="sender"
+                    name="selectSender"
+                    label="Sender Email"
+                    variant="label-hidden"
+                    class="email-sender_select"
+                    onchange="{!c.selectSenderEmailHandler}">
+                        <option value="None">None</option>
+                        <aura:iteration items="{!v.emailSenders}" var="email">
+                            <option value="{!email}">{!email}</option>
+                        </aura:iteration>
+                </lightning:select>
+            </aura:if>
+
+            <aura:if isTrue="{!v.templateId != ''}">
+                <aura:if isTrue="{!v.application.Borrower_Email__c}">
+                    <lightning:layout multipleRows="true" class="slds-p-around_small">
+                        <lightning:layoutItem size="4">
+                            <lightning:input type="checkbox" label="Send to Borrower" aura:id="sendToBorrower"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="4">
+                            ({!v.application.Borrower_Email__c})
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </aura:if>
+                <aura:if isTrue="{!v.application.Email_Co_Borrower__c}">
+                    <lightning:layout multipleRows="true" class="slds-p-around_small">
+                        <lightning:layoutItem size="4">
+                            <lightning:input type="checkbox" label="Send to CoBorrower" aura:id="sendToCoBorrower"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="4">
+                            ({!v.application.Email_Co_Borrower__c})
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </aura:if>
+                <lightning:layout multipleRows="true" class="slds-p-around_small">
+                    <lightning:layoutItem size="4">
+                        <lightning:input type="checkbox" label="Send to Loan Owner" aura:id="sendToLoanOfficer"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="4">
+                        ({!v.application.Owner.Email})
+                    </lightning:layoutItem>
+                </lightning:layout>
+                <lightning:input type="text" value="{!v.ccAddresses}" name="CC" label="CC"></lightning:input>
+                <lightning:input type="text" value="{!v.bccAddresses}" name="BCC" label="BCC"></lightning:input>
+                <lightning:input aura:id="subjectLine" label="Subject" type="text" value="{!v.emailSubjectLine}" ></lightning:input>
+
+                <div class="pdf-attachments slds-m-top_medium">
+                    <div class="pdf-attachments__header">
+                        <div>
+                            <div class="pdf-attachments__title">Attach PDF</div>
+                            <div class="pdf-attachments__subtitle">Upload one or more PDFs to include with this email.</div>
+                        </div>
+                    </div>
+                    <lightning:fileUpload
+                        label="Upload PDF"
+                        name="conditionEmailPdfUpload"
+                        recordId="{!v.recordId}"
+                        accept=".pdf"
+                        multiple="true"
+                        onuploadfinished="{!c.handlePdfUploadFinished}"
+                    />
+                    <aura:if isTrue="{!v.isLoadingAttachments}">
+                        <div class="slds-p-vertical_small">
+                            <lightning:spinner alternativeText="Loading PDFs" size="small" />
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue="{!not(empty(v.pdfAttachments))}">
+                        <div class="pdf-attachments__list">
+                            <aura:iteration items="{!v.pdfAttachments}" var="attachment">
+                                <div class="pdf-attachments__row">
+                                    <span class="pdf-attachments__name">{!attachment.filename}</span>
+                                    <input aura:id="attachmentVersionId" type="hidden" value="{!attachment.contentVersionId}" />
+                                    <span class="pdf-attachments__meta">{!attachment.sizeLabel}</span>
+                                </div>
+                            </aura:iteration>
+                        </div>
+                        <aura:set attribute="else">
+                            <div class="pdf-attachments__empty">No PDF selected.</div>
+                        </aura:set>
+                    </aura:if>
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!not(empty(v.email))}">
+                <lightning:layout class="preview">
+                    <lightning:layoutItem class="ncs-email-preview">
+                        <lightning:inputRichText aura:id="emailBodyEditor"
+                                                 value="{!v.email}"
+                                                 formats="['bold','italic','underline','strike','list','indent','link','color']"/>
+                    </lightning:layoutItem>
+                </lightning:layout>
+                <lightning:layout class="slds-m-top_small " horizontalAlign="center" >
+                    <lightning:layoutItem>
+                        <lightning:button label="Send" variant="brand" onclick="{!c.sendEmail}"/>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </aura:if>
+
+            <aura:set attribute="else">
+                <div class="email-conditions-bold_text">
+                    <span>Please fill in the design attribute with the email template names and developer names.</span>
+                </div>
+            </aura:set>
+        </aura:if>
+    </div>
+
+</aura:component>

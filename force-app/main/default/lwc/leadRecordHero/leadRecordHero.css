@@ -1,0 +1,121 @@
+.hero {
+    align-items: center;
+    background: linear-gradient(110deg, #142342 0%, #1c3155 58%, #647575 100%);
+    border-radius: 14px;
+    box-shadow: 0 12px 28px rgba(17, 31, 56, 0.18);
+    color: #fff;
+    display: flex;
+    gap: 32px;
+    justify-content: space-between;
+    margin: 12px 0 14px;
+    min-height: 168px;
+    overflow: hidden;
+    padding: 22px 24px;
+}
+
+.hero-left {
+    min-width: 0;
+}
+
+.eyebrow {
+    color: #ffa534;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    margin: 0 0 6px;
+    text-transform: uppercase;
+}
+
+.title-row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+}
+
+h1 {
+    font-size: clamp(1.9rem, 3vw, 2.35rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin: 0;
+}
+
+.contact-pill {
+    background: linear-gradient(180deg, #ffb24a 0%, #ff9824 100%);
+    border: 1px solid #ff8c16;
+    border-radius: 999px;
+    color: #122242;
+    font-size: 0.9rem;
+    font-weight: 800;
+    box-shadow: 0 8px 18px rgba(255, 145, 31, 0.25);
+    padding: 7px 12px;
+    text-decoration: none;
+}
+
+.contact-pill:hover {
+    background: linear-gradient(180deg, #ffc066 0%, #ffa438 100%);
+    color: #122242;
+    text-decoration: none;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.chip {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 7px 11px;
+}
+
+.info-panel {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 13px;
+    display: grid;
+    flex: 0 0 min(38vw, 680px);
+    gap: 18px 42px;
+    grid-template-columns: 1fr 1fr;
+    padding: 22px 18px;
+}
+
+.info-item span {
+    color: #aebbd0;
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.info-item strong {
+    color: #fff;
+    display: block;
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.loading {
+    color: #dfe7f4;
+    font-weight: 800;
+}
+
+@media (max-width: 900px) {
+    .hero {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .info-panel {
+        flex: auto;
+        grid-template-columns: 1fr;
+    }
+}

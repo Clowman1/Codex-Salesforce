@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Pre_Approval_Message</name>
+        <label>Send Pre-Approval Message</label>
+        <locationX>182</locationX>
+        <locationY>575</locationY>
+        <actionName>TwilioSF__TwilioSendSMS</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Update_Checkbox_Pre_Approval</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>fromNumber</name>
+            <value>
+                <elementReference>$Label.Twilio_From_Number</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>message</name>
+            <value>
+                <elementReference>PreApprovalMessage</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>recordId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>toNumber</name>
+            <value>
+                <elementReference>$Record.Realtor_Buying_Agent__r.PersonMobilePhone</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TwilioSF__TwilioSendSMS</nameSegment>
+    </actionCalls>
+    <apiVersion>55.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Should_Buyer_Be_Sent_Too</name>
+        <label>Should Buyer Be Sent Too?</label>
+        <locationX>380</locationX>
+        <locationY>335</locationY>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Realtor_Buying_Agent__r.PersonMobilePhone</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Realtor_Buying_Agent__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>$Record.Referral_Source__c</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>What_is_the_Status</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>What_is_the_Status</name>
+        <label>What is the Status?</label>
+        <locationX>50</locationX>
+        <locationY>455</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>CommSent_Attempt_1_or_2</name>
+            <conditionLogic>(1 OR 2) AND 3</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Contact Attempt 1</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Contact Attempt 2</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.CommSent_Attempt_2__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Attempt 1 or 2</label>
+        </rules>
+        <rules>
+            <name>Attempt_3</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Contact Attempt 3</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.CommSent_Attempt_3__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Attempt 3</label>
+        </rules>
+        <rules>
+            <name>Pre_Approval</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Pre-Approval</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.CommSent_Pre_Approval__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_Pre_Approval_Message</targetReference>
+            </connector>
+            <label>Pre-Approval</label>
+        </rules>
+    </decisions>
+    <description>Updated Twilio Message Actions to include the Lead Id as the Parent Id on the Message Record.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>Attempt1or2Message</name>
+        <dataType>String</dataType>
+        <expression>IF(ISPICKVAL({!$Record.Status}, &apos;Contact Attempt 1&apos;) , &apos;This is our first attempt to reach &apos; + {!$Record.FirstName} + &apos; &apos; + {!$Record.LastName} + &apos; via phone/text. We’ll continue to follow up.&apos;, &apos;This is our second attempt to reach &apos; + {!$Record.FirstName} + &apos; &apos; + {!$Record.LastName} + &apos; via phone/text. We’ll continue to follow up.&apos;) + &quot;  - Reach Home Loans&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>Attempt3or4Message</name>
+        <dataType>String</dataType>
+        <expression>&apos;We’ve attempted &apos; + {!$Record.FirstName} + &apos; &apos; + {!$Record.LastName} + &apos; 3 times via phone call and text. We’ll move the lead to our nurture queue for the time being. Please let us know if you re-engage the buyer.&apos; + &quot;  - Reach Home Loans&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>ContactedMessage</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.FirstName} + &quot; &quot; + {!$Record.LastName} + &quot; Update: &quot; + {!$Record.Contacted_Call_Back_Message__c} + &quot;  - Reach Home Loans&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>DocsReceivedMessage</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.FirstName} + &quot; &quot; + {!$Record.LastName} + &quot; Update: &quot; + {!$Record.Documents_Received_Message__c} + &quot;  - Reach Home Loans&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>DocsRequestedMessage</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.FirstName} + &quot; &quot; + {!$Record.LastName} + &quot; Update: &quot; + {!$Record.Documents_Requested_Message__c} + &quot;  - Reach Home Loans&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>PreApprovalMessage</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.FirstName} + &quot; &quot; + {!$Record.LastName} + &quot; is Pre-Approved.&quot; + &quot;  - Reach Home Loans&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>WorkingMessage</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.FirstName} + &quot; &quot; + {!$Record.LastName} + &quot; Update: &quot; + {!$Record.Working_Message__c} + &quot;  - Reach Home Loans&quot;</expression>
+    </formulas>
+    <interviewLabel>Lead Status Change Message Sends {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead Status Change Message Sends</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_Checkbox_Pre_Approval</name>
+        <label>Update Checkbox Pre-Approval</label>
+        <locationX>182</locationX>
+        <locationY>695</locationY>
+        <inputAssignments>
+            <field>CommSent_Pre_Approval__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>254</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Should_Buyer_Be_Sent_Too</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status</field>
+            <operator>IsChanged</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Realtor_Buying_Agent__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>LeadSource</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Realtor Referral</stringValue>
+            </value>
+        </filters>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

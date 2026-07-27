@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lawrence_Transactions</fullName>
+    <columns>NAME</columns>
+    <columns>Loan_Officer__c</columns>
+    <columns>Borrower_Name__c</columns>
+    <columns>OWNER.FIRST_NAME</columns>
+    <columns>Processor__c</columns>
+    <columns>Status__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>Rate_Lock_Exp_Date__c</columns>
+    <columns>Loan_Amount_1st__c</columns>
+    <columns>Loan_Type_1st_TD__c</columns>
+    <columns>Biz_Dev__c</columns>
+    <columns>RECORDTYPE</columns>
+    <columns>Lender_lookup__c</columns>
+    <columns>Lock_Expiring__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>notEqual</operation>
+        <value>Cancelled,Lost,Post-Closed</value>
+    </filters>
+    <filters>
+        <field>Status__c</field>
+        <operation>notEqual</operation>
+        <value>Cancelled,Lost,Post-Closed</value>
+    </filters>
+    <filters>
+        <field>Loan_Officer__c</field>
+        <operation>equals</operation>
+        <value>Lawrence Lanos</value>
+    </filters>
+    <label>Lawrence Transactions</label>
+    <sharedTo>
+        <group>Lawrence_For_Sharing</group>
+    </sharedTo>
+</ListView>

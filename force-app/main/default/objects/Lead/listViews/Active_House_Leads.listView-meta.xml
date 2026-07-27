@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_House_Leads</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>Biz_Dev__c</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>Appointment_Date_Time__c</columns>
+    <columns>Loan_Purpose__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.CONVERTED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>Biz_Dev__c</field>
+        <operation>equals</operation>
+        <value>Biz Dev - Reach,Biz Dev - Bondarevsky,Biz Dev - Cabrera,Biz Dev - Hornaday,Biz Dev - Hsieh,Biz Dev - Hseih,Biz Dev - Perrault</value>
+    </filters>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>equals</operation>
+        <value>Contact Attempt 1,Contact Attempt 2,Contact Attempt 3,Contact Attempt 4,Contact Attempt 5,Contact Attempt 6,Contact_Attempt_6,Working,Application,Application Link Out,Documents Requested,Documents Received for Review,Under Contract</value>
+    </filters>
+    <label>Active House Leads</label>
+</ListView>

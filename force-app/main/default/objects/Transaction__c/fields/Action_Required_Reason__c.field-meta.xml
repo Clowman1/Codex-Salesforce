@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Action_Required_Reason__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(TODAY() -  Funding_Authorization__c &gt;= 2 &amp;&amp; ISNULL( PC_Conditions_Satisfied__c ), &quot;PC Conditions; &quot;, &quot;&quot; ) +
+IF(TODAY() =  Funding_Date__c &amp;&amp; ISNULL( Funding_Authorization__c )&amp;&amp; HOUR(TIMENOW() - 4) &gt; 14  ||   TODAY() &gt;  Funding_Date__c &amp;&amp; ISNULL( Funding_Authorization__c ),  &quot;Funding Authorization; &quot;, &quot;&quot; ) +
+IF(TODAY() &gt;=  Business_Day_Before_Funding__c &amp;&amp; ISNULL(  Funding_Wire_Requested__c  ), &quot;Wire; &quot;, &quot;&quot; ) +
+IF( TODAY() - ( Funding_Date__c ) &gt;= 1 &amp;&amp; ISNULL(  Note_Received_Date__c ), &quot;Note Received; &quot;, &quot;&quot; ) +
+IF(TODAY() &gt;  Funding_Date__c &amp;&amp; ISNULL( MERSUploadedActivated__c), &quot;MERS Activation; &quot;, &quot;&quot; ) +
+IF(TODAY() &gt;   Note_Received_Date__c &amp;&amp; ISNULL(  Purchase_Advice_Date__c ), &quot;Purchase Advice; &quot;, &quot;&quot; ) +
+IF(TODAY() &gt;   Purchase_Advice_Date__c &amp;&amp; ISNULL(   MERS_Transfer_to_Investor__c  ), &quot;MERS Transfer; &quot;, &quot;&quot; ) +
+IF( TODAY() &gt;=  Business_Day_Before_Funding__c&amp;&amp; ISNULL(  FedEx_Label_Sent__c ), &quot;Send FedEx Label; &quot;, &quot;&quot; ) +
+IF( Business_Day_Before_Closing__c  &lt;=  TODAY() &amp;&amp; ISNULL(   MERS_Registration_Complete__c ), &quot;MERS Registration; &quot;, &quot;&quot; )</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Action Required Reason</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

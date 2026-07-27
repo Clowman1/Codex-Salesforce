@@ -1,0 +1,94 @@
+<template>
+    <div class="lookup">
+        <label class="label" for="realtor-search">
+            <template if:true={required}>
+                <abbr class="required" title="required">*</abbr>
+            </template>
+            {label}
+        </label>
+
+        <template if:true={hasSelection}>
+            <div class="selected">
+                <div>
+                    <div class="selected-name">{selectedLabel}</div>
+                    <template if:true={selectedSubtitle}>
+                        <div class="selected-subtitle">{selectedSubtitle}</div>
+                    </template>
+                </div>
+                <button type="button" class="clear-button" onclick={clearSelection} title="Clear selection">Clear</button>
+            </div>
+        </template>
+
+        <template if:true={showLookupSearch}>
+            <div class="input-wrap">
+                <input
+                    id="realtor-search"
+                    class="search-input"
+                    type="search"
+                    value={searchTerm}
+                    placeholder="Search Realtor accounts..."
+                    oninput={handleSearchChange}
+                    onfocus={handleFocus}
+                />
+            </div>
+
+            <template if:true={showResults}>
+                <div class="results" role="listbox">
+                    <template for:each={options} for:item="option">
+                        <button
+                            key={option.value}
+                            type="button"
+                            class="result"
+                            data-id={option.value}
+                            data-label={option.label}
+                            data-subtitle={option.subtitle}
+                            onclick={selectOption}
+                        >
+                            <span class="result-name">{option.label}</span>
+                            <template if:true={option.subtitle}>
+                                <span class="result-subtitle">{option.subtitle}</span>
+                            </template>
+                        </button>
+                    </template>
+                </div>
+            </template>
+
+            <template if:true={showNoResults}>
+                <div class="hint">No matching Realtor accounts found.</div>
+            </template>
+            <template if:true={isSearching}>
+                <div class="hint">Searching...</div>
+            </template>
+            <button type="button" class="create-link" onclick={openCreatePanel}>
+                Create a new Realtor Partner
+            </button>
+        </template>
+
+        <template if:true={isCreateOpen}>
+            <section class="create-panel" aria-label="Create Realtor Partner">
+                <div class="create-panel-header">
+                    <div>
+                        <div class="create-title">Create Realtor Partner</div>
+                        <div class="create-subtitle">Use this when the buyer's agent is not already in Salesforce.</div>
+                    </div>
+                    <button type="button" class="clear-button" onclick={closeCreatePanel}>Back to search</button>
+                </div>
+                <div class="create-grid">
+                    <lightning-input label="First Name" value={createFirstName} data-field="createFirstName" data-create-realtor-input="true" onchange={handleCreateInput} required></lightning-input>
+                    <lightning-input label="Last Name" value={createLastName} data-field="createLastName" data-create-realtor-input="true" onchange={handleCreateInput} required></lightning-input>
+                    <lightning-input type="tel" label="Phone" value={createPhone} data-field="createPhone" data-create-realtor-input="true" onchange={handleCreateInput} required></lightning-input>
+                    <lightning-input type="email" label="Email" value={createEmail} data-field="createEmail" data-create-realtor-input="true" onchange={handleCreateInput} required></lightning-input>
+                    <lightning-combobox label="Biz Dev Designation" value={createBizDevDesignation} data-field="createBizDevDesignation" data-create-realtor-input="true" options={bizDevOptions} onchange={handleCreateInput} required></lightning-combobox>
+                </div>
+                <div class="create-actions">
+                    <button type="button" class="create-cancel" onclick={closeCreatePanel} disabled={isCreating}>Cancel</button>
+                    <button type="button" class="create-submit" onclick={createRealtorAccount} disabled={isCreating}>{createButtonLabel}</button>
+                </div>
+            </section>
+        </template>
+
+        <template if:true={errorMessage}>
+            <div class="error">{errorMessage}</div>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Birthdays_This_Month</fullName>
+    <columns>Closing_Date__pc</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>PC_TITLE</columns>
+    <columns>ACCOUNT.PHONE1</columns>
+    <columns>PC_PHONE3</columns>
+    <columns>PC_PHONE5</columns>
+    <columns>PC_EMAIL</columns>
+    <columns>CORE.USERS.LAST_NAME</columns>
+    <columns>PC_BIRTHDATE</columns>
+    <columns>Birth_Date_Number__pc</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>PC_BIRTHDATE</field>
+        <operation>equals</operation>
+        <value>TODAY</value>
+    </filters>
+    <label>Birthdays This Month</label>
+</ListView>

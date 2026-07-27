@@ -1,0 +1,27 @@
+# Local Salesforce / Codex working files
+/.agents/
+/.rollback/
+/.trainual-playwright-profile/
+/backups/
+/deploy-tmp/
+/outputs/
+/reports/
+/retrieved-all-flows/
+/retrieved-apex-review/
+/retrieved-flow-review/
+/salesforce-backups/
+/tmp/
+/tmp-valuelink-parser/
+/tmp_signature_assets/
+/trainual-review/
+
+# Generated exports, deploy results, and one-off data loads
+/*.csv
+/*.json
+/*.log
+/*.png
+!/sfdx-project.json
+
+# Local OS/editor noise
+.DS_Store
+Thumbs.db

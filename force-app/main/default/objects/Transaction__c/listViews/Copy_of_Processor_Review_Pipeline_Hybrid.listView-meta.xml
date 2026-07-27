@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Copy_of_Processor_Review_Pipeline_Hybrid</fullName>
+    <booleanFilter>1 AND 2 AND 3</booleanFilter>
+    <columns>NAME</columns>
+    <columns>Loan_Officer__c</columns>
+    <columns>Processor__c</columns>
+    <columns>Lender_lookup__c</columns>
+    <columns>Closing_Type__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>Funding_Date__c</columns>
+    <columns>Rate_Lock_Exp_Date__c</columns>
+    <columns>Status__c</columns>
+    <columns>Funding_Wire_Requested__c</columns>
+    <columns>Closing_Package_Sent__c</columns>
+    <columns>Open_in_Ease__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>PC Review,Closing,Funding,Conditionally Approved,Re-Submitted,Approved</value>
+    </filters>
+    <filters>
+        <field>Closing_Date__c</field>
+        <operation>equals</operation>
+        <value>TODAY</value>
+    </filters>
+    <filters>
+        <field>Lender_lookup__c</field>
+        <operation>equals</operation>
+        <value>UWM</value>
+    </filters>
+    <label>Today&apos;s Hybrid Closing Review List</label>
+    <sharedTo>
+        <group>Management</group>
+        <group>Processors</group>
+    </sharedTo>
+</ListView>

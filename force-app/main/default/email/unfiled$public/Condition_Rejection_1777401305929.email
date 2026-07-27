@@ -1,0 +1,37 @@
+<html>
+<head>
+	<title></title>
+	<style type="text/css">.portalButton {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 14px 30px;
+        border-radius: 999px;
+        background: #0082cb;
+        font: normal normal bold 16px Arial, sans-serif;
+        line-height: 20px;
+        color: #ffffff !important;
+        text-decoration: none;
+      }
+	</style>
+</head>
+<body style="height: auto; min-height: auto;">Dear {{{Recipient.FirstName}}},<br />
+<br />
+Thank you for submitting conditions to us. The following item needs your attention please:
+<ul>
+	<li>{{{Condition__c.Name}}} -&nbsp;{{{Condition__c.Description__c}}}</li>
+</ul>
+Reason for requesting again:
+
+<ul>
+	<li>{{{Condition__c.RejectionNotes__c}}}</li>
+</ul>
+
+<p style="margin-bottom:0;">Can you kindly assist to resolve this item immediately? I am here to assist you in every possible way. Please do not hesitate to contact me for any question or clarifications.</p>
+
+<p style="margin-top:24px;margin-bottom:8px;"><strong>Secure Conditions Portal:</strong></p>
+
+<p><a class="portalButton" href="" rel="noopener noreferrer" target="_blank">Open Secure Portal</a></p>
+<br />
+<br />
+</body>
+</html>

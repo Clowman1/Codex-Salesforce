@@ -1,0 +1,77 @@
+<template>
+    <section class="tools">
+        <template if:true={hasTrackers}>
+            <article class="tools-card tracker-panel">
+                <header>
+                    <div>
+                        <h2>Production Trackers</h2>
+                        <p>Click any tracker to review the source records.</p>
+                    </div>
+                </header>
+                <div class="tracker-grid">
+                    <template for:each={trackers} for:item="tracker">
+                        <button key={tracker.key} class={tracker.className} data-report-url={tracker.reportUrl} onclick={openReport} type="button">
+                            <span class="tracker-label">{tracker.label}</span>
+                            <strong>{tracker.formattedVolume}</strong>
+                            <span class="tracker-units">{tracker.unitsText}</span>
+                            <small>{tracker.helperText}</small>
+                        </button>
+                    </template>
+                </div>
+            </article>
+        </template>
+
+        <article class={eventsCardClass}>
+            <header>
+                <h2>Today&apos;s Events</h2>
+                <button onclick={openCalendar}>View Calendar</button>
+            </header>
+            <template if:true={hasEvents}>
+                <template for:each={events} for:item="item">
+                    <button key={item.id} class="tools-row" data-id={item.id} data-object={item.objectApiName} onclick={openRecord}>
+                        <span>{item.title}</span>
+                        <small>{item.subtitle}</small>
+                    </button>
+                </template>
+            </template>
+            <template if:false={hasEvents}>
+                <p class="tools-empty">No upcoming events.</p>
+            </template>
+        </article>
+
+        <article class="tools-card">
+            <header>
+                <h2>Recent Records</h2>
+            </header>
+            <template if:true={hasRecentRecords}>
+                <template for:each={recentRecords} for:item="item">
+                    <button key={item.id} class="tools-row" data-id={item.id} data-object={item.objectApiName} onclick={openRecord}>
+                        <span>{item.title}</span>
+                        <small>{item.subtitle}</small>
+                    </button>
+                </template>
+            </template>
+            <template if:false={hasRecentRecords}>
+                <p class="tools-empty">No recent records.</p>
+            </template>
+        </article>
+
+        <article class="tools-card">
+            <header>
+                <h2>Today&apos;s Tasks</h2>
+                <button onclick={openTasks}>View All</button>
+            </header>
+            <template if:true={hasTasks}>
+                <template for:each={tasks} for:item="item">
+                    <button key={item.id} class="tools-row" data-id={item.id} data-object={item.objectApiName} onclick={openRecord}>
+                        <span>{item.title}</span>
+                        <small>{item.subtitle}</small>
+                    </button>
+                </template>
+            </template>
+            <template if:false={hasTasks}>
+                <p class="tools-empty">Nothing due today.</p>
+            </template>
+        </article>
+    </section>
+</template>

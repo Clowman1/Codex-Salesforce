@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Reassign_Outbound_Message_Owner</name>
+        <label>Reassign Outbound Message Owner</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <actionName>TwilioOutboundMessageOwnerInvocable</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>twilioMessageId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TwilioOutboundMessageOwnerInvocable</nameSegment>
+    </actionCalls>
+    <apiVersion>55.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>When Automated Process creates an outbound-api Twilio message tied to a Transaction, reassign Owner to Transaction.LastModifiedById. Uses dynamic Automated Process user lookup in Apex (no hardcoded User Id).</description>
+    <environments>Default</environments>
+    <interviewLabel>Outbound Message Owner Assignment {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Outbound Message Owner Assignment</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Reassign_Outbound_Message_Owner</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>TwilioSF__Direction__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>outbound-api</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>TwilioSF__SF_Parent_Record_Id__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>TwilioSF__Message__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <triggerOrder>1250</triggerOrder>
+</Flow>

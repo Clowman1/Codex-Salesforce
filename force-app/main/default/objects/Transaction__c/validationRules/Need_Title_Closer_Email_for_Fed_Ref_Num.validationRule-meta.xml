@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Need_Title_Closer_Email_for_Fed_Ref_Num</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    ISCHANGED(Federal_Reference_Number__c ),
+    NOT(ISBLANK(Federal_Reference_Number__c)),
+    ISBLANK(  Title_Closer_Email__c )
+)</errorConditionFormula>
+    <errorMessage>Please Provide Title Closer Email</errorMessage>
+</ValidationRule>

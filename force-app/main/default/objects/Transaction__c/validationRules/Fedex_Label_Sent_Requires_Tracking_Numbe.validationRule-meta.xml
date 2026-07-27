@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fedex_Label_Sent_Requires_Tracking_Numbe</fullName>
+    <active>true</active>
+    <errorConditionFormula>NOT(ISBLANK(FedEx_Label_Sent__c)) &amp;&amp; ISBLANK(FedexTrackingNumber__c)</errorConditionFormula>
+    <errorDisplayField>FedexTrackingNumber__c</errorDisplayField>
+    <errorMessage>Please enter the fedex tracking number.</errorMessage>
+</ValidationRule>

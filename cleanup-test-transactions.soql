@@ -1,0 +1,4 @@
+SELECT Id, Name, Status__c, CreatedDate, Owner.Name
+FROM Transaction__c
+WHERE Name LIKE '%Test%'
+ORDER BY CreatedDate DESC

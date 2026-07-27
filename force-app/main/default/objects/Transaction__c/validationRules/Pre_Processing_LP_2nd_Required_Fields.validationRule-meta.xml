@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pre_Processing_LP_2nd_Required_Fields</fullName>
+    <active>false</active>
+    <errorConditionFormula>AND(
+DATEVALUE(CreatedDate) &gt;= DATE(2024, 12, 20),
+ISCHANGED(Status__c),
+NOT(ISPICKVAL(Status__c, &apos;TRID Application&apos;)),
+NOT(ISPICKVAL(Status__c, &apos;Open&apos;)),
+NOT(ISPICKVAL(Status__c, &apos;Disclosures Out&apos;)),
+NOT(ISPICKVAL(Status__c, &apos;Conditionally Approved&apos;)),
+ISPICKVAL(Lien_Position__c, &apos;2nd&apos;),
+OR(
+ISBLANK(TEXT(Loan_Type_2nd_TD__c)),
+ISBLANK(Loan_2nd_TD__c),
+ISBLANK(TEXT(Doc_Type_2nd_TD__c)),
+ISBLANK(Loan_Amount_2nd__c),
+ISBLANK(Term_2nd__c)
+)
+)</errorConditionFormula>
+    <errorMessage>Please, fill out required fields section</errorMessage>
+</ValidationRule>

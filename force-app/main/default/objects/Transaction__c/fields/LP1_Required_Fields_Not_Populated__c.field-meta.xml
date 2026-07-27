@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LP1_Required_Fields_Not_Populated__c</fullName>
+    <formula>OR(
+ISBLANK(TEXT(Loan_Type_1st_TD__c)),
+ISBLANK(Loan_1st_TD__c),
+ISBLANK(TEXT(Doc_Type_1st_TD__c)),
+ISBLANK(Loan_Amount_1st__c),
+ISBLANK(TEXT(MCC__c)),
+ISBLANK(TEXT(Loan_Program_1st__c)),
+ISBLANK(Term_1st__c),
+ISBLANK(Rate_1st_TD__c),
+ISBLANK(PITI__c),
+ISBLANK(TEXT(MI_Type__c)),
+ISBLANK(DTI_Front_End__c),
+ISBLANK(DTI_Back_End__c ),
+ISBLANK(LTV__c),
+ISBLANK(FICO__c),
+AND (
+ISBLANK(Mortgage_Ins_1st_TD__c),
+CONTAINS(TEXT(MI_Type__c), &apos;Borrower Paid&apos;)
+)
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>LP1 Required Fields Not Populated</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,62 @@
+<!--
+ - Created by BTB12 on 9/22/2022.
+ -->
+
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+    <aura:attribute name="simpleRecord" type="Object"/>
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="frameLoaded" type="Boolean" default="false"/>
+    <aura:attribute name="loadFrame" type="Boolean" default="false"/>
+    <aura:attribute name="showFrameFallback" type="Boolean" default="false"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <force:recordData aura:id="simpleRecord"
+                      recordId="{!v.recordId}"
+                      targetFields="{!v.simpleRecord}"
+                      recordUpdated="{!c.doInit}"
+                      fields="Id,AriveId__c"/>
+
+    <div class="slds-box slds-box_xx-small" style="background:#fff;">
+        <lightning:accordion allowMultipleSectionsOpen="true">
+            <lightning:accordionSection label="Arive">
+                <aura:if isTrue="{!v.simpleRecord}">
+                    <aura:if isTrue="{!not(empty(v.simpleRecord.AriveId__c))}">
+                        <div class="slds-grid slds-wrap slds-grid_vertical-align-center slds-m-bottom_small">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-3">
+                                <p class="slds-text-heading_small slds-m-bottom_xx-small">ARIVE Loan File</p>
+                                <p class="slds-text-body_small slds-text-color_weak">
+                                    Salesforce will load the embedded ARIVE view automatically. If ARIVE asks for login, open ARIVE once, sign in, then reload the embedded view.
+                                </p>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-text-align_right slds-grid slds-grid_align-end slds-gutters_x-small">
+                                <a class="slds-button slds-button_neutral"
+                                   href="{!v.url}"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    Open ARIVE
+                                </a>
+                                <button class="slds-button slds-button_neutral" onclick="{!c.loadEmbeddedFrame}">
+                                    Reload Embedded View
+                                </button>
+                            </div>
+                        </div>
+
+                        <aura:if isTrue="{!v.loadFrame}">
+                            <iframe aura:id="LendWizeIframe"
+                                    title="ARIVE loan file"
+                                    style="width:100%; height:1200px; overflow:hidden; border:1px solid #d8dde6; border-radius:4px;"
+                                    src="{!v.url}"
+                                    onload="{!c.handleFrameLoad}">
+                            </iframe>
+                        </aura:if>
+                        
+                        <aura:set attribute="else">
+                            <p class="slds-text-heading--label slds-text-align--center slds-p-around--x-large">
+                                This record has not yet been synced with ARIVE.<br/><br/> Please allow time for the integration to occur or use Sync With Arive.
+                            </p>
+                        </aura:set>
+                    </aura:if>
+                </aura:if>
+            </lightning:accordionSection>
+        </lightning:accordion>
+    </div>
+</aura:component>

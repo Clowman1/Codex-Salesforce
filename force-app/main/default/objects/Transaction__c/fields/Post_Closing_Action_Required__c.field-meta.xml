@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Post_Closing_Action_Required__c</fullName>
+    <formula>AND
+(
+    TODAY() - Post_Closed_Date__c &gt;= 1,
+    TODAY() - Post_Closed_Date__c &lt; 14,
+    OR(
+AND(ISBLANK(Update_Data_From_UWM__c), Lender_lookup__c = &apos;0015x00002GLWu9AAH&apos;),
+AND(ISBLANK(Update_all_Loan_Data_from_Investor_LOS__c), Transaction_is_UWM_File__c = &apos;No&apos;),
+AND(ISBLANK(Add_Client_to_Home_Bot__c), Show_HomeBot_Checklist__c = &apos;Yes&apos;),
+AND(ISBLANK(TEXT(Occupancy__c)), Show_Occupancy_Checklist__c = &apos;Yes&apos;),
+AND(ISBLANK(Confirm_File_Owner_Matches_LO_on_1003__c)),
+AND(ISBLANK(Review_and_Confirm_Buydown_and_DPA_Opts__c)),
+AND(ISBLANK(BPS__c)),
+AND(ISBLANK(Send_Client_Review_Request_Call_Text__c)),
+AND(ISBLANK(Pull_Audit_Package_from_Investor__c)),
+AND(ISBLANK(Move_OneDrive_File_into_Closed_Loans__c))
+    )
+)</formula>
+    <label>Post-Closing Action Required</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

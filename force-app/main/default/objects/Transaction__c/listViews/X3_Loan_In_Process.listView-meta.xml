@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>X3_Loan_In_Process</fullName>
+    <columns>NAME</columns>
+    <columns>Borrower_Name__c</columns>
+    <columns>Status__c</columns>
+    <columns>Loan_Officer__c</columns>
+    <columns>Processor__c</columns>
+    <columns>Loan_Amount_1st__c</columns>
+    <columns>Submitted_to_Processing_Date__c</columns>
+    <columns>OWNER.FIRST_NAME</columns>
+    <columns>Appraisal_Ordered__c</columns>
+    <columns>Appraisal_Back__c</columns>
+    <columns>Disclosures_Received_Date__c</columns>
+    <columns>Title_Ordered_Date__c</columns>
+    <columns>Title_Received_Date__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>Lock_Exp_Date_1st_TD__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Processing</value>
+    </filters>
+    <label>3. Loan In Process</label>
+    <sharedTo>
+        <group>Management</group>
+    </sharedTo>
+</ListView>

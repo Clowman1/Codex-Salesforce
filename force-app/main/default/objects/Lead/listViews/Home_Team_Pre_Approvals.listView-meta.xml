@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Home_Team_Pre_Approvals</fullName>
+    <columns>Pre_Approval_Date__c</columns>
+    <columns>Last_Call_Attempt_RingCentral__c</columns>
+    <columns>Last_SMS_Attempt_RingCentral__c</columns>
+    <columns>LEAD.LAST_ACTIVITY</columns>
+    <columns>Appointment_Date_Time__c</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>Owner__c</columns>
+    <columns>LEAD.FIRST_NAME</columns>
+    <columns>LEAD.LAST_NAME</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>Loan_Purpose__c</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <columns>Biz_Dev__c</columns>
+    <columns>Realtor_Buying_Agent__c</columns>
+    <columns>LEAD.RATING</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>equals</operation>
+        <value>Pre-Approval</value>
+    </filters>
+    <filters>
+        <field>LEAD.CONVERTED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>LEAD.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Lead.Consumer_Lead_record_type</value>
+    </filters>
+    <filters>
+        <field>Owner__c</field>
+        <operation>contains</operation>
+        <value>Brotsky</value>
+    </filters>
+    <label>Active Pre-Approvals (90 Days)</label>
+    <sharedTo>
+        <group>Brandon_Brotsky</group>
+        <group>Byron_Richie_For_Sharing</group>
+        <group>Opener</group>
+    </sharedTo>
+</ListView>

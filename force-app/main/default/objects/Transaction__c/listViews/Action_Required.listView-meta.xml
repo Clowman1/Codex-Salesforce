@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Action_Required</fullName>
+    <columns>NAME</columns>
+    <columns>Action_Required_Reason__c</columns>
+    <columns>Status__c</columns>
+    <columns>Closing_Type__c</columns>
+    <columns>Closing_Date__c</columns>
+    <columns>Funding_Date__c</columns>
+    <columns>Rate_Lock_Exp_Date__c</columns>
+    <columns>Warehouse_Bank_Picklist__c</columns>
+    <columns>MERS_Activated__c</columns>
+    <columns>Funding_Authorization__c</columns>
+    <columns>MERSUploadedActivated__c</columns>
+    <columns>Manager_Notes__c</columns>
+    <columns>Closer_Note__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Action_Required__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Approved,Closing,Funding</value>
+    </filters>
+    <label>Funder Action Required</label>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

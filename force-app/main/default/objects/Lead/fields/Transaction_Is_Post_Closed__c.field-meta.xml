@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Transaction_Is_Post_Closed__c</fullName>
+    <formula>TEXT(Converted_Transaction_ID__r.Status__c) = &apos;Post-Closed&apos;</formula>
+    <label>Transaction Is Post-Closed</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

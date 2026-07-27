@@ -1,0 +1,39 @@
+<template>
+    <template lwc:if={isPhone}>
+        <div class="imbus-table-row">
+            <div class="request-name">{request.name}</div>
+            <div class="request-description">{request.description}</div>
+            <div class="mobile-actions">
+                <lightning-file-upload
+                    label=""
+                    name="fileUploader"
+                    accept=".pdf,.png,.jpg,.jpeg,.doc"
+                    record-id={leadId}
+                    data-id="fileUploader"
+                    onuploadfinished={handleUploadFinished}
+                    multiple
+                    variant="label-hidden">
+                </lightning-file-upload>
+            </div>
+        </div>
+    </template>
+    <template lwc:else>
+        <div class="imbus-table-row slds-grid slds-grid_vertical-align-center">
+            <div class="slds-col">{request.name}</div>
+            <div class="imbus-status-text slds-col" data-status={request.status}>{request.status}</div>
+            <div class="slds-col">{request.description}</div>
+            <div class="slds-col upload-actions">
+                <lightning-file-upload
+                    label=""
+                    name="fileUploader"
+                    accept=".pdf,.png,.jpg,.jpeg,.doc"
+                    record-id={leadId}
+                    data-id="fileUploader"
+                    onuploadfinished={handleUploadFinished}
+                    multiple
+                    variant="label-hidden">
+                </lightning-file-upload>
+            </div>
+        </div>
+    </template>
+</template>

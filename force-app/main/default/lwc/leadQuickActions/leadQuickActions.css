@@ -1,0 +1,64 @@
+.action-strip {
+    background: #f5f8fc;
+    border: 1px solid #d5e0ee;
+    border-radius: 0 0 8px 8px;
+    padding: 12px 18px;
+}
+
+.strip-label {
+    color: #30415f;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.pill {
+    border: 1px solid transparent;
+    border-radius: 999px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 800;
+    min-height: 32px;
+    padding: 7px 14px;
+    transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+}
+
+.pill:hover,
+.pill:focus {
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.14);
+    filter: brightness(0.98);
+    transform: translateY(-1px);
+}
+
+.pill-blue {
+    background: #dcecff;
+    border-color: #a9ccf3;
+    color: #073763;
+}
+
+.pill-slate {
+    background: #eef2f7;
+    border-color: #cbd5e1;
+    color: #26364f;
+}
+
+.pill-orange {
+    background: #ffb452;
+    border-color: #f39a24;
+    color: #12213b;
+}
+
+.pill-green {
+    background: #dff7ec;
+    border-color: #a9e3c4;
+    color: #064e3b;
+}

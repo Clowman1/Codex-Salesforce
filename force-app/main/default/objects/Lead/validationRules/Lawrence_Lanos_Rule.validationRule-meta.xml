@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lawrence_Lanos_Rule</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    ISCHANGED(OwnerId),
+    OwnerId == &quot;005Qi000000q6MH&quot;,
+    $User.Id == &quot;005Qi000000q6MH&quot;,
+    OR(
+        ISBLANK(Referred_By_Realtor_Group__c),
+        Referred_By_Realtor_Group__c &lt;&gt; &quot;The Nickley Group&quot;
+    ),
+    OR(
+        ISBLANK(TEXT(LeadSource)),
+        NOT(ISPICKVAL(LeadSource, &quot;Nickley ISA&quot;))
+    ),
+    OR(
+        ISBLANK(TEXT(Referral_Source__r.Account.Realtor_Group__c)),
+        NOT(ISPICKVAL(Referral_Source__r.Account.Realtor_Group__c, &quot;The Nickley Group&quot;))
+    ),
+    OR(
+        ISBLANK(TEXT(Realtor_Buying_Agent__r.Realtor_Group__c)), 
+        NOT(ISPICKVAL(Realtor_Buying_Agent__r.Realtor_Group__c, &quot;The Nickley Group&quot;))
+    ),
+    OR(
+        ISBLANK(TEXT(Referral_Source__r.Account.Realtor_Group__c)),
+        NOT(ISPICKVAL(Referral_Source__r.Account.Realtor_Group__c, &quot;Nickley ISA&apos;s&quot;))
+    ),
+    OR(
+        ISBLANK(TEXT(Realtor_Buying_Agent__r.Realtor_Group__c)), 
+        NOT(ISPICKVAL(Realtor_Buying_Agent__r.Realtor_Group__c, &quot;Nickley ISA&apos;s&quot;))
+    ),
+    OR(
+        ISBLANK(ReferralFormSourceEmail__c),
+        NOT(CONTAINS(ReferralFormSourceEmail__c, &quot;nickleygroup&quot;))
+    )
+)</errorConditionFormula>
+    <errorMessage>Lawrence Lanos is only able to claim leads from The Nickley Group and from Nickley ISA lead source</errorMessage>
+</ValidationRule>

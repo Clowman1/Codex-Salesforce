@@ -1,0 +1,78 @@
+<design:component>
+  <design:attribute
+    label="Type of the Conditions"
+    name="conditionsType"
+    datasource="apex://UWMConditionTypeDynamicPicklist"
+    description="Name of the condition type to filter conditions"
+  />
+  <design:attribute
+    label="Types of the Conditions"
+    name="conditionsTypes"
+    description="Comma separated list of condition types. Use this input if you want to filter multiple condition types."
+  />
+  <design:attribute
+    label="Condition Filters By Status"
+    name="conditionFiltersByStatus"
+    description='String with filters for condition statuses. Include order number
+            to place conditions in an appropriate order. Object keys must begin in lower case.
+            You may set custom label names. Mass Update button will work for section
+            with no Cleared and Approved conditions.
+            An example of a string:
+            [
+                {"label" : "Outstanding Conditions", "statuses" : ["New","Submitted","Requested","Review"], "order": 0},
+                {"label" : "Ready for Lender Conditions", "statuses" : ["Approved"], "order": 1},
+                {"label" : "Cleared Conditions", "statuses" : ["Cleared"], "order": 2}
+            ]. '
+  />
+  <design:attribute
+    label="Email Templates For Sending Conditions"
+    name="emailTemplates"
+    description='Email Templates For Sending Conditions. Include label and developer names.
+            An example of a string:
+            [
+                {"label" : "Email Template 1", "developerName" : "Email_Template_1"},
+                {"label" : "Email Template 2", "developerName" : "Email_Template_2"}
+            ]. '
+  />
+  <design:attribute
+    label="The API Name of the flow to create new Loan Conditions"
+    name="createConditionsFlowAPIName"
+    description="This flow can be created from a template flow called Conditions_Creator.
+            The Flow must have an input variable called recordId. Conditions_Creator used by default."
+  />
+  <design:attribute
+    label="The API Name of the flow to mass update Loan Conditions"
+    name="updateConditionsFlowAPIName"
+    description="This flow can be created from a template flow called Conditions_Mass_Update.
+            The Flow must have an input variable called ConditionsToUpdate. Conditions_Mass_Update used by default."
+  />
+  <design:attribute
+    label="The API Name of the class to get Email Senders List"
+    name="emailSendersClassAPIName"
+    description="This class must implement the ISenderList interface with the getEmailSenders method.
+            If you have a functionality to send emails from your email provider and you populated custom setting,
+            then getEmailSenders will be used as a source to picklist to select a proper sender email in the component.
+            By default, the current user who invoked the flow is used to set the From email address."
+  />
+  <design:attribute label="Brand Color" name="brandColor" description="Brand Color for background and other parts" default="#5f43b2" />
+  <design:attribute
+    label="Modal Component"
+    name="modalComponent"
+    description="This attribute is used to override the original ConditionsEmailModal Aura component. You will be
+        able to specify a custom class to customize its behavior or appearance as needed.
+
+         These variables must be present as global aura attributes:
+         recordId,
+         conditionType,
+         application,
+         emailTemplates,
+         emailSendersClassAPIName"
+    default="c:ConditionsEmailModal"
+  />
+  <design:attribute
+    label="Columns to Show"
+    name="columnsToShow"
+    description="Enter Field API Names from the Condition Object to be displayed. Comma-separated. Supported: Name, CreatedDate, Status__c, Requested_Date__c, ETA__c, Assigned_To__c."
+    default="Name,Status__c,CreatedDate,Requested_Date__c,ETA__c,Assigned_To__c"
+  />
+</design:component>

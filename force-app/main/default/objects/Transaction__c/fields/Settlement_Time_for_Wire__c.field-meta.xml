@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Settlement_Time_for_Wire__c</fullName>
+    <description>This field is used on corespondent fundings to indicate the exact settlement time, which will help coordinate wire orders from our warehouse bank.</description>
+    <inlineHelpText>This field is used on corespondent fundings to indicate the exact settlement time, which will help coordinate wire orders from our warehouse bank.</inlineHelpText>
+    <label>Settlement Time for Wire</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

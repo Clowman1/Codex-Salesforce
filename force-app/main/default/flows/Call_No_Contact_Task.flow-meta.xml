@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>55.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Did_the_lead_meet_condition</name>
+        <label>Did the lead meet condition</label>
+        <locationX>1115</locationX>
+        <locationY>572</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Aleady_In_Contact_Attempt</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>get_lead.Status</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Contact Attempt</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Contact_Attempts</targetReference>
+            </connector>
+            <label>Aleady In Contact Attempt</label>
+        </rules>
+        <rules>
+            <name>In_Prior_Condition</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>get_lead.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Contacted/Call Back</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>get_lead.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>New</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Contact_Attempts_0</targetReference>
+            </connector>
+            <label>In Prior Condition</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>AssignPicklistValue</name>
+        <dataType>String</dataType>
+        <expression>&quot;Contact Attempt &quot; &amp; TEXT({!NumberofContacts})</expression>
+    </formulas>
+    <formulas>
+        <name>NumberofContacts</name>
+        <dataType>Number</dataType>
+        <expression>{!get_lead.Lead_Status_Value__c} + 1</expression>
+        <scale>0</scale>
+    </formulas>
+    <interviewLabel>Call - No Contact Task {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Call - No Contact Task</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>get_lead</name>
+        <label>get lead</label>
+        <locationX>1107</locationX>
+        <locationY>409</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Did_the_lead_meet_condition</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.WhoId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Contact_Attempts</name>
+        <label>Update Contact Attempts</label>
+        <locationX>707</locationX>
+        <locationY>600</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>get_lead.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <elementReference>AssignPicklistValue</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Lead</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Contact_Attempts_0</name>
+        <label>Update Contact Attempts</label>
+        <locationX>1400</locationX>
+        <locationY>651</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>get_lead.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Contact Attempt 1</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Lead</object>
+    </recordUpdates>
+    <start>
+        <locationX>970</locationX>
+        <locationY>47</locationY>
+        <connector>
+            <targetReference>get_lead</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Subject</field>
+            <operator>Contains</operator>
+            <value>
+                <stringValue>Call - No Contact</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>WhoId</field>
+            <operator>StartsWith</operator>
+            <value>
+                <stringValue>00Q</stringValue>
+            </value>
+        </filters>
+        <object>Task</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+    <triggerOrder>100</triggerOrder>
+</Flow>

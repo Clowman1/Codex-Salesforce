@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Found_Old_Sharing</name>
+        <label>Found Old Sharing?</label>
+        <locationX>314</locationX>
+        <locationY>539</locationY>
+        <defaultConnector>
+            <targetReference>Create_New_Share</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Delete</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Old_Share</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Delete_Old_Sharing</targetReference>
+            </connector>
+            <label>Delete</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Loan_Officer_Was_Changed</name>
+        <label>Loan Officer Was Changed?</label>
+        <locationX>534</locationX>
+        <locationY>323</locationY>
+        <defaultConnector>
+            <targetReference>Create_New_Share</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes_Delete_Old_Share</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior.Loan_Officer__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>$Record.Loan_Officer__c</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Old_Share</targetReference>
+            </connector>
+            <label>Yes, Delete Old Share</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Transaction Sharing - Loan Officer {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Transaction Sharing - Loan Officer</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_New_Share</name>
+        <label>Create New Share</label>
+        <locationX>534</locationX>
+        <locationY>971</locationY>
+        <inputAssignments>
+            <field>AccessLevel</field>
+            <value>
+                <stringValue>Read</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ParentId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>UserOrGroupId</field>
+            <value>
+                <elementReference>$Record.Loan_Officer__c</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Transaction__Share</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordDeletes>
+        <name>Delete_Old_Sharing</name>
+        <label>Delete Old Sharing</label>
+        <locationX>50</locationX>
+        <locationY>647</locationY>
+        <connector>
+            <targetReference>Create_New_Share</targetReference>
+        </connector>
+        <faultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Create_New_Share</targetReference>
+        </faultConnector>
+        <inputReference>Get_Old_Share</inputReference>
+    </recordDeletes>
+    <recordLookups>
+        <name>Get_Old_Share</name>
+        <label>Get Old Share</label>
+        <locationX>314</locationX>
+        <locationY>431</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Found_Old_Sharing</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>UserOrGroupId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record__Prior.Loan_Officer__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>ParentId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Transaction__Share</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>408</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Loan_Officer_Was_Changed</targetReference>
+        </connector>
+        <filterFormula>OR(
+AND(
+ISNEW(),
+NOT(ISBLANK({!$Record.Loan_Officer__c})),
+{!$Record.OwnerId} != {!$Record.Loan_Officer__c}
+),
+AND(
+ISCHANGED({!$Record.Loan_Officer__c}),
+NOT(ISBLANK({!$Record.Loan_Officer__c})),
+{!$Record.OwnerId} != {!$Record.Loan_Officer__c}
+)
+)</filterFormula>
+        <object>Transaction__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+</Flow>

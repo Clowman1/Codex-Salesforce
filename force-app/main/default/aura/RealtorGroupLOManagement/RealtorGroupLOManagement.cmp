@@ -1,0 +1,19 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable" access="global">
+    <!-- start both flows when component initializes -->
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+
+    <lightning:layout>
+        <lightning:layoutItem size="6" class="slds-p-around_small">
+            <lightning:card title="Assign Loan Officer to Realtor Group Accounts">
+                <!-- aura:id used to find and start the flow from JS controller -->
+                <lightning:flow aura:id="flowA"/>
+            </lightning:card>
+        </lightning:layoutItem>
+
+        <lightning:layoutItem size="6" class="slds-p-around_small">
+            <lightning:card title="Remove Loan Officer from Realtor Group">
+                <lightning:flow aura:id="flowB"/>
+            </lightning:card>
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

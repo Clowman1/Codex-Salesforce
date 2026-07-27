@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loan_Purpose_Is_Required</fullName>
+    <active>false</active>
+    <description>This rule requires the Loan Purpose to be populated if the Lead Source is either Realtor Referral, Past Client, Personal Referral, Previous Client Referral, or Biz Dev Outlaw.</description>
+    <errorConditionFormula>AND(
+ISBLANK( Loan_Purpose__c ),
+NOT(ISPICKVAL(Status , &apos;New&apos;)),
+OR( ISPICKVAL( LeadSource , &quot;Realtor Referral&quot;), 
+ISPICKVAL( LeadSource , &quot;Past Client&quot;), 
+ISPICKVAL( LeadSource , &quot;Personal Referral&quot;), 
+ISPICKVAL( LeadSource , &quot;Previous Client Referral&quot;), 
+ISPICKVAL( LeadSource , &quot;Reach In Market Dialer&quot;),  
+ISPICKVAL( LeadSource , &quot;Biz Dev - Outlaw&quot;), 
+ISPICKVAL( LeadSource , &quot;Biz Dev - Saludes&quot;), 
+ISPICKVAL( LeadSource , &quot;Biz Dev - Carey&quot;)))</errorConditionFormula>
+    <errorMessage>Loan Purpose is required.</errorMessage>
+</ValidationRule>

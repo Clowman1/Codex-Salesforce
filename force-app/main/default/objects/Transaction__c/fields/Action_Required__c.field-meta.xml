@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Action_Required__c</fullName>
+    <formula>OR(
+   AND(
+       TODAY() -  Funding_Authorization__c &gt;= 2,
+       ISNULL( PC_Conditions_Satisfied__c )
+       ),
+   AND(
+       OR(
+          AND(
+              TODAY() =  Funding_Date__c ,
+              ISNULL(  Funding_Authorization__c ),
+              HOUR(TIMENOW() - 4) &gt; 14
+             ),
+          AND(
+              TODAY() &gt;  Funding_Date__c ,
+              ISNULL( Funding_Authorization__c )
+             )
+         )
+       ),
+   
+    AND(
+        TODAY() &gt;=  Business_Day_Before_Funding__c ,
+        ISNULL(  Funding_Wire_Requested__c   )
+       ),
+    AND(
+        TODAY()-  Funding_Date__c &gt;= 2 ,
+        ISNULL(  Note_Received_Date__c )
+       ),
+    AND(
+        TODAY() &gt;  Funding_Date__c ,
+        ISNULL( MERS_Activated__c )
+       ),
+    AND(
+        TODAY() &gt;   Note_Received_Date__c ,
+        ISNULL(  Purchase_Advice_Date__c )
+       ),
+    AND(
+        TODAY() &gt;=  Business_Day_Before_Funding__c ,
+        ISNULL(   FedEx_Label_Sent__c )
+       ),
+    AND(
+        TODAY() &gt;   Purchase_Advice_Date__c ,
+        ISNULL(   MERS_Transfer_to_Investor__c  )
+       )
+  )</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Action Required</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>User_working_the_lead__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>This field updates when the lead status changes to &quot;Documents Requested&quot;, &quot;Documents Received for Review&quot; and &quot;Under Contract&quot;</description>
+    <label>User working the lead</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Leads</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

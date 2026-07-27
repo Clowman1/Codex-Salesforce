@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fieldOverrides>
+        <field>Closing_Date__c</field>
+        <formula>null</formula>
+    </fieldOverrides>
+    <fieldOverrides>
+        <field>Funding_Date__c</field>
+        <formula>null</formula>
+    </fieldOverrides>
+    <fieldOverrides>
+        <field>Status__c</field>
+        <literalValue>Cancelled</literalValue>
+    </fieldOverrides>
+    <fieldOverrides>
+        <field>Withdrawn__c</field>
+        <formula>NOW()</formula>
+    </fieldOverrides>
+    <label>Cancel Loan</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <quickActionLayout>
+        <layoutSectionStyle>TwoColumnsLeftToRight</layoutSectionStyle>
+        <quickActionLayoutColumns>
+            <quickActionLayoutItems>
+                <emptySpace>false</emptySpace>
+                <field>Withdrawn__c</field>
+                <uiBehavior>Required</uiBehavior>
+            </quickActionLayoutItems>
+            <quickActionLayoutItems>
+                <emptySpace>false</emptySpace>
+                <field>Withdrawn_Reason__c</field>
+                <uiBehavior>Required</uiBehavior>
+            </quickActionLayoutItems>
+            <quickActionLayoutItems>
+                <emptySpace>false</emptySpace>
+                <field>Borrower_Withdrawal_Reason__c</field>
+                <uiBehavior>Required</uiBehavior>
+            </quickActionLayoutItems>
+        </quickActionLayoutColumns>
+        <quickActionLayoutColumns/>
+    </quickActionLayout>
+    <type>Update</type>
+</QuickAction>

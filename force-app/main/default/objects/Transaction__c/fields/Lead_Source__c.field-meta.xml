@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lead_Source__c</fullName>
+    <description>Lead source, mapped from lead object</description>
+    <label>Lead Source</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Reach In Market Dialer</fullName>
+                <default>false</default>
+                <label>Reach In Market Dialer</label>
+            </value>
+            <value>
+                <fullName>Realtor Referral</fullName>
+                <default>false</default>
+                <label>Realtor Referral</label>
+            </value>
+            <value>
+                <fullName>Past Client</fullName>
+                <default>false</default>
+                <label>Past Client</label>
+            </value>
+            <value>
+                <fullName>Personal Referral</fullName>
+                <default>false</default>
+                <label>Personal Referral</label>
+            </value>
+            <value>
+                <fullName>Nickley Listing Credit</fullName>
+                <default>false</default>
+                <label>Nickley Listing Credit</label>
+            </value>
+            <value>
+                <fullName>Previous Client Referral</fullName>
+                <default>false</default>
+                <label>Previous Client Referral</label>
+            </value>
+            <value>
+                <fullName>Google_Organic</fullName>
+                <default>false</default>
+                <label>Google Organic</label>
+            </value>
+            <value>
+                <fullName>YouTube</fullName>
+                <default>false</default>
+                <label>YouTube</label>
+            </value>
+            <value>
+                <fullName>Zillow</fullName>
+                <default>false</default>
+                <label>Zillow</label>
+            </value>
+            <value>
+                <fullName>Nickley ISA</fullName>
+                <default>false</default>
+                <label>Nickley ISA</label>
+            </value>
+            <value>
+                <fullName>Tik Tok</fullName>
+                <default>false</default>
+                <label>Tik Tok</label>
+            </value>
+            <value>
+                <fullName>Instagram</fullName>
+                <default>false</default>
+                <label>Instagram</label>
+            </value>
+            <value>
+                <fullName>VM Refinance</fullName>
+                <default>false</default>
+                <label>VM Refinance</label>
+            </value>
+            <value>
+                <fullName>Website</fullName>
+                <default>false</default>
+                <label>Website</label>
+            </value>
+            <value>
+                <fullName>Facebook - Landing Refi</fullName>
+                <default>false</default>
+                <label>Facebook - Landing Refi</label>
+            </value>
+            <value>
+                <fullName>Facebook Text Quote</fullName>
+                <default>false</default>
+                <label>Facebook Text Quote</label>
+            </value>
+            <value>
+                <fullName>Facebook Lead Ad</fullName>
+                <default>false</default>
+                <label>Facebook Lead Ad</label>
+            </value>
+            <value>
+                <fullName>Consumer Webinar</fullName>
+                <default>false</default>
+                <label>Consumer Webinar</label>
+            </value>
+            <value>
+                <fullName>Instagram-Linktree</fullName>
+                <default>false</default>
+                <label>Instagram-Linktree</label>
+            </value>
+            <value>
+                <fullName>Facebook-Linktree</fullName>
+                <default>false</default>
+                <label>Facebook-Linktree</label>
+            </value>
+            <value>
+                <fullName>Youtube-Linktree</fullName>
+                <default>false</default>
+                <label>Youtube-Linktree</label>
+            </value>
+            <value>
+                <fullName>Tiktok-Linktree</fullName>
+                <default>false</default>
+                <label>Tiktok-Linktree</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

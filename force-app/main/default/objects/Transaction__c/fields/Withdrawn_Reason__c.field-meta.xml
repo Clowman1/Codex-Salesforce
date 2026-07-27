@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Withdrawn_Reason__c</fullName>
+    <label>Withdrawn Reason</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>App Denied</fullName>
+                <default>false</default>
+                <label>App Denied</label>
+            </value>
+            <value>
+                <fullName>Approved But Not Accepted</fullName>
+                <default>false</default>
+                <label>Approved But Not Accepted</label>
+            </value>
+            <value>
+                <fullName>App Withdrawn By Borrower</fullName>
+                <default>false</default>
+                <label>App Withdrawn By Borrower</label>
+            </value>
+            <value>
+                <fullName>File Closed For Incompleteness</fullName>
+                <default>false</default>
+                <label>File Closed For Incompleteness</label>
+            </value>
+            <value>
+                <fullName>Pre-Approval Approved But Not Accepted</fullName>
+                <default>false</default>
+                <label>Pre-Approval Approved But Not Accepted</label>
+            </value>
+            <value>
+                <fullName>Pre-Approval Denied</fullName>
+                <default>false</default>
+                <label>Pre-Approval Denied</label>
+            </value>
+            <value>
+                <fullName>App Rescinded By Borrower</fullName>
+                <default>false</default>
+                <label>App Rescinded By Borrower</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CLA_Attempting_Contact_to_Review</fullName>
+    <columns>NAME</columns>
+    <columns>Borrower_Name__c</columns>
+    <columns>Loan_Conditionally_Approved_Date__c</columns>
+    <columns>Call_Text_Due_Date_1__c</columns>
+    <columns>Call_Text_Due_Date_2__c</columns>
+    <columns>Call_Text_Due_Date_3__c</columns>
+    <columns>Completed_CLA_Call_Text_Tasks__c</columns>
+    <columns>OWNER.FIRST_NAME</columns>
+    <columns>Processor__c</columns>
+    <columns>Loan_Officer__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Conditionally Approved</value>
+    </filters>
+    <filters>
+        <field>Email_Sent__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Contact_Made__c</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>Completed_CLA_Call_Text_Tasks__c</field>
+        <operation>greaterOrEqual</operation>
+        <value>1</value>
+    </filters>
+    <label>5.3 CLA Attempting Contact to Review</label>
+    <sharedTo>
+        <group>Closers</group>
+        <group>Management</group>
+    </sharedTo>
+</ListView>
