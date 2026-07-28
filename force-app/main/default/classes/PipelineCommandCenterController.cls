@@ -3847,8 +3847,8 @@ public with sharing class PipelineCommandCenterController {
     private static List<TableColumn> buildPreApprovalCallsTodayColumns() {
         return new List<TableColumn>{
             new TableColumn('name', 'Name'),
-            new TableColumn('phone', 'Phone Number'),
             new TableColumn('status', 'Status'),
+            new TableColumn('phone', 'Phone Number'),
             new TableColumn('createdDate', 'Created Date'),
             new TableColumn('lastActivityDate', 'Last Activity'),
             new TableColumn('appointmentDateTime', 'Appointment Date/Time'),
@@ -3864,6 +3864,7 @@ public with sharing class PipelineCommandCenterController {
     private static List<TableColumn> buildLoanOfficerLeadColumns() {
         return new List<TableColumn>{
             new TableColumn('name', 'Name'),
+            new TableColumn('status', 'Status'),
             new TableColumn('phone', 'Phone Number'),
             new TableColumn('email', 'Email'),
             new TableColumn('leadSource', 'Lead Source'),
@@ -3877,6 +3878,7 @@ public with sharing class PipelineCommandCenterController {
     private static List<TableColumn> buildPreApprovalLeadColumns() {
         return new List<TableColumn>{
             new TableColumn('name', 'Name'),
+            new TableColumn('status', 'Status'),
             new TableColumn('phone', 'Phone Number'),
             new TableColumn('email', 'Email'),
             new TableColumn('leadSource', 'Lead Source'),
@@ -3916,6 +3918,7 @@ public with sharing class PipelineCommandCenterController {
             }
             row.customCells = new List<TableCell>{
                 new TableCell('name', row.name, row.name, true),
+                new TableCell('status', row.status, row.status, false, 'Status'),
                 new TableCell('phone', row.phone, row.phone, false, 'Phone'),
                 new TableCell('email', row.email, row.email, false, 'Email'),
                 new TableCell('leadSource', row.leadSource, row.leadSource, false, 'LeadSource'),
@@ -3939,6 +3942,7 @@ public with sharing class PipelineCommandCenterController {
             }
             row.customCells = new List<TableCell>{
                 new TableCell('name', row.name, row.name, true),
+                new TableCell('status', row.status, row.status, false, 'Status'),
                 new TableCell('phone', row.phone, row.phone, false, 'Phone'),
                 new TableCell('email', row.email, row.email, false, 'Email'),
                 new TableCell('leadSource', row.leadSource, row.leadSource, false, 'LeadSource'),

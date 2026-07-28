@@ -412,6 +412,9 @@ private class PipelineCommandCenterControllerTest {
             System.assertEquals('activePreApprovals', data.pipelineTabs[3].key, 'Expected active pre-approvals before stagnant pre-approvals.');
             System.assertEquals('stagnantPreApprovals', data.pipelineTabs[4].key, 'Expected stagnant pre-approvals after active pre-approvals.');
             System.assertEquals('preApprovalCallsToday', data.pipelineTabs[5].key, 'Expected pre-approval call list before attention tabs.');
+            System.assertEquals('status', data.pipelineTabs[0].customColumns[1].key, 'Expected Status to be the second active lead column.');
+            System.assertEquals('status', data.pipelineTabs[3].customColumns[1].key, 'Expected Status to be the second pre-approval lead column.');
+            System.assertEquals('status', data.pipelineTabs[5].customColumns[1].key, 'Expected Status to be the second pre-approval calls column.');
             System.assertEquals('disclosuresNeedingSigned', data.pipelineTabs[8].key, 'Expected disclosures needing signed before transaction tabs.');
             System.assertEquals('loanOfficerActiveTransactions', data.pipelineTabs[9].key, 'Expected active transaction tab after lead tabs.');
             System.assertEquals('loanOfficerClosedThisMonth', data.pipelineTabs[10].key, 'Expected closed-this-month transaction tab last.');
@@ -569,6 +572,9 @@ private class PipelineCommandCenterControllerTest {
             System.assertEquals('assigned', data.pipelineTabs[0].key, 'Expected Megan own active leads first.');
             System.assertEquals('activePreApprovals', data.pipelineTabs[3].key, 'Expected Megan active pre-approval tab with her own lead tabs.');
             System.assertEquals('preApprovalCallsToday', data.pipelineTabs[5].key, 'Expected Megan pre-approval call tab with her own lead tabs.');
+            System.assertEquals('status', data.pipelineTabs[0].customColumns[1].key, 'Expected Status to be the second active lead column.');
+            System.assertEquals('status', data.pipelineTabs[3].customColumns[1].key, 'Expected Status to be the second pre-approval lead column.');
+            System.assertEquals('status', data.pipelineTabs[5].customColumns[1].key, 'Expected Status to be the second pre-approval calls column.');
             System.assertEquals('loanOfficerClosedThisMonth', data.pipelineTabs[10].key, 'Expected Megan own transaction tabs before partner tabs.');
             System.assert(data.pipelineTabs.size() >= 11, 'Expected Megan to receive the normal LO tab set.');
 
@@ -607,6 +613,10 @@ private class PipelineCommandCenterControllerTest {
                 System.assertEquals('zachFritzStagnantPreApprovals', data.pipelineTabs[26].key, 'Expected Zach stagnant pre-approval tab.');
                 System.assertEquals('zachFritzPreApprovalCallsToday', data.pipelineTabs[27].key, 'Expected Zach pre-approval call tab.');
                 System.assertEquals('zachFritzClosedThisMonth', data.pipelineTabs[32].key, 'Expected Zach closed-this-month transaction tab last.');
+                System.assertEquals('status', data.pipelineTabs[11].customColumns[1].key, 'Expected Status to be the second Brandon partner lead column.');
+                System.assertEquals('status', data.pipelineTabs[16].customColumns[1].key, 'Expected Status to be the second Brandon partner pre-approval call column.');
+                System.assertEquals('status', data.pipelineTabs[22].customColumns[1].key, 'Expected Status to be the second Zach partner lead column.');
+                System.assertEquals('status', data.pipelineTabs[27].customColumns[1].key, 'Expected Status to be the second Zach partner pre-approval call column.');
             } else if (brandonExists) {
                 System.assertEquals(22, data.pipelineTabs.size(), 'Expected Megan own LO tabs plus Brandon loan partner tabs.');
                 System.assertEquals('brandonClosedThisMonth', data.pipelineTabs[21].key, 'Expected Brandon closed-this-month transaction tab last.');
@@ -645,6 +655,9 @@ private class PipelineCommandCenterControllerTest {
             System.assertEquals('Joe Olmsted Active Leads', data.pipelineTabs[0].label, 'Expected Joe-specific tab label.');
             System.assertEquals('Zach Fritz Active Leads', data.pipelineTabs[8].label, 'Expected Zach-specific tab label.');
             System.assertEquals('Rhett Delaney Active Leads', data.pipelineTabs[16].label, 'Expected Rhett-specific tab label.');
+            System.assertEquals('status', data.pipelineTabs[0].customColumns[1].key, 'Expected Lead Status to be the second Joe lead column.');
+            System.assertEquals('status', data.pipelineTabs[8].customColumns[1].key, 'Expected Lead Status to be the second Zach lead column.');
+            System.assertEquals('status', data.pipelineTabs[16].customColumns[1].key, 'Expected Lead Status to be the second Rhett lead column.');
             System.assertEquals(3, data.quickButtons.size(), 'Expected three quick buttons, whether defaults or Joey-saved preferences.');
         }
     }
