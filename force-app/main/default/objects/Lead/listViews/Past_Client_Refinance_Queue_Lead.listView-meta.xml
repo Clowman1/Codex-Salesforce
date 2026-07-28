@@ -2,9 +2,9 @@
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Past_Client_Refinance_Queue_Lead</fullName>
     <columns>FULL_NAME</columns>
+    <columns>LEAD.STATUS</columns>
     <columns>LEAD.PHONE</columns>
     <columns>LEAD.EMAIL</columns>
-    <columns>LEAD.STATUS</columns>
     <columns>LEAD.CREATED_DATE</columns>
     <columns>Interest_Rate__c</columns>
     <columns>Loan_Amount__c</columns>

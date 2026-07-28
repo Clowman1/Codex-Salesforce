@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Biz_Dev_Team_Working_Leads_Boufford</fullName>
-    <columns>LEAD.STATUS</columns>
     <columns>Biz_Dev__c</columns>
+    <columns>LEAD.STATUS</columns>
     <columns>LEAD.LAST_ACTIVITY</columns>
     <columns>LEAD.CREATED_DATE</columns>
     <columns>FULL_NAME</columns>

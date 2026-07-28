@@ -2,8 +2,8 @@
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Lauren_Refi_List</fullName>
     <columns>FULL_NAME</columns>
-    <columns>LEAD.PHONE</columns>
     <columns>LEAD.STATUS</columns>
+    <columns>LEAD.PHONE</columns>
     <columns>LEAD.EMAIL</columns>
     <columns>LEAD.CREATED_DATE</columns>
     <columns>CORE.USERS.ALIAS</columns>
