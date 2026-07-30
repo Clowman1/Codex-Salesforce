@@ -3832,16 +3832,21 @@ public with sharing class PipelineCommandCenterController {
     }
 
     private static List<TableColumn> buildAgedPreApprovalColumns(String ownerDisplayName) {
-        return new List<TableColumn>{
+        List<TableColumn> columns = new List<TableColumn>{
             new TableColumn('name', 'Client Name'),
             new TableColumn('phone', 'Phone'),
             new TableColumn('scheduledEvent', 'Scheduled Event'),
             new TableColumn('preApprovalDate', 'Pre-Approval Date'),
             new TableColumn('loanAmount', 'Loan Amount'),
             new TableColumn('realtorBuyingAgent', 'Realtor - Buying Agent'),
-            new TableColumn('ownerLastCall', ownerDisplayName + ' Last RingCentral Call'),
-            new TableColumn('benLastCall', 'Ben Last RingCentral Call')
+            new TableColumn('ownerLastCall', ownerDisplayName + ' Last RingCentral Call')
         };
+        if (ownerDisplayName == 'Brandon') {
+            columns.add(new TableColumn('brandonLastSms', 'Brandon\'s Last SMS'));
+        } else {
+            columns.add(new TableColumn('benLastCall', 'Ben Last RingCentral Call'));
+        }
+        return columns;
     }
 
     private static List<TableColumn> buildPreApprovalCallsTodayColumns() {
@@ -4107,6 +4112,9 @@ public with sharing class PipelineCommandCenterController {
         Map<Id, Datetime> benRecentCallsByLeadId = leadRecentOutboundCallsByUser(leadIds, benId, System.now().addDays(-14));
         Map<Id, Datetime> ownerLastCallsByLeadId = leadRecentCallsByUser(leadIds, ownerId, DateTime.newInstance(2000, 1, 1, 0, 0, 0));
         Map<Id, Datetime> benLastCallsByLeadId = leadRecentOutboundCallsByUser(leadIds, benId, DateTime.newInstance(2000, 1, 1, 0, 0, 0));
+        Map<Id, Datetime> ownerLastSmsByLeadId = ownerDisplayName == 'Brandon'
+            ? leadRecentSmsByUser(leadIds, ownerId, DateTime.newInstance(2000, 1, 1, 0, 0, 0))
+            : new Map<Id, Datetime>();
         Map<Id, EventCell> scheduledEventsByLeadId = leadNearestScheduledEvents(leadIds);
         List<PipelineRow> rows = new List<PipelineRow>();
         for (Lead leadRecord : agedPreApprovals) {
@@ -4118,13 +4126,14 @@ public with sharing class PipelineCommandCenterController {
                 scheduledEventsByLeadId.get(leadRecord.Id),
                 ownerLastCallsByLeadId.get(leadRecord.Id),
                 benLastCallsByLeadId.get(leadRecord.Id),
+                ownerLastSmsByLeadId.get(leadRecord.Id),
                 ownerDisplayName
             ));
         }
         return rows;
     }
 
-    private static PipelineRow buildAgedPreApprovalRow(Lead leadRecord, EventCell scheduledEvent, Datetime ownerLastCall, Datetime benLastCall, String ownerDisplayName) {
+    private static PipelineRow buildAgedPreApprovalRow(Lead leadRecord, EventCell scheduledEvent, Datetime ownerLastCall, Datetime benLastCall, Datetime ownerLastSms, String ownerDisplayName) {
         PipelineRow row = new PipelineRow(leadRecord);
         Date preApprovalDate = (Date) safeSObjectValue(leadRecord, 'Pre_Approval_Date__c');
         row.displayDate = preApprovalDate;
@@ -4137,9 +4146,13 @@ public with sharing class PipelineCommandCenterController {
             new TableCell('preApprovalDate', formatDateForCell(preApprovalDate), formatDateSortValue(preApprovalDate), false),
             new TableCell('loanAmount', loanAmount, formatDecimalSortValue((Decimal) safeSObjectValue(leadRecord, 'Loan_Amount__c')), false),
             new TableCell('realtorBuyingAgent', realtorBuyingAgent, realtorBuyingAgent, false),
-            new TableCell('ownerLastCall', formatDatetimeForCell(ownerLastCall), formatDatetimeSortValue(ownerLastCall), false),
-            new TableCell('benLastCall', formatDatetimeForCell(benLastCall), formatDatetimeSortValue(benLastCall), false)
+            new TableCell('ownerLastCall', formatDatetimeForCell(ownerLastCall), formatDatetimeSortValue(ownerLastCall), false)
         };
+        if (ownerDisplayName == 'Brandon') {
+            row.customCells.add(new TableCell('brandonLastSms', formatDatetimeForCell(ownerLastSms), formatDatetimeSortValue(ownerLastSms), false));
+        } else {
+            row.customCells.add(new TableCell('benLastCall', formatDatetimeForCell(benLastCall), formatDatetimeSortValue(benLastCall), false));
+        }
         return row;
     }
 
@@ -4310,6 +4323,32 @@ public with sharing class PipelineCommandCenterController {
         return callsByLeadId;
     }
 
+    private static Map<Id, Datetime> leadRecentSmsByUser(Set<Id> leadIds, Id userId, Datetime cutoffDateTime) {
+        Map<Id, Datetime> smsByLeadId = new Map<Id, Datetime>();
+        if (leadIds == null || leadIds.isEmpty() || userId == null || cutoffDateTime == null) {
+            return smsByLeadId;
+        }
+        for (Task taskRecord : [
+            SELECT WhoId, CreatedDate, Subject, TaskSubtype, CallType
+            FROM Task
+            WHERE OwnerId = :userId
+            AND WhoId IN :leadIds
+            AND CreatedDate >= :cutoffDateTime
+            AND (Subject LIKE '%SMS%' OR Subject LIKE '%Text%' OR Subject LIKE '%Message%' OR Subject LIKE '%RingCentral%')
+            ORDER BY CreatedDate DESC
+            LIMIT 50000
+        ]) {
+            if (!isSmsTask(taskRecord)) {
+                continue;
+            }
+            Datetime currentDate = smsByLeadId.get(taskRecord.WhoId);
+            if (currentDate == null || taskRecord.CreatedDate > currentDate) {
+                smsByLeadId.put(taskRecord.WhoId, taskRecord.CreatedDate);
+            }
+        }
+        return smsByLeadId;
+    }
+
     private static Boolean isOutboundCallTask(Task taskRecord) {
         if (taskRecord == null) {
             return false;
@@ -4336,6 +4375,20 @@ public with sharing class PipelineCommandCenterController {
             || subject.contains('ringcentral')
             || subject.contains('call');
     }
+
+    private static Boolean isSmsTask(Task taskRecord) {
+        if (taskRecord == null) {
+            return false;
+        }
+        String callType = taskRecord.CallType == null ? '' : String.valueOf(taskRecord.CallType).toLowerCase();
+        String subject = String.isBlank(taskRecord.Subject) ? '' : taskRecord.Subject.toLowerCase();
+        return String.isBlank(callType)
+            && taskRecord.TaskSubtype != 'Call'
+            && (subject.contains('sms')
+                || subject.contains('text')
+                || subject.contains('message'));
+    }
+
 
     private static Date businessDaysAgo(Integer daysBack) {
         Date targetDate = Date.today();

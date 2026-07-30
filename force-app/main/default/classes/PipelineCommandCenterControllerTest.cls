@@ -1112,6 +1112,8 @@ private class PipelineCommandCenterControllerTest {
                     System.assertEquals('Brandon\'s Aged Pre-Approvals', tab.label, 'Expected Brandon aged pre-approval tab label.');
                     System.assertEquals('Lead', tab.objectApiName, 'Expected Brandon aged pre-approval tab to open Lead records.');
                     System.assertEquals(8, tab.customColumns.size(), 'Expected Brandon aged pre-approval tab to match the Zach tab columns.');
+                    System.assertEquals('brandonLastSms', tab.customColumns[7].key, 'Expected Brandon aged pre-approval tab to replace Ben last call with Brandon last SMS.');
+                    System.assertEquals('Brandon\'s Last SMS', tab.customColumns[7].label, 'Expected Brandon aged pre-approval tab far-right column to show Brandon SMS activity.');
                 }
             }
             System.assert(foundHotFollowUpsTab, 'Expected Ben Command Center to include the Hot Follow Ups tab.');
