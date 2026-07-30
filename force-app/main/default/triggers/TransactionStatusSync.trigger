@@ -4,7 +4,10 @@ trigger TransactionStatusSync on Transaction__c (before insert, before update, a
     }
 
     if (Trigger.isAfter && (Trigger.isInsert || Trigger.isUpdate)) {
-        TransactionUtmCopyService.copyFromConvertedLeads(Trigger.new);
+        TransactionUtmCopyService.copyFromConvertedLeads(
+            Trigger.new,
+            Trigger.isInsert ? null : Trigger.oldMap
+        );
 
         PurchaseDefaultConditionService.ensureForPurchaseTransactions(
             Trigger.new,

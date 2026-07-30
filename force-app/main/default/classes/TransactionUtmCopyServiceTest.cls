@@ -80,6 +80,7 @@ private class TransactionUtmCopyServiceTest {
             Type = 'Investor'
         );
         insert lender;
+        User loanPartner = createUser('utmlp');
 
         Lead sourceLead = new Lead(
             FirstName = 'Converted',
@@ -92,6 +93,7 @@ private class TransactionUtmCopyServiceTest {
             Source_URL__c = 'https://example.com/converted-source'
         );
         insert sourceLead;
+        update new Lead(Id = sourceLead.Id, Loan_Partner__c = loanPartner.Id);
 
         LeadStatus convertedStatus = [
             SELECT MasterLabel
@@ -123,7 +125,7 @@ private class TransactionUtmCopyServiceTest {
 
         Transaction__c refreshed = [
             SELECT First_UTM_Source__c, First_UTM_Medium__c, Last_UTM_Term__c,
-                Meta_Campaign_ID__c, Source_URL__c
+                Meta_Campaign_ID__c, Source_URL__c, Loan_Partner__c
             FROM Transaction__c
             WHERE Id = :transactionRecord.Id
         ];
@@ -132,5 +134,61 @@ private class TransactionUtmCopyServiceTest {
         System.assertEquals('converted-last-term', refreshed.Last_UTM_Term__c);
         System.assertEquals('converted-meta-campaign', refreshed.Meta_Campaign_ID__c);
         System.assertEquals('https://example.com/converted-source', refreshed.Source_URL__c);
+        System.assertEquals(loanPartner.Id, refreshed.Loan_Partner__c, 'Converted Lead Loan Partner should stamp the new Transaction.');
+    }
+
+    @IsTest
+    static void transactionOwnerChangeDoesNotChangeSelectedLoanPartner() {
+        User selectedLoanPartner = createUser('selectedlp');
+        User newOwner = createUser('newowner');
+        Account lender = new Account(
+            Name = 'Owner Change Lender',
+            Type = 'Investor'
+        );
+        insert lender;
+
+        Transaction__c transactionRecord = new Transaction__c(
+            Name = 'Owner Change Transaction',
+            Status__c = 'Processing',
+            Lender_lookup__c = lender.Id,
+            Loan_Partner__c = selectedLoanPartner.Id
+        );
+        insert transactionRecord;
+
+        Test.startTest();
+        update new Transaction__c(
+            Id = transactionRecord.Id,
+            OwnerId = newOwner.Id
+        );
+        Test.stopTest();
+
+        Transaction__c refreshed = [
+            SELECT OwnerId, Loan_Partner__c
+            FROM Transaction__c
+            WHERE Id = :transactionRecord.Id
+        ];
+        System.assertEquals(newOwner.Id, refreshed.OwnerId);
+        System.assertEquals(
+            selectedLoanPartner.Id,
+            refreshed.Loan_Partner__c,
+            'Changing Transaction Owner must not change the selected Loan Partner.'
+        );
+    }
+
+    private static User createUser(String prefix) {
+        String uniqueValue = prefix + String.valueOf(System.now().getTime()) + String.valueOf(Math.abs(Crypto.getRandomInteger()));
+        User testUser = new User(
+            Alias = uniqueValue.left(8),
+            Email = uniqueValue + '@example.com',
+            EmailEncodingKey = 'UTF-8',
+            LastName = prefix,
+            LanguageLocaleKey = 'en_US',
+            LocaleSidKey = 'en_US',
+            ProfileId = UserInfo.getProfileId(),
+            TimeZoneSidKey = 'America/New_York',
+            Username = uniqueValue + '@example.com'
+        );
+        insert testUser;
+        return testUser;
     }
 }
