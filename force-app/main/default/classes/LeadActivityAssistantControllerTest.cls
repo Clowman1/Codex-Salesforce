@@ -21,10 +21,11 @@ private class LeadActivityAssistantControllerTest {
 
     @IsTest
     static void getLeadContextReturnsOwnerAndLoanPartnerAssigneesForBenjamin() {
-        User benUser = createTestUser('benjamin', 'benjamin@reachhomeloans.com');
+        User benUser = createNamedTestUser('benjamin', 'Benjamin', 'Bondarevsky', 'benjamin@reachhomeloans.com');
         User ownerUser = createTestUser('leadown', 'leadowner@example.com');
         User loanPartner = createTestUser('loanpart', 'loanpartner@example.com');
         User unrelatedUser = createTestUser('unrelate', 'unrelated@example.com');
+        Id expectedBenjaminAssigneeId = firstBenjaminBondarevskyId();
         PermissionSet benAccess = [
             SELECT Id
             FROM PermissionSet
@@ -61,9 +62,10 @@ private class LeadActivityAssistantControllerTest {
             for (LeadActivityAssistantController.AssigneeOption option : context.assignees) {
                 assigneeIds.add(option.value);
             }
-            System.assertEquals(2, assigneeIds.size(), 'Expected Benjamin to see only the Lead Owner and Loan Partner for event assignment.');
+            System.assertEquals(3, assigneeIds.size(), 'Expected Benjamin to see the Lead Owner, Loan Partner, and Benjamin Bondarevsky for event assignment.');
             System.assert(assigneeIds.contains(String.valueOf(ownerUser.Id)), 'Expected the Lead Owner to be assignable.');
             System.assert(assigneeIds.contains(String.valueOf(loanPartner.Id)), 'Expected the Loan Partner to be assignable.');
+            System.assert(assigneeIds.contains(String.valueOf(expectedBenjaminAssigneeId)), 'Expected Benjamin Bondarevsky to be assignable.');
             System.assert(!assigneeIds.contains(String.valueOf(unrelatedUser.Id)), 'Expected unrelated users to be hidden from this Lead event assignment list.');
         }
     }
@@ -400,6 +402,8 @@ private class LeadActivityAssistantControllerTest {
     static void createEventAssignsOnlyOwnerOrLoanPartner() {
         User ownerUser = createTestUser('evtowner', 'evtowner@example.com');
         User loanPartner = createTestUser('evtlp', 'evtlp@example.com');
+        User benUser = createNamedTestUser('evtben', 'Benjamin', 'Bondarevsky', 'eventben@example.com');
+        Id expectedBenjaminAssigneeId = firstBenjaminBondarevskyId();
         User unrelatedUser = createTestUser('evtother', 'evtother@example.com');
         Id leadId;
         System.runAs(ownerUser) {
@@ -426,6 +430,16 @@ private class LeadActivityAssistantControllerTest {
             15,
             'Loan partner event'
         );
+        LeadActivityAssistantController.SaveResult benResult = LeadActivityAssistantController.createEvent(
+            leadId,
+            'Scheduled Appointment',
+            expectedBenjaminAssigneeId,
+            '2026-07-01T11:00',
+            15,
+            true,
+            15,
+            'Benjamin event'
+        );
         LeadActivityAssistantController.SaveResult fallbackResult = LeadActivityAssistantController.createEvent(
             leadId,
             'Scheduled Appointment',
@@ -441,9 +455,10 @@ private class LeadActivityAssistantControllerTest {
         Map<Id, Event> eventsById = new Map<Id, Event>([
             SELECT OwnerId
             FROM Event
-            WHERE Id IN :new Set<Id>{ partnerResult.recordId, fallbackResult.recordId }
+            WHERE Id IN :new Set<Id>{ partnerResult.recordId, benResult.recordId, fallbackResult.recordId }
         ]);
         System.assertEquals(loanPartner.Id, eventsById.get(partnerResult.recordId).OwnerId, 'Expected Loan Partner event assignment to be honored.');
+        System.assertEquals(expectedBenjaminAssigneeId, eventsById.get(benResult.recordId).OwnerId, 'Expected Benjamin Bondarevsky event assignment to be honored.');
         System.assertEquals(ownerUser.Id, eventsById.get(fallbackResult.recordId).OwnerId, 'Expected unsupported assignees to fall back to the Lead Owner.');
     }
 
@@ -497,6 +512,21 @@ private class LeadActivityAssistantControllerTest {
     }
 
     private static User createTestUser(String aliasPrefix, String email) {
+        return createNamedTestUser(aliasPrefix, aliasPrefix, 'User', email);
+    }
+
+    private static Id firstBenjaminBondarevskyId() {
+        return [
+            SELECT Id
+            FROM User
+            WHERE Name = 'Benjamin Bondarevsky'
+            AND IsActive = true
+            ORDER BY CreatedDate ASC, Id ASC
+            LIMIT 1
+        ].Id;
+    }
+
+    private static User createNamedTestUser(String aliasPrefix, String firstName, String lastName, String email) {
         Profile profileRecord = [
             SELECT Id
             FROM Profile
@@ -505,8 +535,8 @@ private class LeadActivityAssistantControllerTest {
         ];
         String uniqueValue = String.valueOf(System.now().getTime()) + String.valueOf(Math.abs(Crypto.getRandomInteger()));
         User userRecord = new User(
-            FirstName = aliasPrefix,
-            LastName = 'User',
+            FirstName = firstName,
+            LastName = lastName,
             Alias = aliasPrefix.left(Math.min(8, aliasPrefix.length())),
             Email = email,
             Username = aliasPrefix + uniqueValue + '@example.com',

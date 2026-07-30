@@ -1,4 +1,6 @@
 public with sharing class LeadActivityAssistantController {
+    private static final String BENJAMIN_BONDAREVSKY_NAME = 'Benjamin Bondarevsky';
+
     public class SaveResult {
         @AuraEnabled public Id recordId;
         @AuraEnabled public String message;
@@ -192,11 +194,18 @@ public with sharing class LeadActivityAssistantController {
 
     private static List<AssigneeOption> standardLeadAssignees(Lead leadRecord) {
         List<AssigneeOption> assignees = new List<AssigneeOption>();
+        Set<Id> assigneeIds = new Set<Id>();
         if (isUserId(leadRecord.OwnerId)) {
             assignees.add(new AssigneeOption('Lead Owner: ' + leadRecord.Owner.Name, leadRecord.OwnerId));
+            assigneeIds.add(leadRecord.OwnerId);
         }
         if (isUserId(leadRecord.Loan_Partner__c) && leadRecord.Loan_Partner__c != leadRecord.OwnerId) {
             assignees.add(new AssigneeOption('Loan Partner: ' + leadRecord.Loan_Partner__r.Name, leadRecord.Loan_Partner__c));
+            assigneeIds.add(leadRecord.Loan_Partner__c);
+        }
+        User benjaminBondarevsky = benjaminBondarevskyUser();
+        if (benjaminBondarevsky != null && !assigneeIds.contains(benjaminBondarevsky.Id)) {
+            assignees.add(new AssigneeOption(BENJAMIN_BONDAREVSKY_NAME, benjaminBondarevsky.Id));
         }
         return assignees;
     }
@@ -216,6 +225,10 @@ public with sharing class LeadActivityAssistantController {
         if (isUserId(leadRecord.Loan_Partner__c)) {
             validOwnerIds.add(leadRecord.Loan_Partner__c);
         }
+        User benjaminBondarevsky = benjaminBondarevskyUser();
+        if (benjaminBondarevsky != null) {
+            validOwnerIds.add(benjaminBondarevsky.Id);
+        }
         if (isUserId(requestedOwnerId) && validOwnerIds.contains(requestedOwnerId)) {
             return requestedOwnerId;
         }
@@ -223,6 +236,18 @@ public with sharing class LeadActivityAssistantController {
             return leadRecord.OwnerId;
         }
         return UserInfo.getUserId();
+    }
+
+    private static User benjaminBondarevskyUser() {
+        List<User> users = [
+            SELECT Id, Name
+            FROM User
+            WHERE Name = :BENJAMIN_BONDAREVSKY_NAME
+            AND IsActive = true
+            ORDER BY CreatedDate ASC, Id ASC
+            LIMIT 1
+        ];
+        return users.isEmpty() ? null : users[0];
     }
 
     private static String normalizeText(String value) {
