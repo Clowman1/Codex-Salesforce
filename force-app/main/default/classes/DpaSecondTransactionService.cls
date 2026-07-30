@@ -1,6 +1,13 @@
 public with sharing class DpaSecondTransactionService {
     public static final String MODE_MANUAL = 'MANUAL';
     public static final String MODE_AUTO = 'AUTO';
+    private static final String DPA_SECOND_LOAN_TYPE = 'DPA 2nd';
+    private static final Set<String> VALID_SECOND_LIEN_LOAN_TYPES = new Set<String>{
+        'Conventional',
+        'Non-QM',
+        'HELOC',
+        DPA_SECOND_LOAN_TYPE
+    };
     private static final String LOG_SOURCE = 'DpaSecondTransactionService';
 
     public class Request {
@@ -205,9 +212,7 @@ public with sharing class DpaSecondTransactionService {
 
         Id lenderId = req != null && req.lenderId != null ? req.lenderId : firstTransaction.Lender_lookup__c;
         Decimal loanAmount2nd = req != null && req.loanAmount2nd != null ? req.loanAmount2nd : firstTransaction.Loan_Amount_1st__c;
-        String loanType2nd = req != null && String.isNotBlank(req.loanType2nd)
-            ? req.loanType2nd
-            : firstTransaction.Loan_Type_1st_TD__c;
+        String loanType2nd = resolveSecondLienLoanType(req, firstTransaction);
         String loanProgram2nd = req != null && String.isNotBlank(req.loanProgram2nd) ? req.loanProgram2nd : firstTransaction.Loan_Program_1st__c;
         Decimal rate2nd = req != null && req.rate2nd != null ? req.rate2nd : firstTransaction.Rate_1st_TD__c;
 
@@ -264,6 +269,18 @@ public with sharing class DpaSecondTransactionService {
             Loan_Program_2nd__c = loanProgram2nd,
             Rate_2nd_TD__c = rate2nd
         );
+    }
+
+    private static String resolveSecondLienLoanType(Request req, Transaction__c firstTransaction) {
+        String requestedLoanType = req != null && String.isNotBlank(req.loanType2nd)
+            ? req.loanType2nd
+            : firstTransaction.Loan_Type_1st_TD__c;
+
+        if (VALID_SECOND_LIEN_LOAN_TYPES.contains(requestedLoanType)) {
+            return requestedLoanType;
+        }
+
+        return DPA_SECOND_LOAN_TYPE;
     }
 
     private static void populateBusinessError(Result result, String errorCode, String userMessage) {
