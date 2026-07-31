@@ -24,12 +24,17 @@
             <div class="form-grid">
                 <label class="field field-full">
                     <span>Subject</span>
-                    <select value={callSubject} data-field="callSubject" onchange={handleInput}>
-                        <template for:each={callSubjectOptions} for:item="option">
-                            <option key={option.value} value={option.value}>{option.label}</option>
-                        </template>
-                    </select>
-                    <small class="hint">Choose the activity outcome that best matches the conversation.</small>
+                    <template if:true={isAccountRecord}>
+                        <input type="text" value={callSubject} data-field="callSubject" onchange={handleInput} required />
+                    </template>
+                    <template if:false={isAccountRecord}>
+                        <select value={callSubject} data-field="callSubject" onchange={handleInput}>
+                            <template for:each={callSubjectOptions} for:item="option">
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            </template>
+                        </select>
+                    </template>
+                    <small class="hint">{callSubjectHint}</small>
                 </label>
                 <label class="field field-full">
                     <span>Internal Note</span>

@@ -51,6 +51,7 @@ export default class LeadActivityAssistant extends LightningElement {
         this.isConsumerLead = true;
         this.leadName = '';
         this.objectApiName = 'Lead';
+        this.callSubject = 'Call - No Contact';
         this.callEventSubject = '';
         this.callEventSubjectEdited = false;
         if (value) {
@@ -132,6 +133,12 @@ export default class LeadActivityAssistant extends LightningElement {
         return this.isAccountRecord
             ? 'This saves to the Task and creates an Account note in the Notes tab.'
             : 'This saves to the Task and creates a Lead note in the Notes tab.';
+    }
+
+    get callSubjectHint() {
+        return this.isAccountRecord
+            ? 'Enter the subject that should appear on the completed Account call activity.'
+            : 'Choose the activity outcome that best matches the conversation.';
     }
 
     get assigneeHint() {
@@ -223,6 +230,10 @@ export default class LeadActivityAssistant extends LightningElement {
             this.isConsumerLead = context?.isConsumerLead !== false;
             this.leadName = context?.leadName || '';
             this.objectApiName = context?.objectApiName || 'Lead';
+            if (this.isAccountRecord && this.callSubject === 'Call - No Contact') {
+                this.callSubject = '';
+                this.syncCallFormInputs();
+            }
             if (!this.callEventSubjectEdited) {
                 this.callEventSubject = this.defaultCallEventSubject;
             }
@@ -250,7 +261,7 @@ export default class LeadActivityAssistant extends LightningElement {
             this.errorMessage = 'Start Date and Start Time are both required to schedule the follow-up event.';
             return;
         }
-        if (this.isConsumerLead && !this.eventStartDateTime && !this.callSubjectAllowsNoFutureEvent) {
+        if (!this.isAccountRecord && this.isConsumerLead && !this.eventStartDateTime && !this.callSubjectAllowsNoFutureEvent) {
             this.errorMessage = 'This call requires a future event. Please select a Start Date and Start Time, or make sure this Lead already has a future event set.';
             return;
         }
@@ -324,7 +335,7 @@ export default class LeadActivityAssistant extends LightningElement {
     }
 
     resetCallForm() {
-        this.callSubject = 'Call - No Contact';
+        this.callSubject = this.isAccountRecord ? '' : 'Call - No Contact';
         this.internalNote = '';
         this.eventOwnerId = this.defaultAssigneeId;
         this.eventStartDate = '';

@@ -123,7 +123,7 @@ public with sharing class LeadActivityAssistantController {
         } else {
             taskRecord.WhatId = leadId;
         }
-        taskRecord.Subject = taskSubject(trimmedSubject);
+        taskRecord.Subject = isLeadRecord ? taskSubject(trimmedSubject) : trimmedSubject;
         taskRecord.Description = String.isBlank(internalNote) ? null : internalNote.trim();
         taskRecord.ActivityDate = Date.today();
         taskRecord.Status = String.isBlank(taskStatus) ? 'Completed' : taskStatus.trim();
@@ -149,7 +149,7 @@ public with sharing class LeadActivityAssistantController {
         try {
             insert taskRecord;
         } catch (DmlException ex) {
-            throw new AuraHandledException(friendlyTaskError(ex));
+            throw new AuraHandledException(friendlyTaskError(ex, isLeadRecord));
         }
 
         if (isLeadRecord) {
@@ -167,7 +167,7 @@ public with sharing class LeadActivityAssistantController {
                 eventSubject
             );
         }
-        createActivityNote(leadId, trimmedSubject, internalNote);
+        createActivityNote(leadId, trimmedSubject, internalNote, isLeadRecord);
         return new SaveResult(taskRecord.Id, 'Call logged.');
     }
 
@@ -554,18 +554,18 @@ public with sharing class LeadActivityAssistantController {
         return 'Follow Up - ' + leadRecord.Name;
     }
 
-    private static String friendlyTaskError(DmlException ex) {
+    private static String friendlyTaskError(DmlException ex, Boolean isLeadRecord) {
         String message = ex.getDmlMessage(0);
         if (String.isBlank(message)) {
             message = ex.getMessage();
         }
-        if (isPreApprovalRequirementError(message)) {
+        if (isLeadRecord && isPreApprovalRequirementError(message)) {
             return 'To move this Lead to Pre-Approval, fill in both Lead Rating and Loan Amount on the Lead record, then try again.';
         }
-        if (message != null && message.contains('Follow Up Date Time field cannot be blank')) {
+        if (isLeadRecord && message != null && message.contains('Follow Up Date Time field cannot be blank')) {
             return 'This call requires a future event. Please select a Start Date and Start Time, or make sure this Lead already has a future event set.';
         }
-        if (message != null && message.contains('External Message to Buyer')) {
+        if (isLeadRecord && message != null && message.contains('External Message to Buyer')) {
             return 'This status requires an External Message to Buyer Agent before the call can be logged.';
         }
         if (message != null && message.contains('comments cannot be blank')) {
@@ -596,7 +596,7 @@ public with sharing class LeadActivityAssistantController {
         return Datetime.valueOf(normalized);
     }
 
-    private static void createActivityNote(Id recordId, String subject, String internalNote) {
+    private static void createActivityNote(Id recordId, String subject, String internalNote, Boolean includeTimestampInSubject) {
         if (String.isBlank(internalNote)) {
             return;
         }
@@ -604,7 +604,7 @@ public with sharing class LeadActivityAssistantController {
         String enhancedBody = '<p>' + cleanedNote.escapeHtml4() + '</p>';
         if (!enhancedNoteAlreadyExists(recordId, cleanedNote, enhancedBody)) {
             Enhanced_Note__c enhancedNote = new Enhanced_Note__c(
-                Subject__c = taskSubject(subject),
+                Subject__c = includeTimestampInSubject ? taskSubject(subject) : subject,
                 Body__c = enhancedBody,
                 Type__c = 'Note',
                 Direction__c = 'Outbound'

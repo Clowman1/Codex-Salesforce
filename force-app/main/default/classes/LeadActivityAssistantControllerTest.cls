@@ -167,7 +167,7 @@ private class LeadActivityAssistantControllerTest {
         Test.startTest();
         LeadActivityAssistantController.SaveResult result = LeadActivityAssistantController.logCall(
             accountRecord.Id,
-            'Call',
+            'Account Check In',
             'Completed',
             'Account note for testing',
             '2026-07-01T10:00',
@@ -189,7 +189,7 @@ private class LeadActivityAssistantControllerTest {
             WHERE Id = :result.recordId
         ];
         System.assertEquals(accountRecord.Id, taskRecord.WhatId);
-        System.assert(taskRecord.Subject.startsWith('Call'), 'Expected the call subject to retain the entered value.');
+        System.assertEquals('Account Check In', taskRecord.Subject, 'Expected the account call subject to retain the entered free-text value.');
         System.assertEquals('Normal', taskRecord.Priority);
         System.assertEquals('Call', taskRecord.Type);
         System.assertEquals('Call', taskRecord.TaskSubtype);
@@ -225,6 +225,45 @@ private class LeadActivityAssistantControllerTest {
             WHERE LinkedEntityId = :accountRecord.Id
         ];
         System.assert(!linkedNotes.isEmpty(), 'Expected the internal note to be linked to the Account Notes tab.');
+    }
+
+    @IsTest
+    static void logCallForAccountDoesNotRequireFollowUpEvent() {
+        Account accountRecord = createPersonAccount(UserInfo.getUserId(), 'No Follow Up');
+
+        Test.startTest();
+        LeadActivityAssistantController.SaveResult result = LeadActivityAssistantController.logCall(
+            accountRecord.Id,
+            'Account Call Only',
+            'Completed',
+            'Account-only note',
+            null,
+            null,
+            null,
+            UserInfo.getUserId(),
+            null,
+            true,
+            15,
+            null
+        );
+        Test.stopTest();
+
+        Task taskRecord = [
+            SELECT WhatId, Subject, Description, Follow_Up_Date__c
+            FROM Task
+            WHERE Id = :result.recordId
+        ];
+        System.assertEquals(accountRecord.Id, taskRecord.WhatId);
+        System.assertEquals('Account Call Only', taskRecord.Subject);
+        System.assertEquals('Account-only note', taskRecord.Description);
+        System.assertEquals(null, taskRecord.Follow_Up_Date__c, 'Account calls should not require a follow-up event date.');
+
+        List<Event> followUpEvents = [
+            SELECT Id
+            FROM Event
+            WHERE WhatId = :accountRecord.Id
+        ];
+        System.assertEquals(0, followUpEvents.size(), 'Account call without follow-up date should not create an event.');
     }
 
     @IsTest
