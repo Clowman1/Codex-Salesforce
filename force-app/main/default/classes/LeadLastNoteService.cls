@@ -38,7 +38,7 @@ public without sharing class LeadLastNoteService {
             leadsToUpdate.add(new Lead(Id = leadId, Last_Note__c = value));
         }
         if (!leadsToUpdate.isEmpty()) {
-            update leadsToUpdate;
+            Database.update(leadsToUpdate, false, AccessLevel.SYSTEM_MODE);
         }
     }
 
