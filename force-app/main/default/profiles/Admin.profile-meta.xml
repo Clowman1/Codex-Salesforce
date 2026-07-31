@@ -5,6 +5,11 @@
         <field>Lead.Source_URL_Full__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Lead.Last_Note__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <classAccesses>
         <apexClass>LeadActivityAssistantController</apexClass>
         <enabled>true</enabled>
