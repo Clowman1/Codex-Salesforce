@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status__c</fullName>
+    <label>Status</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>New</fullName>
+                <default>false</default>
+                <label>New</label>
+            </value>
+            <value>
+                <fullName>Meeting Set</fullName>
+                <default>false</default>
+                <label>Meeting Set</label>
+            </value>
+            <value>
+                <fullName>Working</fullName>
+                <default>false</default>
+                <label>Working</label>
+            </value>
+            <value>
+                <fullName>Hot</fullName>
+                <default>false</default>
+                <label>Hot</label>
+            </value>
+            <value>
+                <fullName>Active</fullName>
+                <default>false</default>
+                <label>Active</label>
+            </value>
+            <value>
+                <fullName>Contact Attempt</fullName>
+                <default>false</default>
+                <label>Contact Attempt</label>
+            </value>
+            <value>
+                <fullName>Contact Call Back</fullName>
+                <default>false</default>
+                <label>Contact Call Back</label>
+            </value>
+            <value>
+                <fullName>Phone Appointment 1</fullName>
+                <default>false</default>
+                <label>Phone Appointment 1</label>
+            </value>
+            <value>
+                <fullName>Phone Appointment 2</fullName>
+                <default>false</default>
+                <label>Phone Appointment 2</label>
+            </value>
+            <value>
+                <fullName>Nurture</fullName>
+                <default>false</default>
+                <label>Nurture</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

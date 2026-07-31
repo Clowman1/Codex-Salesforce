@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lead_Document_Request_Reference__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Lead Document Request Reference</label>
+    <referenceTo>Lead_Document_Request_Reference__c</referenceTo>
+    <relationshipLabel>Conditions</relationshipLabel>
+    <relationshipName>Conditions</relationshipName>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

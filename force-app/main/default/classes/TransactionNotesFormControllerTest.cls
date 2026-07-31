@@ -1,0 +1,55 @@
+@isTest
+public with sharing class TransactionNotesFormControllerTest {
+	@TestSetup
+	static void makeData(){
+		Transaction__c testLead = new Transaction__c();
+
+		insert testLead;
+	}
+    @isTest
+	static void getNotesTest() {
+		Transaction__c testLead = [SELECT Id FROM Transaction__c ORDER BY CreatedDate DESC LIMIT 1];
+		String testLeadNotes = 'Test Lead Notes on: ' + Datetime.now().toString();
+		testLead.Lead_Notes_JSON__c = testLeadNotes;
+	
+		update testLead;
+
+		Test.startTest();
+		String actualNotes = TransactionNotesFormController.getNotes(testLead.Id);
+		Test.stopTest();
+
+		System.assertEquals(testLeadNotes, actualNotes, 'Wrong notes returned');
+    } 
+
+	@isTest
+	static void saveNotesTest() {
+		Transaction__c testLead = [SELECT Id FROM Transaction__c ORDER BY CreatedDate DESC LIMIT 1];
+		String testLeadNotes = 'Test Lead Notes on: ' + Datetime.now().toString();
+		
+		Test.startTest();
+		TransactionNotesFormController.saveNotes(testLead.Id, testLeadNotes);
+		Test.stopTest();
+
+		Transaction__c actualLead = [SELECT Id, Lead_Notes_JSON__c FROM Transaction__c WHERE Id = :testLead.Id];
+
+		System.assertEquals(testLeadNotes, actualLead.Lead_Notes_JSON__c, 'Notes were not set');
+	}
+
+	@isTest
+	static void createNoteTest() {
+		Transaction__c testLead = [SELECT Id, Name FROM Transaction__c ORDER BY CreatedDate DESC LIMIT 1];
+		Map<String, String> notesMap = new Map<String, String>{
+			'Borrower Name' => testLead.Name
+		};
+		String notesJSON = JSON.serialize(notesMap);
+
+		Test.startTest();
+		TransactionNotesFormController.createNote(testLead.Id, notesJSON, notesJSON);
+		Test.stopTest();
+
+		Enhanced_Note__c note = [SELECT Id, Body__c FROM Enhanced_Note__c WHERE Transaction__c = :testLead.Id ORDER BY CreatedDate DESC LIMIT 1];
+	
+		System.assertNotEquals(null, note, 'Note should be created');
+		System.assertEquals(true, note.Body__c.contains(testLead.name), 'Enhanced Note is not populated correctly');
+	}
+}

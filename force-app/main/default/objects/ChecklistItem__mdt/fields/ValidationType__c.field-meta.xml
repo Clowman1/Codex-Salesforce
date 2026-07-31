@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ValidationType__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Validation Type</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Is Custom Validation</fullName>
+                <default>true</default>
+                <label>Is Custom Validation</label>
+            </value>
+            <value>
+                <fullName>Is Equal To</fullName>
+                <default>false</default>
+                <label>Is Equal To</label>
+            </value>
+            <value>
+                <fullName>Is Equal To Compared Field</fullName>
+                <default>false</default>
+                <label>Is Equal To Compared Field</label>
+            </value>
+            <value>
+                <fullName>Is Greater Than</fullName>
+                <default>false</default>
+                <label>Is Greater Than</label>
+            </value>
+            <value>
+                <fullName>Is Greater Than Compared Field</fullName>
+                <default>false</default>
+                <label>Is Greater Than Compared Field</label>
+            </value>
+            <value>
+                <fullName>Is Greater Than Or Equal To</fullName>
+                <default>false</default>
+                <label>Is Greater Than Or Equal To</label>
+            </value>
+            <value>
+                <fullName>Is Greater Than Or Equal to Compared Field</fullName>
+                <default>false</default>
+                <label>Is Greater Than Or Equal to Compared Field</label>
+            </value>
+            <value>
+                <fullName>Is Less Than</fullName>
+                <default>false</default>
+                <label>Is Less Than</label>
+            </value>
+            <value>
+                <fullName>Is Less Than Compared Field</fullName>
+                <default>false</default>
+                <label>Is Less Than Compared Field</label>
+            </value>
+            <value>
+                <fullName>Is Less Than Or Equal To</fullName>
+                <default>false</default>
+                <label>Is Less Than Or Equal To</label>
+            </value>
+            <value>
+                <fullName>Is Less Than Or Equal to Compared Field</fullName>
+                <default>false</default>
+                <label>Is Less Than Or Equal to Compared Field</label>
+            </value>
+            <value>
+                <fullName>Is Not Null</fullName>
+                <default>false</default>
+                <label>Is Not Null</label>
+            </value>
+            <value>
+                <fullName>Is Null</fullName>
+                <default>false</default>
+                <label>Is Null</label>
+            </value>
+            <value>
+                <fullName>Is Equal To Value</fullName>
+                <default>false</default>
+                <label>Is Equal To Value</label>
+            </value>
+            <value>
+                <fullName>Is Less Than Value</fullName>
+                <default>false</default>
+                <label>Is Less Than Value</label>
+            </value>
+            <value>
+                <fullName>Is Less Than Or Equal To Value</fullName>
+                <default>false</default>
+                <label>Is Less Than Or Equal To Value</label>
+            </value>
+            <value>
+                <fullName>Is Greater Than Value</fullName>
+                <default>false</default>
+                <label>Is Greater Than Value</label>
+            </value>
+            <value>
+                <fullName>Is Greater Than Or Equal To Value</fullName>
+                <default>false</default>
+                <label>Is Greater Than Or Equal To Value</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

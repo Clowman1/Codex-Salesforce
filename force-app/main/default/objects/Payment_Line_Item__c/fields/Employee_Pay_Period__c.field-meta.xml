@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Employee_Pay_Period__c</fullName>
+    <label>Employee Pay Period</label>
+    <referenceTo>Employee_Pay_Period__c</referenceTo>
+    <relationshipLabel>Payment Line Items</relationshipLabel>
+    <relationshipName>Payment_Line_Items</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

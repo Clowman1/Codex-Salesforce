@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(
+Blocked__c = TRUE,
+&apos;Blocked&apos;,
+IF(
+    NOT(ISBLANK(Sent_DateTime__c)),
+    &quot;Sent&quot;,
+    IF(
+        Scheduled_Send_DateTime__c &lt; NOW(),
+        &quot;Overdue&quot;,
+        &quot;Scheduled&quot;
+    )
+)
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Status</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

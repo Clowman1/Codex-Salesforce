@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>COC_Specialist__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>COC Specialist</label>
+    <referenceTo>User</referenceTo>
+    <relationshipLabel>Change of Circumstances</relationshipLabel>
+    <relationshipName>Change_of_Circumstances</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rate_lock__c</fullName>
+    <label>Rate lock</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Locked</fullName>
+                <default>false</default>
+                <label>Locked</label>
+            </value>
+            <value>
+                <fullName>Need Lock Requested</fullName>
+                <default>false</default>
+                <label>Need Lock Requested</label>
+            </value>
+            <value>
+                <fullName>Floating</fullName>
+                <default>false</default>
+                <label>Floating</label>
+            </value>
+            <value>
+                <fullName>Unlocked</fullName>
+                <default>false</default>
+                <label>Unlocked</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

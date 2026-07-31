@@ -117,6 +117,80 @@ private class ClientActivityTransactionRouterTest {
         System.assertNotEquals(null, stampedTransaction.Last_Processor_RC_SMS__c, 'SMS history should stamp the last processor SMS.');
     }
 
+    @IsTest
+    static void callOnNurturedConsumerLeadRepointsOffTheLead() {
+        String sharedPhone = '813-555-4141';
+        Account borrower = new Account(LastName = 'Repoint Borrower', PersonMobilePhone = sharedPhone);
+        insert borrower;
+        Transaction__c activeLoan = createTransaction('Repoint Active', borrower.Id, null);
+
+        Lead nurturedLead = new Lead(
+            FirstName = 'Nurtured',
+            LastName = 'Borrower',
+            Company = 'N/A',
+            Status = 'Nurturing',
+            MobilePhone = sharedPhone,
+            RecordTypeId = leadRecordTypeId('Consumer_Lead_record_type')
+        );
+        insert nurturedLead;
+
+        Test.startTest();
+        Task callTask = new Task(
+            Subject = 'Benjamin Bondarevsky called Nurtured Borrower on 07/30/2026 at 09:00:00 AM',
+            WhoId = nurturedLead.Id,
+            TaskSubtype = 'Call',
+            Status = 'Completed',
+            Priority = 'Normal'
+        );
+        insert callTask;
+        Test.stopTest();
+
+        Task routedTask = [SELECT WhoId, WhatId FROM Task WHERE Id = :callTask.Id];
+        System.assertNotEquals(nurturedLead.Id, routedTask.WhoId, 'A nurtured consumer lead must not keep the call.');
+        System.assertEquals(activeLoan.Id, routedTask.WhatId, 'An active transaction should take the call.');
+    }
+
+    @IsTest
+    static void callOnRealtorLeadIsLeftAlone() {
+        String sharedPhone = '813-555-4242';
+        Account borrower = new Account(LastName = 'Realtor Untouched', PersonMobilePhone = sharedPhone);
+        insert borrower;
+        createTransaction('Realtor Untouched', borrower.Id, null);
+
+        Lead realtorLead = new Lead(
+            FirstName = 'Realtor',
+            LastName = 'Partner',
+            Company = 'N/A',
+            Status = 'Nurturing',
+            MobilePhone = sharedPhone,
+            RecordTypeId = leadRecordTypeId('Realtor_Lead_record_type')
+        );
+        insert realtorLead;
+
+        Test.startTest();
+        Task callTask = new Task(
+            Subject = 'Benjamin Bondarevsky called Realtor Partner on 07/30/2026 at 09:30:00 AM',
+            WhoId = realtorLead.Id,
+            TaskSubtype = 'Call',
+            Status = 'Completed',
+            Priority = 'Normal'
+        );
+        insert callTask;
+        Test.stopTest();
+
+        Task routedTask = [SELECT WhoId FROM Task WHERE Id = :callTask.Id];
+        System.assertEquals(realtorLead.Id, routedTask.WhoId, 'Realtor lead calls must stay on the realtor lead.');
+    }
+
+    private static Id leadRecordTypeId(String developerName) {
+        return [
+            SELECT Id
+            FROM RecordType
+            WHERE SObjectType = 'Lead' AND DeveloperName = :developerName
+            LIMIT 1
+        ].Id;
+    }
+
     private static Transaction__c createTransaction(String name, Id borrowerId, Id firstMortgageId) {
     if (businessAccountRecordTypeId == null) {
         businessAccountRecordTypeId = [

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DPA_Grant__c</fullName>
+    <label>DPA/Grant</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>No DPA Program</fullName>
+                <default>false</default>
+                <label>No DPA Program</label>
+            </value>
+            <value>
+                <fullName>Miami Dade - Lee DPA</fullName>
+                <default>false</default>
+                <label>Miami Dade - Lee DPA</label>
+            </value>
+            <value>
+                <fullName>Palm Beach - Lee DPA</fullName>
+                <default>false</default>
+                <label>Palm Beach - Lee DPA</label>
+            </value>
+            <value>
+                <fullName>&quot;Other&quot; DPA Program</fullName>
+                <default>false</default>
+                <label>&quot;Other&quot; DPA Program</label>
+            </value>
+            <value>
+                <fullName>&quot;Other&quot; Grant Program</fullName>
+                <default>false</default>
+                <label>&quot;Other&quot; Grant Program</label>
+            </value>
+            <value>
+                <fullName>Yes</fullName>
+                <default>false</default>
+                <label>Yes</label>
+            </value>
+            <value>
+                <fullName>No</fullName>
+                <default>false</default>
+                <label>No</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

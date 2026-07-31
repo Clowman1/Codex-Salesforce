@@ -98,4 +98,16 @@ public with sharing class LeadDocumentRequestController {
     public static void sendEditedRequestEmail(Id leadId, String subject, String htmlBody) {
         LeadDocumentRequestService.sendEditedRequestEmail(leadId, subject, htmlBody);
     }
+
+    // Separate name rather than an overload: @AuraEnabled methods cannot be overloaded.
+    @AuraEnabled
+    public static void sendComposedRequestEmail(
+        Id leadId,
+        String subject,
+        String htmlBody,
+        String toAddresses,
+        String ccAddresses
+    ) {
+        LeadDocumentRequestService.sendEditedRequestEmail(leadId, subject, htmlBody, toAddresses, ccAddresses);
+    }
 }

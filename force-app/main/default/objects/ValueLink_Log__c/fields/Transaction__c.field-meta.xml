@@ -7,6 +7,6 @@
     <relationshipLabel>ValueLink Logs</relationshipLabel>
     <relationshipName>ValueLink_Logs</relationshipName>
     <required>false</required>
-    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Lookup</type>
 </CustomField>

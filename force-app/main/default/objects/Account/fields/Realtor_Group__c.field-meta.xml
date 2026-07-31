@@ -16,6 +16,16 @@
                 <label>The Nickley Group</label>
             </value>
             <value>
+                <fullName>Nickley TC&apos;s</fullName>
+                <default>false</default>
+                <label>Nickley TC&apos;s</label>
+            </value>
+            <value>
+                <fullName>Nickley ISA&apos;s</fullName>
+                <default>false</default>
+                <label>Nickley ISA&apos;s</label>
+            </value>
+            <value>
                 <fullName>EXP Realty Melbourne</fullName>
                 <default>false</default>
                 <label>EXP Realty Melbourne</label>
@@ -24,11 +34,6 @@
                 <fullName>Coastal Real Estate Professionals</fullName>
                 <default>false</default>
                 <label>Coastal Real Estate Professionals</label>
-            </value>
-            <value>
-                <fullName>Nickley ISA&apos;s</fullName>
-                <default>false</default>
-                <label>Nickley ISA&apos;s</label>
             </value>
             <value>
                 <fullName>SERHANT - ORL</fullName>

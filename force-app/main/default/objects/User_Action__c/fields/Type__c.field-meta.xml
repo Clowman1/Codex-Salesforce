@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <label>Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Pre-Approval Sent</fullName>
+                <default>false</default>
+                <label>Pre-Approval Sent</label>
+            </value>
+            <value>
+                <fullName>Proposed Refinance Sent</fullName>
+                <default>false</default>
+                <label>Proposed Refinance Sent</label>
+            </value>
+            <value>
+                <fullName>Loan Conditions Email Sent</fullName>
+                <default>false</default>
+                <label>Loan Conditions Email Sent</label>
+            </value>
+            <value>
+                <fullName>Realtor Intake Form Submitted</fullName>
+                <default>false</default>
+                <label>Realtor Intake Form Submitted</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

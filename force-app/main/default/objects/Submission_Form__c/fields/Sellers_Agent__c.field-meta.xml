@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sellers_Agent__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Seller&apos;s Agent</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Submission Forms (Seller&apos;s Agent)</relationshipLabel>
+    <relationshipName>Submission_Forms</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

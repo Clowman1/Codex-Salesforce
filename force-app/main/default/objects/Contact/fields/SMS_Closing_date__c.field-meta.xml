@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SMS_Closing_date__c</fullName>
+    <formula>DATE( YEAR( TODAY() ) , MONTH( Closing_Date__c ) , DAY( Closing_Date__c ) )</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>SMS Closing date</label>
+    <required>false</required>
+    <type>Date</type>
+</CustomField>

@@ -10,8 +10,8 @@ public with sharing class LeadDocumentRequestService {
     private static final String EMAIL_TEMPLATE_DEVELOPER_NAME = 'Lead_Initial_Documents_Needed';
     private static final String REQUESTED_DOCUMENT_LIST_PLACEHOLDER = '{{REQUESTED_DOCUMENT_LIST}}';
     private static final String OWNER_SIGNATURE_PLACEHOLDER = '{{OWNER_SIGNATURE}}';
+    private static final String SENDER_SIGNATURE_PLACEHOLDER = '{{SENDER_SIGNATURE}}';
     private static final String LEAD_PORTAL_LINK_PLACEHOLDER = '{{LEAD_PORTAL_LINK}}';
-    private static final String ORG_WIDE_FROM_ADDRESS = 'reachus@reachhomeloans.com';
     @TestVisible private static String testLeadHomeUrlOverride;
     @TestVisible private static Map<Id, String> testLeadPortalHashesByLeadId = new Map<Id, String>();
 
@@ -85,6 +85,8 @@ public with sharing class LeadDocumentRequestService {
     public class EmailInformation {
         @AuraEnabled public String subject;
         @AuraEnabled public String htmlBody;
+        @AuraEnabled public String toAddresses;
+        @AuraEnabled public String ccAddresses;
     }
 
     public class EmailTemplateOption {
@@ -444,7 +446,7 @@ public with sharing class LeadDocumentRequestService {
 
     public static List<EmailTemplateOption> getEmailTemplateOptions() {
         return new List<EmailTemplateOption>{
-            new EmailTemplateOption('Initial Documents Needed', EMAIL_TEMPLATE_DEVELOPER_NAME)
+            new EmailTemplateOption('Pre-Approval Docs Needed', EMAIL_TEMPLATE_DEVELOPER_NAME)
         };
     }
 
@@ -461,6 +463,8 @@ public with sharing class LeadDocumentRequestService {
         EmailInformation preview = new EmailInformation();
         preview.subject = rendered.getSubject();
         preview.htmlBody = rendered.getHtmlBody();
+        preview.toAddresses = String.isBlank(leadRecord.Email) ? '' : leadRecord.Email;
+        preview.ccAddresses = String.join(buildDefaultCcAddresses(leadRecord), ', ');
         return preview;
     }
 
@@ -470,6 +474,17 @@ public with sharing class LeadDocumentRequestService {
     }
 
     public static void sendEditedRequestEmail(Id leadId, String subject, String htmlBody) {
+        // Null To/CC means "use the defaults" (borrower email, Loan Partner on the Lead).
+        sendEditedRequestEmail(leadId, subject, htmlBody, null, null);
+    }
+
+    public static void sendEditedRequestEmail(
+        Id leadId,
+        String subject,
+        String htmlBody,
+        String toAddresses,
+        String ccAddresses
+    ) {
         Lead leadRecord = getLeadOrThrow(leadId);
         ensureLeadIsOpenForDocumentRequests(leadRecord);
         if (String.isBlank(leadRecord.Email)) {
@@ -490,18 +505,28 @@ public with sharing class LeadDocumentRequestService {
             throw new LeadDocumentRequestException('Email body is required before sending.');
         }
 
+        // A blank To falls back to the borrower email. A non-null but empty CC means the sender
+        // deliberately cleared the Loan Partner, so it is respected rather than re-defaulted.
+        List<String> resolvedToAddresses = parseEmailAddressList(toAddresses, 'To');
+        if (resolvedToAddresses.isEmpty()) {
+            resolvedToAddresses.add(leadRecord.Email);
+        }
+        List<String> resolvedCcAddresses = ccAddresses == null
+            ? buildDefaultCcAddresses(leadRecord)
+            : parseEmailAddressList(ccAddresses, 'CC');
+
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         mail.setTargetObjectId(leadRecord.Id);
-        mail.setToAddresses(new List<String>{ leadRecord.Email });
+        mail.setToAddresses(resolvedToAddresses);
         mail.setTreatTargetObjectAsRecipient(false);
         mail.setSubject(subject);
         mail.setHtmlBody(htmlBody);
         mail.setSaveAsActivity(true);
 
-        Id orgWideEmailAddressId = LeadDocumentRequestRepository.getInstance()
-            .selectOrgWideEmailAddressId(ORG_WIDE_FROM_ADDRESS);
-        if (orgWideEmailAddressId != null) {
-            mail.setOrgWideEmailAddressId(orgWideEmailAddressId);
+        // Intentionally no org-wide From address: the email must send from the user clicking send,
+        // not a shared inbox, so borrower replies land with the person they spoke with.
+        if (!resolvedCcAddresses.isEmpty()) {
+            mail.setCcAddresses(resolvedCcAddresses);
         }
 
         if (!Test.isRunningTest()) {
@@ -885,7 +910,7 @@ public with sharing class LeadDocumentRequestService {
     ) {
         String bodyWithPortalLink = addLeadPortalLink(htmlBody, leadRecord);
         String bodyWithDocuments = addRequestedDocumentList(bodyWithPortalLink, requestRecords);
-        return addOwnerSignature(bodyWithDocuments, leadRecord);
+        return addSenderSignature(bodyWithDocuments);
     }
 
     private static String addLeadPortalLink(String htmlBody, Lead leadRecord) {
@@ -915,50 +940,171 @@ public with sharing class LeadDocumentRequestService {
             htmlBody.substring(closingBodyIndex);
     }
 
-    private static String addOwnerSignature(String htmlBody, Lead leadRecord) {
-        String signature = buildOwnerSignature(leadRecord);
-        if (htmlBody.contains(OWNER_SIGNATURE_PLACEHOLDER)) {
-            return htmlBody.replace(OWNER_SIGNATURE_PLACEHOLDER, signature);
+    private static String addSenderSignature(String htmlBody) {
+        String signature = buildSenderSignature();
+        String updatedBody = htmlBody;
+        // Both tokens are honored so existing templates keep working after the rename.
+        if (updatedBody.contains(SENDER_SIGNATURE_PLACEHOLDER)) {
+            updatedBody = updatedBody.replace(SENDER_SIGNATURE_PLACEHOLDER, signature);
         }
-        return htmlBody;
+        if (updatedBody.contains(OWNER_SIGNATURE_PLACEHOLDER)) {
+            updatedBody = updatedBody.replace(OWNER_SIGNATURE_PLACEHOLDER, signature);
+        }
+        return updatedBody;
     }
 
-    private static String buildOwnerSignature(Lead leadRecord) {
-        if (leadRecord == null || leadRecord.OwnerId == null) {
+    // Accepts comma, semicolon, or whitespace separated addresses so senders can paste or type
+    // extra recipients. Duplicates are collapsed and malformed entries are rejected up front.
+    private static List<String> parseEmailAddressList(String rawValue, String fieldLabel) {
+        List<String> parsedAddresses = new List<String>();
+        if (String.isBlank(rawValue)) {
+            return parsedAddresses;
+        }
+        Set<String> seenLowerCase = new Set<String>();
+        for (String candidate : rawValue.split('[,;\\s]+')) {
+            String trimmed = candidate == null ? '' : candidate.trim();
+            if (String.isBlank(trimmed)) {
+                continue;
+            }
+            if (!Pattern.matches('^[^@\\s,;]+@[^@\\s,;]+\\.[^@\\s,;.]+$', trimmed)) {
+                throw new LeadDocumentRequestException(
+                    fieldLabel + ' contains an invalid email address: ' + trimmed
+                );
+            }
+            if (seenLowerCase.add(trimmed.toLowerCase())) {
+                parsedAddresses.add(trimmed);
+            }
+        }
+        return parsedAddresses;
+    }
+
+    // Default CC is the Lead Owner plus the Loan Partner, minus whoever is sending. So the Owner
+    // sending CCs the Loan Partner, the Loan Partner sending CCs the Owner, and anyone else
+    // sending CCs both. Owner is listed first.
+    private static List<String> buildDefaultCcAddresses(Lead leadRecord) {
+        List<String> ccAddresses = new List<String>();
+        if (leadRecord == null) {
+            return ccAddresses;
+        }
+        Id senderId = UserInfo.getUserId();
+
+        List<Id> orderedCandidateIds = new List<Id>();
+        // A Lead can be owned by a queue, so only consider User owners.
+        if (leadRecord.OwnerId != null
+            && leadRecord.OwnerId.getSObjectType() == Schema.User.SObjectType
+            && leadRecord.OwnerId != senderId) {
+            orderedCandidateIds.add(leadRecord.OwnerId);
+        }
+        Id loanPartnerId = (Id) safeLeadValue(leadRecord, 'Loan_Partner__c');
+        if (loanPartnerId != null && loanPartnerId != senderId && !orderedCandidateIds.contains(loanPartnerId)) {
+            orderedCandidateIds.add(loanPartnerId);
+        }
+        if (orderedCandidateIds.isEmpty()) {
+            return ccAddresses;
+        }
+
+        Map<Id, User> usersById = LeadDocumentRequestRepository.getInstance()
+            .selectUsersByIds(new Set<Id>(orderedCandidateIds));
+        Set<String> seenLowerCase = new Set<String>();
+        for (Id candidateId : orderedCandidateIds) {
+            User candidate = usersById.get(candidateId);
+            if (candidate == null || String.isBlank(candidate.Email)) {
+                continue;
+            }
+            if (seenLowerCase.add(candidate.Email.toLowerCase())) {
+                ccAddresses.add(candidate.Email);
+            }
+        }
+        return ccAddresses;
+    }
+
+    private static Object safeLeadValue(Lead leadRecord, String fieldApiName) {
+        if (leadRecord == null) {
+            return null;
+        }
+        try {
+            return leadRecord.get(fieldApiName);
+        } catch (SObjectException fieldNotQueried) {
+            return null;
+        }
+    }
+
+    // Signature follows the user sending the email (matching the From address), not the lead owner.
+    // Card layout mirrors the Transaction Conditions component signature in LoanConditionController.
+    private static String buildSenderSignature() {
+        Id senderId = UserInfo.getUserId();
+        User sender = LeadDocumentRequestRepository.getInstance()
+            .selectUsersByIds(new Set<Id>{ senderId })
+            .get(senderId);
+        if (sender == null) {
             return '';
         }
-        User owner = LeadDocumentRequestRepository.getInstance()
-            .selectUsersByIds(new Set<Id>{ leadRecord.OwnerId })
-            .get(leadRecord.OwnerId);
-        if (owner == null) {
+
+        String displayName = sender.Name;
+        if (String.isBlank(displayName)) {
+            List<String> nameParts = new List<String>();
+            if (String.isNotBlank(sender.FirstName)) {
+                nameParts.add(sender.FirstName);
+            }
+            if (String.isNotBlank(sender.LastName)) {
+                nameParts.add(sender.LastName);
+            }
+            displayName = String.join(nameParts, ' ');
+        }
+        if (String.isBlank(displayName)) {
             return '';
         }
 
-        List<String> nameAndTitle = new List<String>();
-        if (String.isNotBlank(owner.Name)) {
-            nameAndTitle.add(owner.Name.escapeHtml4());
+        String photoUrl = htmlEncode(sender.Headshot_URL__c);
+        String title = htmlEncode(sender.Title);
+        String phone = htmlEncode(FormattingUtility.formatPhone(sender.Phone));
+        String mobilePhone = htmlEncode(FormattingUtility.formatPhone(sender.MobilePhone));
+        String fax = htmlEncode(FormattingUtility.formatPhone(sender.Fax));
+        String email = htmlEncode(sender.Email);
+        String nmls = htmlEncode(sender.NMLS__c);
+
+        List<String> detailLines = new List<String>();
+        if (String.isNotBlank(title)) {
+            detailLines.add('<div style="font-size:13px;line-height:18px;color:#4b5563;">' + title + '</div>');
         }
-        if (String.isNotBlank(owner.Title)) {
-            nameAndTitle.add(owner.Title.escapeHtml4());
+        if (String.isNotBlank(phone)) {
+            detailLines.add('<div style="font-size:13px;line-height:18px;color:#4b5563;">Direct: ' + phone + '</div>');
+        } else if (String.isNotBlank(mobilePhone)) {
+            detailLines.add('<div style="font-size:13px;line-height:18px;color:#4b5563;">Mobile: ' + mobilePhone + '</div>');
+        }
+        if (String.isNotBlank(email)) {
+            detailLines.add('<div style="font-size:13px;line-height:18px;color:#4b5563;"><a href="mailto:' + email + '" style="color:#1a2541;text-decoration:none;">' + email + '</a></div>');
+        }
+        if (String.isNotBlank(fax)) {
+            detailLines.add('<div style="font-size:13px;line-height:18px;color:#4b5563;">Fax: ' + fax + '</div>');
+        }
+        detailLines.add('<div style="font-size:13px;line-height:18px;color:#4b5563;">327 Plaza Real #215, Boca Raton, FL, 33432</div>');
+        if (String.isNotBlank(nmls)) {
+            detailLines.add('<div style="font-size:13px;line-height:18px;color:#4b5563;">NMLS #' + nmls + '</div>');
         }
 
-        List<String> contactParts = new List<String>();
-        if (String.isNotBlank(owner.Phone)) {
-            contactParts.add('(p): ' + owner.Phone.escapeHtml4());
-        }
-        if (String.isNotBlank(owner.Fax)) {
-            contactParts.add('(f): ' + owner.Fax.escapeHtml4());
-        }
+        // Headshot_URL__c holds a public file.force.com delivery link, so it renders for external
+        // borrowers. Senders without a headshot simply get the text-only card.
+        String imageMarkup = String.isBlank(photoUrl)
+            ? ''
+            : '<td style="padding-right:14px;vertical-align:top;width:82px;">'
+                + '<img src="' + photoUrl + '" alt="' + htmlEncode(displayName) + '" width="72" height="72" '
+                + 'style="display:block;border-radius:50%;width:72px;height:72px;object-fit:cover;">'
+                + '</td>';
 
-        String signature = String.join(nameAndTitle, ' | ');
-        if (!contactParts.isEmpty()) {
-            signature += (String.isBlank(signature) ? '' : '<br/>') + String.join(contactParts, ' | ');
-        }
-        signature += '<br/>327 Plaza Real #215, Boca Raton, FL, 33432';
-        if (String.isNotBlank(owner.NMLS__c)) {
-            signature += '<br/>NMLS: ' + owner.NMLS__c.escapeHtml4();
-        }
-        return signature;
+        return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,sans-serif;color:#1f2937;">'
+            + '<tr>'
+            + imageMarkup
+            + '<td style="vertical-align:top;">'
+            + '<div style="font-size:15px;line-height:20px;font-weight:bold;color:#1a2541;">' + htmlEncode(displayName) + '</div>'
+            + String.join(detailLines, '')
+            + '</td>'
+            + '</tr>'
+            + '</table>';
+    }
+
+    private static String htmlEncode(String value) {
+        return String.isBlank(value) ? '' : value.escapeHtml4();
     }
 
     private static String buildRequestedDocumentListHtml(List<Lead_Document_Request__c> requestRecords) {

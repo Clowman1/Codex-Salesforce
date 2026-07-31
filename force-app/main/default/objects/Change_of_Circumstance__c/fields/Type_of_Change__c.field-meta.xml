@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type_of_Change__c</fullName>
+    <label>Type of Change</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>LE COC</fullName>
+                <default>false</default>
+                <label>LE COC</label>
+            </value>
+            <value>
+                <fullName>CD COC</fullName>
+                <default>false</default>
+                <label>CD COC</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

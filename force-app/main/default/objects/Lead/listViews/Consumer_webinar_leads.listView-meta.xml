@@ -4,8 +4,6 @@
     <columns>FULL_NAME</columns>
     <columns>LEAD.STATUS</columns>
     <columns>Webinar_Date__c</columns>
-    <columns>LEAD.PHONE</columns>
-    <columns>LEAD.EMAIL</columns>
     <columns>Lead_Owner_Name__c</columns>
     <columns>LEAD.CREATED_DATE</columns>
     <columns>LEAD.LAST_ACTIVITY</columns>
@@ -15,6 +13,8 @@
     <columns>Last_Call_Attempt_RingCentral__c</columns>
     <columns>Purchase_Price__c</columns>
     <columns>Loan_Amount__c</columns>
+    <columns>Lead_Notes_JSON__c</columns>
+    <columns>Notes__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>LEAD.CONVERTED</field>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Accounts_In_SMS_Campaign</fullName>
+    <booleanFilter>1 AND (2 OR 3) AND 4 AND 5</booleanFilter>
+    <columns>NAME</columns>
+    <columns>Campaign_Type__c</columns>
+    <columns>Account__c</columns>
+    <columns>Recipient_Phone_Number__c</columns>
+    <columns>Sender_Name__c</columns>
+    <columns>Scheduled_Send_DateTime__c</columns>
+    <columns>Sent_DateTime__c</columns>
+    <columns>Status__c</columns>
+    <columns>Info_Message__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Account__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Scheduled</value>
+    </filters>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Overdue</value>
+    </filters>
+    <filters>
+        <field>Type__c</field>
+        <operation>equals</operation>
+        <value>RingCentral SMS</value>
+    </filters>
+    <filters>
+        <field>Campaign_Type__c</field>
+        <operation>equals</operation>
+        <value>Account Pre-Approval Message</value>
+    </filters>
+    <label>Accounts in SMS Campaign</label>
+</ListView>

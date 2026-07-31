@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MCC__c</fullName>
+    <label>MCC</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Broward MCC</fullName>
+                <default>false</default>
+                <label>Broward MCC</label>
+            </value>
+            <value>
+                <fullName>Miami-Dade MCC</fullName>
+                <default>false</default>
+                <label>Miami-Dade MCC</label>
+            </value>
+            <value>
+                <fullName>FL Statewide MCC</fullName>
+                <default>false</default>
+                <label>FL Statewide MCC</label>
+            </value>
+            <value>
+                <fullName>Palm Beach MCC</fullName>
+                <default>false</default>
+                <label>Palm Beach MCC</label>
+            </value>
+            <value>
+                <fullName>No MCC</fullName>
+                <default>false</default>
+                <label>No MCC</label>
+            </value>
+            <value>
+                <fullName>&quot;Other&quot; MCC</fullName>
+                <default>false</default>
+                <label>&quot;Other&quot; MCC</label>
+            </value>
+            <value>
+                <fullName>Yes</fullName>
+                <default>false</default>
+                <label>Yes</label>
+            </value>
+            <value>
+                <fullName>No</fullName>
+                <default>false</default>
+                <label>No</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

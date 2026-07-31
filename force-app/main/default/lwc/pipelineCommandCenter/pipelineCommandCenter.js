@@ -4,6 +4,8 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 import getDashboardData from '@salesforce/apex/PipelineCommandCenterController.getDashboardData';
 import getPastClientRowsByYear from '@salesforce/apex/PipelineCommandCenterController.getPastClientRowsByYear';
+import getNickleyRealtorRows from '@salesforce/apex/PipelineCommandCenterController.getNickleyRealtorRows';
+import passPreApprovalFollowUp from '@salesforce/apex/PipelineCommandCenterController.passPreApprovalFollowUp';
 import getListViewOptions from '@salesforce/apex/PipelineCommandCenterController.getListViewOptions';
 import getRealtorPartnerFormOptions from '@salesforce/apex/PipelineCommandCenterController.getRealtorPartnerFormOptions';
 import getNewLeadFormOptions from '@salesforce/apex/PipelineCommandCenterController.getNewLeadFormOptions';
@@ -156,6 +158,7 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
     lastDashboardRefreshAt = 0;
     draggedTabKey;
     pastClientLoadingTabs = new Set();
+    nickleyRealtorTabLoading = false;
     selectedBenMasterGroupKey = '';
     selectedJoeyMasterGroupKey = '';
 
@@ -215,6 +218,7 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
                 this.selectedJoeyMasterGroupKey = activeJoeyGroupKey || this.selectedJoeyMasterGroupKey || 'joeOlmsted';
             }
             this.loadActivePastClientTab();
+            this.loadActiveNickleyRealtorTab();
             this.error = undefined;
         } else if (error) {
             this.error = this.extractError(error);
@@ -624,6 +628,7 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
         }
         this.pipelineTabs = this.decorateTabs(this.pipelineTabs);
         await this.loadActivePastClientTab();
+        await this.loadActiveNickleyRealtorTab();
     }
 
     async selectBenMasterGroup(event) {
@@ -1114,6 +1119,29 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
         this.brokerCheckError = undefined;
     }
 
+    async handlePassFollowUp(event) {
+        const leadId = event.currentTarget.dataset.recordId;
+        if (!leadId) {
+            return;
+        }
+        this.isLoading = true;
+        try {
+            await passPreApprovalFollowUp({ leadId });
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Passed',
+                    message: 'This lead will cycle back into your follow-up queue after the next call window.',
+                    variant: 'success'
+                })
+            );
+            await refreshApex(this.wiredDashboardResult);
+        } catch (error) {
+            this.error = this.extractError(error);
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
     async confirmBrokerCheckReceived() {
         if (!this.brokerCheckRecordId) {
             this.brokerCheckError = 'A Transaction is required.';
@@ -1268,6 +1296,36 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
             this.error = this.extractError(error);
         } finally {
             this.pastClientLoadingTabs.delete(activeTab.key);
+        }
+    }
+
+    async loadActiveNickleyRealtorTab() {
+        if (this.activePipelineTabKey !== 'myNickleyRealtors' || this.nickleyRealtorTabLoading) {
+            return;
+        }
+        const activeTab = this.pipelineTabs.find((tab) => tab.key === 'myNickleyRealtors');
+        if (!activeTab || activeTab.rowsLoaded) {
+            return;
+        }
+        this.nickleyRealtorTabLoading = true;
+        try {
+            const rows = await getNickleyRealtorRows();
+            this.pipelineTabs = this.decorateTabs(
+                this.pipelineTabs.map((tab) =>
+                    tab.key === 'myNickleyRealtors'
+                        ? {
+                              ...tab,
+                              rows,
+                              rowsLoaded: true,
+                              count: rows.length || tab.count
+                          }
+                        : tab
+                )
+            );
+        } catch (error) {
+            this.error = this.extractError(error);
+        } finally {
+            this.nickleyRealtorTabLoading = false;
         }
     }
 
@@ -1763,7 +1821,8 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
             return [
                 this.buildJoeyMasterGroup('myLeads', 'My Leads', 'pcc-joey-master-joe'),
                 this.buildJoeyMasterGroup('brandonLeads', 'Brandon\'s Leads', 'pcc-joey-master-zach'),
-                this.buildJoeyMasterGroup('zachLeads', 'Zach\'s Leads', 'pcc-joey-master-rhett')
+                this.buildJoeyMasterGroup('zachLeads', 'Zach\'s Leads', 'pcc-joey-master-rhett'),
+                this.buildJoeyMasterGroup('preApprovalFollowUps', 'Pre-Approval Follow Ups', 'pcc-joey-master-berkeley')
             ].filter((group) => group.hasTabs);
         }
         return [
@@ -1808,6 +1867,9 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
     joeyGroupKeyForTab(tabKey) {
         const key = tabKey || '';
         if (this.usesMeganMasterGroups) {
+            if (key.startsWith('meganPreApprovalFollowUps')) {
+                return 'preApprovalFollowUps';
+            }
             if (key.startsWith('brandon')) {
                 return 'brandonLeads';
             }
@@ -2124,7 +2186,14 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
         return ['preApprovalCallsToday', 'brandonPreApprovalCallsToday'].includes(tabKey);
     }
 
+    get showPassAction() {
+        return this.activePipelineTabKey === 'meganPreApprovalFollowUps';
+    }
+
     get isActionablePipelineTab() {
+        if (this.activePipelineTabKey === 'myNickleyRealtors') {
+            return false;
+        }
         return this.isTransactionPipelineTab || this.isAccountPipelineTab || this.isLeadActionTab;
     }
 

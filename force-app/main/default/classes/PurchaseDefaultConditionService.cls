@@ -17,6 +17,16 @@ public without sharing class PurchaseDefaultConditionService {
         'Cancelled'
     };
 
+    // Files no longer being worked. Nothing is created or re-assigned on these, so historical
+    // assignees on closed/cancelled loans stay as they were.
+    private static final Set<String> INACTIVE_STATUSES = new Set<String>{
+        'Cancelled',
+        'PC Review',
+        'QC Review',
+        'Post-Closed',
+        'Lost'
+    };
+
     public static void ensureForPurchaseTransactions(
         List<Transaction__c> newRecords,
         Map<Id, Transaction__c> oldRecordsById
@@ -52,17 +62,21 @@ public without sharing class PurchaseDefaultConditionService {
             }
 
             Id assignedToId = transactionRecord.Processor__c;
+            Boolean allowCreate = canCreateDefaults(transactionRecord);
+            Boolean allowReassign = canReassignDefaults(transactionRecord);
 
             if (!existingDefaults.containsKey(ESCROW_DEPOSIT)) {
-                conditionsToCreate.add(buildCondition(
-                    transactionRecord.Id,
-                    assignedToId,
-                    ESCROW_DEPOSIT,
-                    'Assets',
-                    'Source of $ escrow deposit: Most recent bank statement and transaction history (if needed) for the account the funds came out of\n\n'
-                    + 'PLEASE NOTE: Login from a computer and select the specific account. View the transactions and use the date filters to select the appropriate date range ([insert date] - today\'s date), then apply the filter to view selected range. Finally, you will save as PDF via the Print function by pressing Ctrl + P (on Windows) or Cmd + P (on Mac). In the print window, change the destination to "Save as PDF." Click Save and choose where to save the file on your computer.'
-                ));
-            } else if (existingDefaults.get(ESCROW_DEPOSIT).Assigned_To__c != assignedToId) {
+                if (allowCreate) {
+                    conditionsToCreate.add(buildCondition(
+                        transactionRecord.Id,
+                        assignedToId,
+                        ESCROW_DEPOSIT,
+                        'Assets',
+                        'Source of $ escrow deposit: Most recent bank statement and transaction history (if needed) for the account the funds came out of\n\n'
+                        + 'PLEASE NOTE: Login from a computer and select the specific account. View the transactions and use the date filters to select the appropriate date range ([insert date] - today\'s date), then apply the filter to view selected range. Finally, you will save as PDF via the Print function by pressing Ctrl + P (on Windows) or Cmd + P (on Mac). In the print window, change the destination to "Save as PDF." Click Save and choose where to save the file on your computer.'
+                    ));
+                }
+            } else if (allowReassign && existingDefaults.get(ESCROW_DEPOSIT).Assigned_To__c != assignedToId) {
                 conditionsToUpdate.add(new Condition__c(
                     Id = existingDefaults.get(ESCROW_DEPOSIT).Id,
                     Assigned_To__c = assignedToId
@@ -70,16 +84,18 @@ public without sharing class PurchaseDefaultConditionService {
             }
 
             if (!existingDefaults.containsKey(HOMEOWNERS_INSURANCE)) {
-                conditionsToCreate.add(buildCondition(
-                    transactionRecord.Id,
-                    assignedToId,
-                    HOMEOWNERS_INSURANCE,
-                    'HOI',
-                    'INSURANCE:\n\n'
-                    + 'Once you have chosen a quote to move forward with, please provide a copy of the quote you would like to move forward so I can work to finalize the policy for you.\n'
-                    + 'We will want your insurance decision no later than DATE to stay on track for closing.'
-                ));
-            } else if (existingDefaults.get(HOMEOWNERS_INSURANCE).Assigned_To__c != assignedToId) {
+                if (allowCreate) {
+                    conditionsToCreate.add(buildCondition(
+                        transactionRecord.Id,
+                        assignedToId,
+                        HOMEOWNERS_INSURANCE,
+                        'HOI',
+                        'INSURANCE:\n\n'
+                        + 'Once you have chosen a quote to move forward with, please provide a copy of the quote you would like to move forward so I can work to finalize the policy for you.\n'
+                        + 'We will want your insurance decision no later than DATE to stay on track for closing.'
+                    ));
+                }
+            } else if (allowReassign && existingDefaults.get(HOMEOWNERS_INSURANCE).Assigned_To__c != assignedToId) {
                 conditionsToUpdate.add(new Condition__c(
                     Id = existingDefaults.get(HOMEOWNERS_INSURANCE).Id,
                     Assigned_To__c = assignedToId
@@ -102,11 +118,21 @@ public without sharing class PurchaseDefaultConditionService {
         if (transactionRecord.Loan_Purpose__c != PURCHASE) {
             return false;
         }
-        if (CONDITIONAL_APPROVAL_OR_LATER_STATUSES.contains(transactionRecord.Status__c)) {
-            return false;
-        }
 
-        return true;
+        return canCreateDefaults(transactionRecord) || canReassignDefaults(transactionRecord);
+    }
+
+    // Defaults are only seeded early in the file. Also blocked on inactive statuses so a Lost or
+    // QC Review file never gets new conditions seeded onto it.
+    private static Boolean canCreateDefaults(Transaction__c transactionRecord) {
+        return !CONDITIONAL_APPROVAL_OR_LATER_STATUSES.contains(transactionRecord.Status__c)
+            && !INACTIVE_STATUSES.contains(transactionRecord.Status__c);
+    }
+
+    // Re-assignment keeps running past Conditional Approval so that a Processor assigned or changed
+    // late in the file still propagates to the default conditions. Inactive files are left alone.
+    private static Boolean canReassignDefaults(Transaction__c transactionRecord) {
+        return !INACTIVE_STATUSES.contains(transactionRecord.Status__c);
     }
 
     private static Map<Id, Map<String, Condition__c>> getExistingDefaultsByTransactionId(Set<Id> transactionIds) {

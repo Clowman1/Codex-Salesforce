@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Nickley_Realtor_LO__c</fullName>
+    <description>Preferred Loan Officer allocation for this realtor, used to filter the &quot;My Nickley Realtors&quot; Home tab for Zach Fritz, Joe Olmsted, and Rhett Delaney. Admin-managed only.</description>
+    <inlineHelpText>Which LO this Nickley Group realtor is allocated to. Only Admins should edit this.</inlineHelpText>
+    <label>Nickley Realtor LO</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Zach Fritz</fullName>
+                <default>false</default>
+                <label>Zach Fritz</label>
+            </value>
+            <value>
+                <fullName>Joe Olmsted</fullName>
+                <default>false</default>
+                <label>Joe Olmsted</label>
+            </value>
+            <value>
+                <fullName>Rhett Delaney</fullName>
+                <default>false</default>
+                <label>Rhett Delaney</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

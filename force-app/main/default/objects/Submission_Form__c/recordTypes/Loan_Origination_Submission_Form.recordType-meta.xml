@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loan_Origination_Submission_Form</fullName>
+    <active>true</active>
+    <label>Loan Origination Submission Form</label>
+    <picklistValues>
+        <picklist>AUS__c</picklist>
+        <values>
+            <fullName>DU</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>GUS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>LP</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Manual</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Appraisal__c</picklist>
+        <values>
+            <fullName>ACE %2B PDR%2FPDI</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Needed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Required</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PIW</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Brokered_Loan__c</picklist>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Buydown__c</picklist>
+        <values>
+            <fullName>1-0</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>1-1</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2-1</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3-2-1</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Channel__c</picklist>
+        <values>
+            <fullName>Broker</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Correspondent</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Condo_Review_Type__c</picklist>
+        <values>
+            <fullName>Full Review</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Limited Review</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Non-Warrantable</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Contributor__c</picklist>
+        <values>
+            <fullName>Lender Paid</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Seller Paid</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>DPA_Grant__c</picklist>
+        <values>
+            <fullName>%22Other%22 DPA Program</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>%22Other%22 Grant Program</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Miami Dade - Lee DPA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>No DPA Program</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Palm Beach - Lee DPA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>DU_LP_Manual__c</picklist>
+        <values>
+            <fullName>Any</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>DU Only</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>LP Only</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Manual</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Income_4506T_Multi__c</picklist>
+        <values>
+            <fullName>1 year</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>1099 Transcripts</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2 years</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3 years</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Business Transcripts</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Day 1</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>NA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>W-2 Only</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Income_4506T__c</picklist>
+        <values>
+            <fullName>1 year</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>1099 Transcripts</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2 years</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3 years</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Business Transcripts</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Day 1</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>W-2 Only</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Intentions_for_Current_Home__c</picklist>
+        <values>
+            <fullName>Renting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Retaining</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Selling after closing</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Selling prior to closing</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Lien_Position__c</picklist>
+        <values>
+            <fullName>1st</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2nd</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Attached 2nd</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Loan_Program__c</picklist>
+        <values>
+            <fullName>10%2F1 yr ARM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10%2F1 yr Interest Only ARM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>15 yr Fixed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>20 yr Fixed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2F1 yr ARM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2F1 yr Interest Only ARM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>30 yr Fixed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>30 yr Interest Only</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>40 Yr Adjustable</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>40 yr Fixed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5%2F1 yr ARM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5%2F1 yr Interest Only ARM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>7%2F1 yr ARM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>7%2F1 yr Interest Only ARM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Money Merge Account</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Option ARM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Reverse Mortgage</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Loan_Purpose__c</picklist>
+        <values>
+            <fullName>Cash-Out Refinance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>HELOC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>NoCash-Out Refinance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Purchase</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Refinance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Refinance Cash-Out</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Refinance Debt Consolidation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Refinance No Cash-Out</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Refinance Rate %26 Term</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Loan_Type__c</picklist>
+        <values>
+            <fullName>Conventional</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>FHA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>FarmersHomeAdministration</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Jumbo</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>NonQM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>USDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>VA</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>MCC_Loan__c</picklist>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>MCC__c</picklist>
+        <values>
+            <fullName>%22Other%22 MCC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Broward MCC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>FL Statewide MCC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Miami-Dade MCC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>No MCC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Palm Beach MCC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Multiple_Borrower_Pairs__c</picklist>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>New_Build_Bank_Owned__c</picklist>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Occupancy__c</picklist>
+        <values>
+            <fullName>Investment</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Investment - Rental</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Primary Residence</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Second Home</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>PIW__c</picklist>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Property_Type__c</picklist>
+        <values>
+            <fullName>Attached PUD</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Condo</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Detached PUD</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>House</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Multi Family</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Townhouse</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Rate_Buydown__c</picklist>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Rate_lock__c</picklist>
+        <values>
+            <fullName>Floating</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Locked</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Need Lock Requested</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Refinance_Purpose__c</picklist>
+        <values>
+            <fullName>Cash Out Refinance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Cash-Out Debt Consolidation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Rate %26 Term</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Rate And Term Reduction-FHA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Streamline Refinance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>VA Interest Rate Reduction</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Source_of_Funds_to_Close_Multi__c</picklist>
+        <values>
+            <fullName>Checking%2FSavings</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Gift</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>NA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Net Proceeds from Sale</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Retirement</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Source_of_Funds_to_Close__c</picklist>
+        <values>
+            <fullName>Checking%2FSavings</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Gift</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Net Proceeds from Sale</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Retirement</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Term__c</picklist>
+        <values>
+            <fullName>10</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>20</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>25</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>30</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Waive_Escrows__c</picklist>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Waiving_Escrow__c</picklist>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>X2nd_Lien__c</picklist>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

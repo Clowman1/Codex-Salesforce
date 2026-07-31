@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lead_Cutoff_Date__c</fullName>
+    <description>Only leads created on or after this date are eligible for stagnant alerts. Defaults to 2025-01-01 if not set.</description>
+    <label>Lead Cutoff Date</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

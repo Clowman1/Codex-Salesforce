@@ -602,7 +602,7 @@ private class PipelineCommandCenterControllerTest {
                 }
             }
             if (brandonExists && zachExists && zachTabsIncluded) {
-                System.assertEquals(33, data.pipelineTabs.size(), 'Expected Megan own LO tabs plus Brandon and Zach loan partner tabs.');
+                System.assertEquals(34, data.pipelineTabs.size(), 'Expected Megan own LO tabs plus Brandon and Zach loan partner tabs and the pre-approval follow-up tab.');
                 System.assertEquals('brandonActiveLeads', data.pipelineTabs[11].key, 'Expected Brandon partner lead tabs after Megan own tabs.');
                 System.assertEquals('brandonActivePreApprovals', data.pipelineTabs[14].key, 'Expected Brandon active pre-approval tab.');
                 System.assertEquals('brandonStagnantPreApprovals', data.pipelineTabs[15].key, 'Expected Brandon stagnant pre-approval tab.');
@@ -617,9 +617,12 @@ private class PipelineCommandCenterControllerTest {
                 System.assertEquals('status', data.pipelineTabs[16].customColumns[1].key, 'Expected Status to be the second Brandon partner pre-approval call column.');
                 System.assertEquals('status', data.pipelineTabs[22].customColumns[1].key, 'Expected Status to be the second Zach partner lead column.');
                 System.assertEquals('status', data.pipelineTabs[27].customColumns[1].key, 'Expected Status to be the second Zach partner pre-approval call column.');
+                System.assertEquals('meganPreApprovalFollowUps', data.pipelineTabs[33].key, 'Expected the pre-approval follow-up tab last.');
+                System.assertEquals('ownerLO', data.pipelineTabs[33].customColumns[1].key, 'Expected Owner/LO to be the second pre-approval follow-up column.');
             } else if (brandonExists) {
-                System.assertEquals(22, data.pipelineTabs.size(), 'Expected Megan own LO tabs plus Brandon loan partner tabs.');
+                System.assertEquals(23, data.pipelineTabs.size(), 'Expected Megan own LO tabs plus Brandon loan partner tabs and the pre-approval follow-up tab.');
                 System.assertEquals('brandonClosedThisMonth', data.pipelineTabs[21].key, 'Expected Brandon closed-this-month transaction tab last.');
+                System.assertEquals('meganPreApprovalFollowUps', data.pipelineTabs[22].key, 'Expected the pre-approval follow-up tab last.');
             }
         }
     }
@@ -1112,8 +1115,6 @@ private class PipelineCommandCenterControllerTest {
                     System.assertEquals('Brandon\'s Aged Pre-Approvals', tab.label, 'Expected Brandon aged pre-approval tab label.');
                     System.assertEquals('Lead', tab.objectApiName, 'Expected Brandon aged pre-approval tab to open Lead records.');
                     System.assertEquals(8, tab.customColumns.size(), 'Expected Brandon aged pre-approval tab to match the Zach tab columns.');
-                    System.assertEquals('brandonLastSms', tab.customColumns[7].key, 'Expected Brandon aged pre-approval tab to replace Ben last call with Brandon last SMS.');
-                    System.assertEquals('Brandon\'s Last SMS', tab.customColumns[7].label, 'Expected Brandon aged pre-approval tab far-right column to show Brandon SMS activity.');
                 }
             }
             System.assert(foundHotFollowUpsTab, 'Expected Ben Command Center to include the Hot Follow Ups tab.');

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Category__c</fullName>
+    <label>Category</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Appraisal</fullName>
+                <default>false</default>
+                <label>Appraisal</label>
+            </value>
+            <value>
+                <fullName>Condo Docs</fullName>
+                <default>false</default>
+                <label>Condo Docs</label>
+            </value>
+            <value>
+                <fullName>Engineering</fullName>
+                <default>false</default>
+                <label>Engineering</label>
+            </value>
+            <value>
+                <fullName>HOI</fullName>
+                <default>false</default>
+                <label>HOI</label>
+            </value>
+            <value>
+                <fullName>IBTS</fullName>
+                <default>false</default>
+                <label>IBTS</label>
+            </value>
+            <value>
+                <fullName>Lien</fullName>
+                <default>false</default>
+                <label>Lien</label>
+            </value>
+            <value>
+                <fullName>Post Close Cure</fullName>
+                <default>false</default>
+                <label>Post Close Cure</label>
+            </value>
+            <value>
+                <fullName>Termite/Pest Inspection</fullName>
+                <default>false</default>
+                <label>Termite/Pest Inspection</label>
+            </value>
+            <value>
+                <fullName>VOE</fullName>
+                <default>false</default>
+                <label>VOE</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

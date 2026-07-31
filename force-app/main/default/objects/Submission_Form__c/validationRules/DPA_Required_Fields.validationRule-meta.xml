@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DPA_Required_Fields</fullName>
+    <active>false</active>
+    <description>Requires minimum 1st transaction fields when DPA is selected.</description>
+    <errorConditionFormula>AND(
+ISPICKVAL(DPA_Grant__c, &apos;Yes&apos;),
+OR(
+ISBLANK(Transaction__c),
+ISBLANK(Transaction__r.Lender_lookup__c),
+ISBLANK(Transaction__r.Loan_Amount_1st__c),
+ISPICKVAL(Transaction__r.Loan_Type_1st_TD__c, &apos;&apos;),
+ISPICKVAL(Transaction__r.Loan_Program_1st__c, &apos;&apos;),
+ISBLANK(Transaction__r.Rate_1st_TD__c)
+)
+)</errorConditionFormula>
+    <errorDisplayField>DPA_Grant__c</errorDisplayField>
+    <errorMessage>DPA transactions require Lender, Loan Amount, Loan Type, Loan Program, and Rate to be completed.</errorMessage>
+</ValidationRule>

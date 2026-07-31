@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loan_Anniversary_Date__c</fullName>
+    <formula>IF(MONTH(Closing_Date__c)&gt;MONTH(TODAY()),DATE(YEAR(TODAY()),MONTH(Closing_Date__c),DAY(Closing_Date__c)),
+IF(MONTH(Closing_Date__c)&lt;MONTH(TODAY()),DATE(YEAR(TODAY())+1,MONTH(Closing_Date__c),DAY(Closing_Date__c)), 
+IF(DAY(Closing_Date__c) &gt;= (DAY(TODAY())),DATE(YEAR(TODAY()),MONTH(Closing_Date__c),DAY(Closing_Date__c)), 
+DATE(YEAR(TODAY())+1,MONTH(Closing_Date__c),DAY(Closing_Date__c)))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Loan Anniversary Date</label>
+    <required>false</required>
+    <type>Date</type>
+</CustomField>

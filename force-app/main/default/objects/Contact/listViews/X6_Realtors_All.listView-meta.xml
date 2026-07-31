@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>X6_Realtors_All</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>CONTACT.CREATED_DATE</columns>
+    <columns>CONTACT.TITLE</columns>
+    <columns>CONTACT.PHONE1</columns>
+    <columns>CONTACT.PHONE3</columns>
+    <columns>CONTACT.PHONE5</columns>
+    <columns>Group__c</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>CONTACT.EMAIL</columns>
+    <columns>CORE.USERS.FIRST_NAME</columns>
+    <columns>Stage__c</columns>
+    <columns>Status__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Group__c</field>
+        <operation>includes</operation>
+        <value>Realtor</value>
+    </filters>
+    <label>6. Realtors (All)</label>
+</ListView>

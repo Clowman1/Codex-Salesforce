@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Condition_Group_Key__c</fullName>
+    <label>Condition Group Key</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Master</fullName>
+                <default>false</default>
+                <label>Master</label>
+            </value>
+            <value>
+                <fullName>Senior Underwriter (PTD)</fullName>
+                <default>false</default>
+                <label>Senior Underwriter (PTD)</label>
+            </value>
+            <value>
+                <fullName>Underwriter II (PTD)</fullName>
+                <default>false</default>
+                <label>Underwriter II (PTD)</label>
+            </value>
+            <value>
+                <fullName>Project Review (PTD)</fullName>
+                <default>false</default>
+                <label>Project Review (PTD)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

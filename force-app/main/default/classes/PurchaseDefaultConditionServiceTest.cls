@@ -221,6 +221,118 @@ private class PurchaseDefaultConditionServiceTest {
     }
 
     @IsTest
+    static void reassignsExistingDefaultsToProcessorAfterConditionalApproval() {
+        Account lender = createLender('ReassignPostCla');
+        User processor = getAlternateActiveUser();
+        // Processor is populated on insert because a Conditionally Approved save fires the
+        // "Create Tasks for Processor Team" flow, which cannot create its Tasks without an owner.
+        Transaction__c transactionRecord = new Transaction__c(
+            Name = 'Purchase Defaults Post-CLA Reassign Test',
+            Status__c = 'Conditionally Approved',
+            Loan_Purpose__c = 'Purchase',
+            Lender_lookup__c = lender.Id,
+            OwnerId = UserInfo.getUserId(),
+            Processor__c = UserInfo.getUserId(),
+            Loan_Commitment_Date__c = Date.today().addDays(14)
+        );
+        insert transactionRecord;
+
+        insert new List<Condition__c>{
+            new Condition__c(
+                Transaction__c = transactionRecord.Id,
+                Assigned_To__c = UserInfo.getUserId(),
+                Name = 'Escrow Deposit',
+                Category__c = 'Assets',
+                Description__c = 'Test escrow condition.',
+                Status__c = 'New',
+                Type__c = 'Processor',
+                Can_Borrower_See__c = true,
+                Include_In_Email__c = true,
+                IncludeInEmail__c = true
+            ),
+            new Condition__c(
+                Transaction__c = transactionRecord.Id,
+                Assigned_To__c = UserInfo.getUserId(),
+                Name = 'Homeowner\'s Insurance',
+                Category__c = 'HOI',
+                Description__c = 'Test insurance condition.',
+                Status__c = 'New',
+                Type__c = 'Processor',
+                Can_Borrower_See__c = true,
+                Include_In_Email__c = true,
+                IncludeInEmail__c = true
+            )
+        };
+
+        Test.startTest();
+        transactionRecord.Processor__c = processor.Id;
+        update transactionRecord;
+        Test.stopTest();
+
+        for (Condition__c conditionRecord : [
+            SELECT Assigned_To__c
+            FROM Condition__c
+            WHERE Transaction__c = :transactionRecord.Id
+        ]) {
+            System.assertEquals(
+                processor.Id,
+                conditionRecord.Assigned_To__c,
+                'A Processor assigned after Conditional Approval should still propagate to existing defaults.'
+            );
+        }
+        System.assertEquals(
+            2,
+            [SELECT COUNT() FROM Condition__c WHERE Transaction__c = :transactionRecord.Id],
+            'Post-CLA reassignment must not create new default conditions.'
+        );
+    }
+
+    @IsTest
+    static void leavesInactiveTransactionDefaultsUntouched() {
+        Account lender = createLender('InactiveUntouched');
+        User processor = getAlternateActiveUser();
+        Transaction__c transactionRecord = new Transaction__c(
+            Name = 'Purchase Defaults Inactive Test',
+            Status__c = 'Post-Closed',
+            Loan_Purpose__c = 'Purchase',
+            Lender_lookup__c = lender.Id,
+            OwnerId = UserInfo.getUserId(),
+            Loan_Commitment_Date__c = Date.today().addDays(14)
+        );
+        insert transactionRecord;
+
+        Condition__c existingCondition = new Condition__c(
+            Transaction__c = transactionRecord.Id,
+            Assigned_To__c = UserInfo.getUserId(),
+            Name = 'Escrow Deposit',
+            Category__c = 'Assets',
+            Description__c = 'Test escrow condition.',
+            Status__c = 'New',
+            Type__c = 'Processor',
+            Can_Borrower_See__c = true,
+            Include_In_Email__c = true,
+            IncludeInEmail__c = true
+        );
+        insert existingCondition;
+
+        Test.startTest();
+        transactionRecord.Processor__c = processor.Id;
+        update transactionRecord;
+        Test.stopTest();
+
+        System.assertEquals(
+            UserInfo.getUserId(),
+            [SELECT Assigned_To__c FROM Condition__c WHERE Id = :existingCondition.Id].Assigned_To__c,
+            'Closed files must keep their historical assignee.'
+        );
+        System.assertEquals(
+            1,
+            [SELECT COUNT() FROM Condition__c WHERE Transaction__c = :transactionRecord.Id],
+            'Inactive files must not have new default conditions seeded.'
+        );
+    }
+
+    @IsTest
     static void retriesMissingDefaultsOnLaterPurchaseSaveBeforeConditionalApproval() {
         Account lender = createLender('Retry');
         Transaction__c transactionRecord = new Transaction__c(

@@ -6,6 +6,7 @@
 
         <template if:false={showCeoHubHomeOverride}>
         <header class="pcc-hero">
+            <p class="pcc-licensed-states">Licensed in: FL, CA, CO, GA, LA, MD, NJ, NC, PA, SC, TN, VA, TX</p>
             <div>
                 <p class="pcc-kicker">Reach Home Loans</p>
                 <h1>{headerTitle}</h1>
@@ -472,6 +473,9 @@
                                         <template if:true={isActionablePipelineTab}>
                                             <th class="pcc-action-column">Actions</th>
                                         </template>
+                                        <template if:true={showPassAction}>
+                                            <th class="pcc-pass-column"></th>
+                                        </template>
                                         <template if:true={canEditPipelineTabRows}>
                                             <th class="pcc-action-column">Edit</th>
                                         </template>
@@ -519,6 +523,11 @@
                                                             <button class="pcc-row-edit" data-record-id={row.id} onclick={openProcessorNoteEditor} type="button">Note</button>
                                                         </template>
                                                     </div>
+                                                </td>
+                                            </template>
+                                            <template if:true={showPassAction}>
+                                                <td class="pcc-pass-column">
+                                                    <button class="pcc-pass-pill" data-record-id={row.id} onclick={handlePassFollowUp} title="Treat as contacted and cycle this lead back later" type="button">Pass</button>
                                                 </td>
                                             </template>
                                             <template if:true={canEditPipelineTabRows}>

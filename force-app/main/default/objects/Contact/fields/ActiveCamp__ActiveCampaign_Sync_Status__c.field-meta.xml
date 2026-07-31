@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ActiveCamp__ActiveCampaign_Sync_Status__c</fullName>
+    <deprecated>false</deprecated>
+    <label>ActiveCampaign Sync Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Waiting For Next Sync</fullName>
+                <default>false</default>
+                <label>Waiting For Next Sync</label>
+            </value>
+            <value>
+                <fullName>Successfully Synced</fullName>
+                <default>false</default>
+                <label>Successfully Synced</label>
+            </value>
+            <value>
+                <fullName>Duplicate Email Found Do Not Sync</fullName>
+                <default>false</default>
+                <label>Duplicate Email Found Do Not Sync</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

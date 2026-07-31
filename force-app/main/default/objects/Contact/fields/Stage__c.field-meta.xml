@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stage__c</fullName>
+    <label>Stage</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Lead</fullName>
+                <default>false</default>
+                <label>Lead</label>
+            </value>
+            <value>
+                <fullName>Contacted - Call Back Required</fullName>
+                <default>false</default>
+                <label>Contacted - Call Back Required</label>
+            </value>
+            <value>
+                <fullName>In Process</fullName>
+                <default>false</default>
+                <label>In Process</label>
+            </value>
+            <value>
+                <fullName>Hot Nurture</fullName>
+                <default>false</default>
+                <label>Hot Nurture</label>
+            </value>
+            <value>
+                <fullName>Nurture</fullName>
+                <default>false</default>
+                <label>Nurture</label>
+            </value>
+            <value>
+                <fullName>Bad Lead</fullName>
+                <default>false</default>
+                <label>Bad Lead</label>
+            </value>
+            <value>
+                <fullName>Needs List Sent</fullName>
+                <default>false</default>
+                <label>Needs List Sent</label>
+            </value>
+            <value>
+                <fullName>Disclosures Received</fullName>
+                <default>false</default>
+                <label>Disclosures Received</label>
+            </value>
+            <value>
+                <fullName>Pre-approved</fullName>
+                <default>false</default>
+                <label>Pre-approved</label>
+            </value>
+            <value>
+                <fullName>Credit impaired</fullName>
+                <default>false</default>
+                <label>Credit impaired</label>
+            </value>
+            <value>
+                <fullName>Not Qualified</fullName>
+                <default>false</default>
+                <label>Not Qualified</label>
+            </value>
+            <value>
+                <fullName>Closed Client</fullName>
+                <default>false</default>
+                <label>Closed Client</label>
+            </value>
+            <value>
+                <fullName>Lost</fullName>
+                <default>false</default>
+                <label>Lost</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

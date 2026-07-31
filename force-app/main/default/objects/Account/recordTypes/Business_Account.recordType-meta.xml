@@ -6,10 +6,6 @@
     <picklistValues>
         <picklist>AccountSource</picklist>
         <values>
-            <fullName>Benjamin B%2E</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Google_Organic</fullName>
             <default>false</default>
         </values>
@@ -23,10 +19,6 @@
         </values>
         <values>
             <fullName>Website</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Website - Refi</fullName>
             <default>false</default>
         </values>
         <values>
@@ -160,6 +152,10 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Reverse Mortgage</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Second Home</fullName>
             <default>false</default>
         </values>
@@ -179,27 +175,11 @@
     <picklistValues>
         <picklist>Biz_Dev_Designation__c</picklist>
         <values>
-            <fullName>Biz Dev - Cabrera</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Biz Dev - Fritz</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Biz Dev - Hornaday</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Biz Dev - Hsieh</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Biz Dev - Olmsted</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Biz Dev - Perrault</fullName>
             <default>false</default>
         </values>
         <values>
@@ -215,11 +195,22 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>Biz Dev - Williams</fullName>
+            <fullName>None</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Borrower_Rating__c</picklist>
+        <values>
+            <fullName>Cold</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>None</fullName>
+            <fullName>Hot</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Warm</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -558,6 +549,21 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>Nickley_Realtor_LO__c</picklist>
+        <values>
+            <fullName>Joe Olmsted</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Rhett Delaney</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Zach Fritz</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>Ownership</picklist>
         <values>
             <fullName>Other</fullName>
@@ -615,6 +621,60 @@
         </values>
         <values>
             <fullName>Wemert Group</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Realtor_Referral_Source__c</picklist>
+        <values>
+            <fullName>Facebook</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Instagram</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Organic</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Partner Referral</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>TikTok</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Youtube</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Realtor_Source__c</picklist>
+        <values>
+            <fullName>Facebook</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Instagram</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Organic</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Partner Referral</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>TikTok</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Youtube</fullName>
             <default>false</default>
         </values>
     </picklistValues>

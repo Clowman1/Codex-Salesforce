@@ -41,7 +41,7 @@ private class LeadDocumentCollectionServiceTest {
         LeadDocumentRequestController.sendEditedRequestEmail(
             leadRecord.Id,
             preview.subject,
-            preview.htmlBody.replace('Good afternoon!', 'Good afternoon! Edited for Lead.')
+            preview.htmlBody.replace('Hi Test,', 'Hi Test, Edited for Lead.')
         );
         Test.stopTest();
 
@@ -56,14 +56,14 @@ private class LeadDocumentCollectionServiceTest {
         System.assertNotEquals(null, LeadDocumentRequestService.getLeadPortalHash(updatedLead));
         System.assert(LeadDocumentRequestService.buildLeadPortalLink(updatedLead).contains('?id='));
         System.assertEquals('Lead_Initial_Documents_Needed', templateOptions[0].developerName);
-        System.assertEquals('Initial Documents Needed', preview.subject);
-        System.assert(preview.htmlBody.contains('out of underwriting'));
-        System.assert(preview.htmlBody.contains('The items needed are'));
-        System.assert(preview.htmlBody.contains('Items sent thru DocuSign'));
-        System.assert(preview.htmlBody.contains('mortgage underwriting process'));
+        System.assertEquals('Items Needed - Borrower Mortgage Pre-Approval', preview.subject);
+        System.assert(preview.htmlBody.contains('Hi Test,'));
+        System.assert(preview.htmlBody.contains('items needed to bring you one step closer'));
+        System.assert(preview.htmlBody.contains('complete your pre-approval'));
+        System.assert(preview.htmlBody.contains('Here is a link to your secure folder'));
         System.assert(preview.htmlBody.contains('Pay Stub'));
         System.assert(preview.htmlBody.indexOf('Pay Stub') < preview.htmlBody.indexOf('Upload Files'));
-        System.assert(preview.htmlBody.indexOf('Pay Stub') < preview.htmlBody.indexOf('All the best'));
+        System.assert(preview.htmlBody.indexOf('Upload Files') < preview.htmlBody.indexOf('327 Plaza Real'));
         System.assert(!preview.htmlBody.contains('{{LEAD_PORTAL_LINK}}'));
         System.assert(preview.htmlBody.contains('https://example.force.com/documents/s/lead?id='));
         System.assert(preview.htmlBody.contains('327 Plaza Real'));

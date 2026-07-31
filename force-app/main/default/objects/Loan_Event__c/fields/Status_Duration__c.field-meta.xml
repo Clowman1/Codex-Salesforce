@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status_Duration__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(AND(NOT(ISBLANK(Status_Entered_Date_Time__c)), NOT(ISBLANK(Status_Exit_Date_Time__c))), TEXT(FLOOR(Status_Exit_Date_Time__c - Status_Entered_Date_Time__c)) &amp; &apos; days&apos;, &apos;&apos;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Status Duration</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

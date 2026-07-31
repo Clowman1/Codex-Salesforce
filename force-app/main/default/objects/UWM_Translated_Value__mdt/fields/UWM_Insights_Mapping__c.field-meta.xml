@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UWM_Insights_Mapping__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>UWM Insights Mapping</label>
+    <referenceTo>UWM_Insights_Mapping__mdt</referenceTo>
+    <relationshipLabel>UWM Translated Values</relationshipLabel>
+    <relationshipName>UWM_Translated_Values</relationshipName>
+    <required>false</required>
+    <type>MetadataRelationship</type>
+    <unique>false</unique>
+</CustomField>

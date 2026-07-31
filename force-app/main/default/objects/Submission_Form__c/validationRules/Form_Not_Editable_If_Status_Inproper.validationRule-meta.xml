@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Form_Not_Editable_If_Status_Inproper</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND( 
+NOT(ISNEW()),
+NOT(OR(ISPICKVAL(Transaction__r.Status__c, &apos;TRID Application&apos;), ISPICKVAL(Transaction__r.Status__c, &apos;Open&apos;), ISBLANK(TEXT(Transaction__r.Status__c)))),
+OR($Profile.Name = &apos;Loan Officer Profile&apos;, $Profile.Name = &apos;Loan Officer Profile (Read Only)&apos;)
+)</errorConditionFormula>
+    <errorMessage>Submission Form is Read-Only</errorMessage>
+</ValidationRule>

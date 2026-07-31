@@ -18,7 +18,17 @@
     <filters>
         <field>LEAD.RECORDTYPE</field>
         <operation>notEqual</operation>
-        <value>Lead.Realtor_Lead_record_type</value>
+        <value>Lead.Realtor_Lead_record_type,Lead.Loan_Officer_Lead_Record_Type</value>
+    </filters>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notEqual</operation>
+        <value>Nurture - Preapproval,Nurturing,Pre-Approval,Submitted For Disclosures</value>
+    </filters>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notContain</operation>
+        <value>Pre-Approval</value>
     </filters>
     <label>Leads All</label>
     <sharedTo>

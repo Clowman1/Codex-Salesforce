@@ -12,8 +12,8 @@
     </filters>
     <label>Investor Accounts</label>
     <sharedTo>
-        <allInternalUsers></allInternalUsers>
         <allCustomerPortalUsers></allCustomerPortalUsers>
+        <allInternalUsers></allInternalUsers>
         <group>Admins</group>
     </sharedTo>
 </ListView>

@@ -5,5 +5,6 @@
     <description>Internal guard used by the Consumer Webinar CTC notification flow so Angelina is emailed only the first time the transaction reaches Approval or beyond.</description>
     <label>Consumer Webinar CTC Notified</label>
     <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

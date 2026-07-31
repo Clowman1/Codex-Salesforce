@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pay_Period__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Pay Period</label>
+    <referenceTo>Pay_Period__c</referenceTo>
+    <relationshipLabel>Employee Pay Periods</relationshipLabel>
+    <relationshipName>Employee_Pay_Periods</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

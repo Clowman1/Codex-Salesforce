@@ -6,7 +6,114 @@ public without sharing class ClientActivityTransactionRouter {
         'Post-Closed'
     };
 
+    // Only consumer-borrower leads are re-pointed. Realtor and Loan Officer leads are legitimately
+    // the right home for a call, so they are left alone.
+    private static final Set<String> CONSUMER_LEAD_RECORD_TYPES = new Set<String>{
+        'Consumer_Lead_record_type',
+        'Consumer_Under_Contract_Lead_Record_Type'
+    };
+
+    // Salesforce forbids a Task from carrying both a Lead WhoId and any WhatId, so a call that
+    // lands on a stale lead can never be attached to the borrower's transaction. This re-points
+    // those tasks before save, applying the intended order:
+    //   1. an active transaction for that person,
+    //   2. an active (non-nurture) lead,
+    //   3. otherwise the Person Account.
+    @TestVisible
+    private static void repointStaleLeadTasks(List<Task> taskRecords) {
+        String leadPrefix = Lead.SObjectType.getDescribe().getKeyPrefix();
+        Set<Id> leadIds = new Set<Id>();
+        for (Task taskRecord : taskRecords) {
+            if (!isClientCommunicationTask(taskRecord) || taskRecord.WhoId == null) {
+                continue;
+            }
+            if (String.valueOf(taskRecord.WhoId).left(3) == leadPrefix) {
+                leadIds.add(taskRecord.WhoId);
+            }
+        }
+        if (leadIds.isEmpty()) {
+            return;
+        }
+
+        Map<Id, Lead> leadsById = new Map<Id, Lead>([
+            SELECT Id, Status, Phone, MobilePhone, RecordType.DeveloperName
+            FROM Lead
+            WHERE Id IN :leadIds
+        ]);
+
+        Set<String> phoneNumbers = new Set<String>();
+        for (Lead leadRecord : leadsById.values()) {
+            if (!isConsumerLead(leadRecord)) {
+                continue;
+            }
+            if (String.isNotBlank(leadRecord.Phone)) {
+                phoneNumbers.add(leadRecord.Phone);
+            }
+            if (String.isNotBlank(leadRecord.MobilePhone)) {
+                phoneNumbers.add(leadRecord.MobilePhone);
+            }
+        }
+        if (phoneNumbers.isEmpty()) {
+            return;
+        }
+
+        Map<String, Id> contactIdByPhone = RingCentralLeadPriorityMatcher.getContactIdsByPhoneNumbers(phoneNumbers);
+        Map<String, Id> transactionIdByPhone = RingCentralLeadPriorityMatcher.getTransactionIdsByPhoneNumbers(phoneNumbers);
+
+        for (Task taskRecord : taskRecords) {
+            if (!isClientCommunicationTask(taskRecord) || taskRecord.WhoId == null) {
+                continue;
+            }
+            Lead leadRecord = leadsById.get(taskRecord.WhoId);
+            if (leadRecord == null || !isConsumerLead(leadRecord)) {
+                continue;
+            }
+
+            Id transactionId = phoneLookup(transactionIdByPhone, leadRecord);
+            Id contactId = phoneLookup(contactIdByPhone, leadRecord);
+            if (contactId == null) {
+                // Nothing better to point at, so the lead keeps the activity.
+                continue;
+            }
+
+            if (transactionId != null) {
+                taskRecord.WhoId = contactId;
+                taskRecord.WhatId = transactionId;
+            } else if (isNurtureStatus(leadRecord.Status)) {
+                taskRecord.WhoId = contactId;
+                taskRecord.WhatId = null;
+            }
+        }
+    }
+
+    private static Boolean isConsumerLead(Lead leadRecord) {
+        return leadRecord != null
+            && leadRecord.RecordType != null
+            && CONSUMER_LEAD_RECORD_TYPES.contains(leadRecord.RecordType.DeveloperName);
+    }
+
+    // The org carries several spellings ('Nurturing', 'Nurture - Preapproval', 'Nurture-Pre-Approval',
+    // 'Nurtured'), so this matches on the stem rather than a value list.
+    private static Boolean isNurtureStatus(String status) {
+        return String.isNotBlank(status) && status.toLowerCase().contains('nurtur');
+    }
+
+    private static Id phoneLookup(Map<String, Id> idsByNormalizedPhone, Lead leadRecord) {
+        if (idsByNormalizedPhone == null || idsByNormalizedPhone.isEmpty()) {
+            return null;
+        }
+        for (String rawPhone : new List<String>{ leadRecord.Phone, leadRecord.MobilePhone }) {
+            String normalized = RingCentralLeadPriorityMatcher.normalizePhoneNumber(rawPhone);
+            if (String.isNotBlank(normalized) && idsByNormalizedPhone.containsKey(normalized)) {
+                return idsByNormalizedPhone.get(normalized);
+            }
+        }
+        return null;
+    }
+
     public static void routeTasks(List<Task> taskRecords) {
+        repointStaleLeadTasks(taskRecords);
+
         Set<Id> accountIds = new Set<Id>();
         Set<Id> contactIds = new Set<Id>();
         Set<Id> transactionIds = new Set<Id>();

@@ -3,7 +3,10 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentInstanceProperties><name>pageKey</name><value>loanOfficers</value></componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>pageKey</name>
+                    <value>loanOfficers</value>
+                </componentInstanceProperties>
                 <componentName>ceoIntelligenceCenter</componentName>
                 <identifier>c_ceoIntelligenceCenter_loanOfficers</identifier>
             </componentInstance>
@@ -11,9 +14,17 @@
         <name>region1</name>
         <type>Region</type>
     </flexiPageRegions>
-    <flexiPageRegions><name>region2</name><type>Region</type></flexiPageRegions>
-    <flexiPageRegions><name>region3</name><type>Region</type></flexiPageRegions>
+    <flexiPageRegions>
+        <name>region2</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <name>region3</name>
+        <type>Region</type>
+    </flexiPageRegions>
     <masterLabel>Inside Loan Officers</masterLabel>
-    <template><name>flexipage:appHomeTemplateHeaderTwoColumnsLeftSidebar</name></template>
+    <template>
+        <name>flexipage:appHomeTemplateHeaderTwoColumnsLeftSidebar</name>
+    </template>
     <type>AppPage</type>
 </FlexiPage>

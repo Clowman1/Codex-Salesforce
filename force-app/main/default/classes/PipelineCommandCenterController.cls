@@ -99,6 +99,14 @@ public with sharing class PipelineCommandCenterController {
         'jolmsted@reachhomeloans.com',
         'rdelaney@reachhomeloans.com'
     };
+    // Standalone gate for the "My Nickley Realtors" Home tab. Intentionally NOT shared with
+    // JOEY_ASSISTED_LO_USERNAMES above (a separate, unrelated assistant-view feature) even though
+    // the three usernames happen to overlap.
+    private static final Map<String, String> NICKLEY_REALTOR_TAB_USERNAME_TO_LABEL = new Map<String, String>{
+        'zfritz@reachhomeloans.com' => 'Zach Fritz',
+        'jolmsted@reachhomeloans.com' => 'Joe Olmsted',
+        'rdelaney@reachhomeloans.com' => 'Rhett Delaney'
+    };
     private static final List<String> PROCESSING_TEAM_LEAD_USERNAMES = new List<String>{
         'anoble@reachhomeloans.com'
     };
@@ -354,6 +362,10 @@ public with sharing class PipelineCommandCenterController {
         data.isCeoDashboard = ceoPipeline;
         data.isPastClientDashboard = pastClientPipeline;
         data.isRhettDelaney = rhettDelaney;
+        String nickleyRealtorLOLabel = currentUserNickleyRealtorLOLabel();
+        if (nickleyRealtorLOLabel != null) {
+            data.pipelineTabs.add(buildNickleyRealtorStubTab(nickleyRealtorLOLabel));
+        }
         return data;
     }
 
@@ -363,6 +375,122 @@ public with sharing class PipelineCommandCenterController {
             return new List<PipelineRow>();
         }
         return buildPastClientRows(closingYear);
+    }
+
+    // Stamps a Pass on a Pre-Approval Follow Ups lead. The cadence treats this the same as a
+    // logged call, so the lead leaves the queue and returns after the applicable gap.
+    @AuraEnabled
+    public static void passPreApprovalFollowUp(Id leadId) {
+        if (leadId == null) {
+            throw new AuraHandledException('A Lead is required to pass on a follow-up.');
+        }
+        List<Lead> leads = [
+            SELECT Id, Status
+            FROM Lead
+            WHERE Id = :leadId
+            LIMIT 1
+        ];
+        if (leads.isEmpty()) {
+            throw new AuraHandledException('Unable to locate that Lead.');
+        }
+        if (leads[0].Status != 'Pre-Approval') {
+            throw new AuraHandledException('Only leads in Pre-Approval status can be passed on.');
+        }
+        update new Lead(
+            Id = leadId,
+            Pre_Approval_Pass_At__c = System.now()
+        );
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<PipelineRow> getNickleyRealtorRows() {
+        String nickleyRealtorLOLabel = currentUserNickleyRealtorLOLabel();
+        if (nickleyRealtorLOLabel == null) {
+            return new List<PipelineRow>();
+        }
+        return buildNickleyRealtorRows(nickleyRealtorLOLabel);
+    }
+
+    private static String currentUserNickleyRealtorLOLabel() {
+        User currentUser = [
+            SELECT Username
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+            LIMIT 1
+        ];
+        String username = String.isBlank(currentUser.Username) ? '' : currentUser.Username.toLowerCase();
+        return NICKLEY_REALTOR_TAB_USERNAME_TO_LABEL.get(username);
+    }
+
+    private static PipelineTab buildNickleyRealtorStubTab(String loLabel) {
+        Integer realtorCount = [
+            SELECT COUNT()
+            FROM Account
+            WHERE Nickley_Realtor_LO__c = :loLabel
+        ];
+        PipelineTab tab = new PipelineTab(
+            'myNickleyRealtors',
+            'My Nickley Realtors',
+            'Your allocated Nickley Group realtor partners.',
+            'Account',
+            new List<PipelineRow>(),
+            buildNickleyRealtorColumns()
+        );
+        tab.count = realtorCount;
+        return tab;
+    }
+
+    private static List<TableColumn> buildNickleyRealtorColumns() {
+        return new List<TableColumn>{
+            new TableColumn('name', 'Name'),
+            new TableColumn('phone', 'Phone'),
+            new TableColumn('email', 'Email'),
+            new TableColumn('lastLeadSentDate', 'Last Lead Sent')
+        };
+    }
+
+    private static List<PipelineRow> buildNickleyRealtorRows(String loLabel) {
+        List<Account> realtorAccounts = [
+            SELECT Id, Name, Phone, PersonMobilePhone, PersonEmail
+            FROM Account
+            WHERE Nickley_Realtor_LO__c = :loLabel
+            ORDER BY Name
+        ];
+        Set<Id> accountIds = new Set<Id>();
+        for (Account realtorAccount : realtorAccounts) {
+            accountIds.add(realtorAccount.Id);
+        }
+        Map<Id, Datetime> lastLeadDateByAccountId = nickleyRealtorLastLeadSentDates(accountIds);
+        List<PipelineRow> rows = new List<PipelineRow>();
+        for (Account realtorAccount : realtorAccounts) {
+            rows.add(buildNickleyRealtorRow(realtorAccount, lastLeadDateByAccountId.get(realtorAccount.Id)));
+        }
+        return rows;
+    }
+
+    // "Last lead sent" must reflect ALL leads ever sent by the realtor, not just the ones the
+    // viewing LO happens to own/share (Lead sharing here is per-owner, unlike Account). Delegates
+    // to a separate without-sharing class scoped to a date-only aggregate keyed by an already-vetted
+    // set of Account Ids - no Lead content is exposed.
+    private static Map<Id, Datetime> nickleyRealtorLastLeadSentDates(Set<Id> accountIds) {
+        return NickleyRealtorLeadDateService.lastLeadSentDates(accountIds);
+    }
+
+    private static PipelineRow buildNickleyRealtorRow(Account realtorAccount, Datetime lastLeadSentDate) {
+        PipelineRow row = new PipelineRow();
+        row.id = realtorAccount.Id;
+        row.name = realtorAccount.Name;
+        String phone = firstNonBlank(new List<String>{ realtorAccount.Phone, realtorAccount.PersonMobilePhone });
+        String email = realtorAccount.PersonEmail;
+        String lastLeadDisplay = lastLeadSentDate == null ? '' : formatDateForCell(lastLeadSentDate.date());
+        String lastLeadSort = formatDatetimeSortValue(lastLeadSentDate);
+        row.customCells = new List<TableCell>{
+            new TableCell('name', blankToLabel(realtorAccount.Name, ''), blankToLabel(realtorAccount.Name, ''), true),
+            new TableCell('phone', blankToLabel(phone, ''), blankToLabel(phone, ''), false),
+            new TableCell('email', blankToLabel(email, ''), blankToLabel(email, ''), false),
+            new TableCell('lastLeadSentDate', lastLeadDisplay, lastLeadSort, false)
+        };
+        return row;
     }
 
     @AuraEnabled(cacheable=true)
@@ -3680,6 +3808,7 @@ public with sharing class PipelineCommandCenterController {
             tabs.add(new PipelineTab('zachFritzActiveTransactions', 'Zach Active Transactions', 'Zachary Fritz transactions where you are the Loan Partner and the file is still active.', 'Transaction__c', applyLoanOfficerTransactionCells(buildTransactionRowsByLoanOfficerScope(new Set<Id>(), zachUserId, meganUserId, true, 'active', 100)), transactionColumns));
             tabs.add(new PipelineTab('zachFritzClosedThisMonth', 'Zach Transactions Closed this Month', 'Zachary Fritz funded, review, and post-closed files this month where you are the Loan Partner.', 'Transaction__c', applyLoanOfficerTransactionCells(buildTransactionRowsByLoanOfficerScope(new Set<Id>(), zachUserId, meganUserId, true, 'closedThisMonth', 100)), transactionColumns));
         }
+        tabs.add(buildMeganPreApprovalFollowUpTab(meganUserId, brandonUserId, zachUserId));
         return tabs;
     }
 
@@ -3831,22 +3960,231 @@ public with sharing class PipelineCommandCenterController {
         );
     }
 
+    // Megan's "Pre-Approval Follow Ups" cadence queue. Leads re-surface on a tightening schedule
+    // measured from Pre_Approval_Date__c: every 6 days through day 30, every 14 days for days 31-60.
+    // Past day 60 the lead leaves this queue entirely and becomes Ben's aged pre-approval work.
+    private static final Integer MEGAN_FOLLOW_UP_EARLY_STAGE_MAX_AGE_DAYS = 30;
+    private static final Integer MEGAN_FOLLOW_UP_MAX_AGE_DAYS = 60;
+    private static final Integer MEGAN_FOLLOW_UP_EARLY_CALL_GAP_DAYS = 6;
+    private static final Integer MEGAN_FOLLOW_UP_LATE_CALL_GAP_DAYS = 14;
+
+    private static PipelineTab buildMeganPreApprovalFollowUpTab(Id meganUserId, Id brandonUserId, Id zachUserId) {
+        List<PipelineRow> rows = buildMeganPreApprovalFollowUpRows(meganUserId, brandonUserId, zachUserId);
+        return new PipelineTab(
+            'meganPreApprovalFollowUps',
+            'Pre-Approval Follow Ups',
+            'Pre-approved leads owned by Megan, Zach, or Brandon that are due for a follow-up call: every 6 days through day 30 after pre-approval, every 14 days for days 31-60.',
+            'Lead',
+            rows,
+            buildMeganPreApprovalFollowUpColumns()
+        );
+    }
+
+    private static List<TableColumn> buildMeganPreApprovalFollowUpColumns() {
+        return new List<TableColumn>{
+            new TableColumn('name', 'Name'),
+            new TableColumn('ownerLO', 'Owner/LO'),
+            new TableColumn('status', 'Status'),
+            new TableColumn('preApprovalDate', 'Pre-Approval Date'),
+            new TableColumn('phone', 'Phone Number'),
+            new TableColumn('lastLoggedCall', 'Last Logged Call'),
+            new TableColumn('lastLoggedSms', 'Last Logged SMS'),
+            new TableColumn('loanDetails', 'Loan Details'),
+            new TableColumn('nextAppointment', 'Next Appointment Date/Time')
+        };
+    }
+
+    private static List<PipelineRow> buildMeganPreApprovalFollowUpRows(Id meganUserId, Id brandonUserId, Id zachUserId) {
+        Set<Id> ownerIds = new Set<Id>();
+        if (meganUserId != null) {
+            ownerIds.add(meganUserId);
+        }
+        if (brandonUserId != null) {
+            ownerIds.add(brandonUserId);
+        }
+        if (zachUserId != null) {
+            ownerIds.add(zachUserId);
+        }
+        if (ownerIds.isEmpty() || meganUserId == null) {
+            return new List<PipelineRow>();
+        }
+
+        Date oldestPreApprovalDate = Date.today().addDays(-MEGAN_FOLLOW_UP_MAX_AGE_DAYS);
+        List<Lead> preApprovedLeads = [
+            SELECT Id,
+                Name,
+                Status,
+                Phone,
+                Email,
+                OwnerId,
+                Owner.Name,
+                CreatedDate,
+                LastActivityDate,
+                Loan_Amount__c,
+                Loan_Purpose__c,
+                Loan_Details__c,
+                Pre_Approval_Date__c,
+                Pre_Approval_Pass_At__c,
+                Appointment_Date_Time__c,
+                Realtor_Buying_Agent__r.Name
+            FROM Lead
+            WHERE OwnerId IN :ownerIds
+            AND Status = 'Pre-Approval'
+            AND Pre_Approval_Date__c != null
+            AND Pre_Approval_Date__c >= :oldestPreApprovalDate
+            ORDER BY Pre_Approval_Date__c ASC, Name ASC
+            LIMIT 500
+        ];
+
+        Map<Id, Id> ownerIdByLeadId = new Map<Id, Id>();
+        for (Lead leadRecord : preApprovedLeads) {
+            ownerIdByLeadId.put(leadRecord.Id, leadRecord.OwnerId);
+        }
+        Set<Id> relevantTaskOwnerIds = new Set<Id>(ownerIds);
+        Map<Id, Datetime> lastCallByLeadId = leadLastContactByOwnerOrPartner(
+            ownerIdByLeadId,
+            relevantTaskOwnerIds,
+            meganUserId,
+            true
+        );
+        Map<Id, Datetime> lastSmsByLeadId = leadLastContactByOwnerOrPartner(
+            ownerIdByLeadId,
+            relevantTaskOwnerIds,
+            meganUserId,
+            false
+        );
+
+        Date today = Date.today();
+        List<PipelineRow> rows = new List<PipelineRow>();
+        for (Lead leadRecord : preApprovedLeads) {
+            Date preApprovalDate = (Date) safeSObjectValue(leadRecord, 'Pre_Approval_Date__c');
+            if (preApprovalDate == null) {
+                continue;
+            }
+            Integer ageInDays = preApprovalDate.daysBetween(today);
+            if (ageInDays < 0 || ageInDays > MEGAN_FOLLOW_UP_MAX_AGE_DAYS) {
+                continue;
+            }
+            Integer requiredCallGapDays = ageInDays <= MEGAN_FOLLOW_UP_EARLY_STAGE_MAX_AGE_DAYS
+                ? MEGAN_FOLLOW_UP_EARLY_CALL_GAP_DAYS
+                : MEGAN_FOLLOW_UP_LATE_CALL_GAP_DAYS;
+            Datetime lastCall = lastCallByLeadId.get(leadRecord.Id);
+            // A Pass counts the same as a logged call for cadence purposes, so the lead drops out
+            // now and cycles back once the applicable gap has elapsed.
+            Datetime passedAt = (Datetime) safeSObjectValue(leadRecord, 'Pre_Approval_Pass_At__c');
+            Datetime lastTouch = lastCall;
+            if (passedAt != null && (lastTouch == null || passedAt > lastTouch)) {
+                lastTouch = passedAt;
+            }
+            if (lastTouch != null && lastTouch > System.now().addDays(-requiredCallGapDays)) {
+                continue;
+            }
+            rows.add(buildMeganPreApprovalFollowUpRow(
+                leadRecord,
+                lastCall,
+                lastSmsByLeadId.get(leadRecord.Id)
+            ));
+        }
+        return rows;
+    }
+
+    // Last call (or SMS) logged on each lead by either that lead's own owner or the loan partner.
+    private static Map<Id, Datetime> leadLastContactByOwnerOrPartner(
+        Map<Id, Id> ownerIdByLeadId,
+        Set<Id> taskOwnerIds,
+        Id partnerUserId,
+        Boolean wantCallTasks
+    ) {
+        Map<Id, Datetime> lastContactByLeadId = new Map<Id, Datetime>();
+        if (ownerIdByLeadId == null || ownerIdByLeadId.isEmpty() || taskOwnerIds == null || taskOwnerIds.isEmpty()) {
+            return lastContactByLeadId;
+        }
+        Set<Id> leadIds = ownerIdByLeadId.keySet();
+        Set<Id> eligibleTaskOwnerIds = new Set<Id>(taskOwnerIds);
+        if (partnerUserId != null) {
+            eligibleTaskOwnerIds.add(partnerUserId);
+        }
+        for (Task taskRecord : [
+            SELECT WhoId, OwnerId, CreatedDate, Subject, Description, TaskSubtype, CallType
+            FROM Task
+            WHERE WhoId IN :leadIds
+            AND OwnerId IN :eligibleTaskOwnerIds
+            ORDER BY CreatedDate DESC
+            LIMIT 50000
+        ]) {
+            Id leadOwnerId = ownerIdByLeadId.get(taskRecord.WhoId);
+            Boolean loggedByOwnerOrPartner = taskRecord.OwnerId == leadOwnerId || taskRecord.OwnerId == partnerUserId;
+            if (!loggedByOwnerOrPartner) {
+                continue;
+            }
+            Boolean matchesType = wantCallTasks ? isCallTask(taskRecord) : isSmsTask(taskRecord);
+            if (!matchesType) {
+                continue;
+            }
+            Datetime currentDate = lastContactByLeadId.get(taskRecord.WhoId);
+            if (currentDate == null || taskRecord.CreatedDate > currentDate) {
+                lastContactByLeadId.put(taskRecord.WhoId, taskRecord.CreatedDate);
+            }
+        }
+        return lastContactByLeadId;
+    }
+
+    private static Boolean isSmsTask(Task taskRecord) {
+        if (taskRecord == null) {
+            return false;
+        }
+        String subject = String.isBlank(taskRecord.Subject) ? '' : taskRecord.Subject.toLowerCase();
+        return subject.contains('sms')
+            || subject.contains('text message')
+            || subject.contains('texted');
+    }
+
+    // RingCentral logs text messages as Tasks with CallType populated ('Outbound'/'Inbound'), and
+    // email-logging Tasks can carry a subject containing "call". Both would otherwise satisfy the
+    // call checks below, so they are ruled out before any call classification runs.
+    private static Boolean isNonCallContactTask(Task taskRecord) {
+        if (taskRecord == null) {
+            return true;
+        }
+        if (isSmsTask(taskRecord)) {
+            return true;
+        }
+        String subject = String.isBlank(taskRecord.Subject) ? '' : taskRecord.Subject.toLowerCase();
+        return taskRecord.TaskSubtype == 'Email' || subject.startsWith('email:');
+    }
+
+    private static PipelineRow buildMeganPreApprovalFollowUpRow(Lead leadRecord, Datetime lastCall, Datetime lastSms) {
+        PipelineRow row = new PipelineRow(leadRecord);
+        Date preApprovalDate = (Date) safeSObjectValue(leadRecord, 'Pre_Approval_Date__c');
+        row.displayDate = preApprovalDate;
+        Datetime appointmentDateTime = (Datetime) safeSObjectValue(leadRecord, 'Appointment_Date_Time__c');
+        String ownerName = row.ownerName;
+        String loanDetails = (String) safeSObjectValue(leadRecord, 'Loan_Details__c');
+        row.customCells = new List<TableCell>{
+            new TableCell('name', leadRecord.Name, leadRecord.Name, true),
+            new TableCell('ownerLO', ownerName, ownerName, false),
+            new TableCell('status', leadRecord.Status, leadRecord.Status, false),
+            new TableCell('preApprovalDate', formatDateForCell(preApprovalDate), formatDateSortValue(preApprovalDate), false),
+            new TableCell('phone', row.phone, row.phone, false),
+            new TableCell('lastLoggedCall', formatDatetimeForCell(lastCall), formatDatetimeSortValue(lastCall), false),
+            new TableCell('lastLoggedSms', formatDatetimeForCell(lastSms), formatDatetimeSortValue(lastSms), false),
+            new TableCell('loanDetails', loanDetails, loanDetails, false),
+            new TableCell('nextAppointment', formatDatetimeForCell(appointmentDateTime), formatDatetimeSortValue(appointmentDateTime), false)
+        };
+        return row;
+    }
+
     private static List<TableColumn> buildAgedPreApprovalColumns(String ownerDisplayName) {
-        List<TableColumn> columns = new List<TableColumn>{
+        return new List<TableColumn>{
             new TableColumn('name', 'Client Name'),
             new TableColumn('phone', 'Phone'),
             new TableColumn('scheduledEvent', 'Scheduled Event'),
             new TableColumn('preApprovalDate', 'Pre-Approval Date'),
             new TableColumn('loanAmount', 'Loan Amount'),
             new TableColumn('realtorBuyingAgent', 'Realtor - Buying Agent'),
-            new TableColumn('ownerLastCall', ownerDisplayName + ' Last RingCentral Call')
+            new TableColumn('ownerLastCall', ownerDisplayName + ' Last RingCentral Call'),
+            new TableColumn('benLastCall', 'Ben Last RingCentral Call')
         };
-        if (ownerDisplayName == 'Brandon') {
-            columns.add(new TableColumn('brandonLastSms', 'Brandon\'s Last SMS'));
-        } else {
-            columns.add(new TableColumn('benLastCall', 'Ben Last RingCentral Call'));
-        }
-        return columns;
     }
 
     private static List<TableColumn> buildPreApprovalCallsTodayColumns() {
@@ -4112,9 +4450,6 @@ public with sharing class PipelineCommandCenterController {
         Map<Id, Datetime> benRecentCallsByLeadId = leadRecentOutboundCallsByUser(leadIds, benId, System.now().addDays(-14));
         Map<Id, Datetime> ownerLastCallsByLeadId = leadRecentCallsByUser(leadIds, ownerId, DateTime.newInstance(2000, 1, 1, 0, 0, 0));
         Map<Id, Datetime> benLastCallsByLeadId = leadRecentOutboundCallsByUser(leadIds, benId, DateTime.newInstance(2000, 1, 1, 0, 0, 0));
-        Map<Id, Datetime> ownerLastSmsByLeadId = ownerDisplayName == 'Brandon'
-            ? leadRecentSmsByUser(leadIds, ownerId, DateTime.newInstance(2000, 1, 1, 0, 0, 0))
-            : new Map<Id, Datetime>();
         Map<Id, EventCell> scheduledEventsByLeadId = leadNearestScheduledEvents(leadIds);
         List<PipelineRow> rows = new List<PipelineRow>();
         for (Lead leadRecord : agedPreApprovals) {
@@ -4126,14 +4461,13 @@ public with sharing class PipelineCommandCenterController {
                 scheduledEventsByLeadId.get(leadRecord.Id),
                 ownerLastCallsByLeadId.get(leadRecord.Id),
                 benLastCallsByLeadId.get(leadRecord.Id),
-                ownerLastSmsByLeadId.get(leadRecord.Id),
                 ownerDisplayName
             ));
         }
         return rows;
     }
 
-    private static PipelineRow buildAgedPreApprovalRow(Lead leadRecord, EventCell scheduledEvent, Datetime ownerLastCall, Datetime benLastCall, Datetime ownerLastSms, String ownerDisplayName) {
+    private static PipelineRow buildAgedPreApprovalRow(Lead leadRecord, EventCell scheduledEvent, Datetime ownerLastCall, Datetime benLastCall, String ownerDisplayName) {
         PipelineRow row = new PipelineRow(leadRecord);
         Date preApprovalDate = (Date) safeSObjectValue(leadRecord, 'Pre_Approval_Date__c');
         row.displayDate = preApprovalDate;
@@ -4146,13 +4480,9 @@ public with sharing class PipelineCommandCenterController {
             new TableCell('preApprovalDate', formatDateForCell(preApprovalDate), formatDateSortValue(preApprovalDate), false),
             new TableCell('loanAmount', loanAmount, formatDecimalSortValue((Decimal) safeSObjectValue(leadRecord, 'Loan_Amount__c')), false),
             new TableCell('realtorBuyingAgent', realtorBuyingAgent, realtorBuyingAgent, false),
-            new TableCell('ownerLastCall', formatDatetimeForCell(ownerLastCall), formatDatetimeSortValue(ownerLastCall), false)
+            new TableCell('ownerLastCall', formatDatetimeForCell(ownerLastCall), formatDatetimeSortValue(ownerLastCall), false),
+            new TableCell('benLastCall', formatDatetimeForCell(benLastCall), formatDatetimeSortValue(benLastCall), false)
         };
-        if (ownerDisplayName == 'Brandon') {
-            row.customCells.add(new TableCell('brandonLastSms', formatDatetimeForCell(ownerLastSms), formatDatetimeSortValue(ownerLastSms), false));
-        } else {
-            row.customCells.add(new TableCell('benLastCall', formatDatetimeForCell(benLastCall), formatDatetimeSortValue(benLastCall), false));
-        }
         return row;
     }
 
@@ -4323,34 +4653,8 @@ public with sharing class PipelineCommandCenterController {
         return callsByLeadId;
     }
 
-    private static Map<Id, Datetime> leadRecentSmsByUser(Set<Id> leadIds, Id userId, Datetime cutoffDateTime) {
-        Map<Id, Datetime> smsByLeadId = new Map<Id, Datetime>();
-        if (leadIds == null || leadIds.isEmpty() || userId == null || cutoffDateTime == null) {
-            return smsByLeadId;
-        }
-        for (Task taskRecord : [
-            SELECT WhoId, CreatedDate, Subject, TaskSubtype, CallType
-            FROM Task
-            WHERE OwnerId = :userId
-            AND WhoId IN :leadIds
-            AND CreatedDate >= :cutoffDateTime
-            AND (Subject LIKE '%SMS%' OR Subject LIKE '%Text%' OR Subject LIKE '%Message%' OR Subject LIKE '%RingCentral%')
-            ORDER BY CreatedDate DESC
-            LIMIT 50000
-        ]) {
-            if (!isSmsTask(taskRecord)) {
-                continue;
-            }
-            Datetime currentDate = smsByLeadId.get(taskRecord.WhoId);
-            if (currentDate == null || taskRecord.CreatedDate > currentDate) {
-                smsByLeadId.put(taskRecord.WhoId, taskRecord.CreatedDate);
-            }
-        }
-        return smsByLeadId;
-    }
-
     private static Boolean isOutboundCallTask(Task taskRecord) {
-        if (taskRecord == null) {
+        if (isNonCallContactTask(taskRecord)) {
             return false;
         }
         String callType = taskRecord.CallType == null ? '' : String.valueOf(taskRecord.CallType).toLowerCase();
@@ -4365,7 +4669,7 @@ public with sharing class PipelineCommandCenterController {
     }
 
     private static Boolean isCallTask(Task taskRecord) {
-        if (taskRecord == null) {
+        if (isNonCallContactTask(taskRecord)) {
             return false;
         }
         String callType = taskRecord.CallType == null ? '' : String.valueOf(taskRecord.CallType).toLowerCase();
@@ -4375,20 +4679,6 @@ public with sharing class PipelineCommandCenterController {
             || subject.contains('ringcentral')
             || subject.contains('call');
     }
-
-    private static Boolean isSmsTask(Task taskRecord) {
-        if (taskRecord == null) {
-            return false;
-        }
-        String callType = taskRecord.CallType == null ? '' : String.valueOf(taskRecord.CallType).toLowerCase();
-        String subject = String.isBlank(taskRecord.Subject) ? '' : taskRecord.Subject.toLowerCase();
-        return String.isBlank(callType)
-            && taskRecord.TaskSubtype != 'Call'
-            && (subject.contains('sms')
-                || subject.contains('text')
-                || subject.contains('message'));
-    }
-
 
     private static Date businessDaysAgo(Integer daysBack) {
         Date targetDate = Date.today();

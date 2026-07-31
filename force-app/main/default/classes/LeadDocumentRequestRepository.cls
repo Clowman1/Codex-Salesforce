@@ -305,6 +305,9 @@ public inherited sharing class LeadDocumentRequestRepository {
         if (hasLeadField('Lead_Portal_Link_As_URL__c')) {
             fields.add('Lead_Portal_Link_As_URL__c');
         }
+        if (hasLeadField('Loan_Partner__c')) {
+            fields.add('Loan_Partner__c');
+        }
 
         return 'SELECT ' + String.join(fields, ',') +
             ' FROM Lead WHERE ' + whereClause + ' ' + accessAndLimitClause;

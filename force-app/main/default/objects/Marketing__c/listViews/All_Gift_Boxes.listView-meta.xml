@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Gift_Boxes</fullName>
+    <columns>NAME</columns>
+    <columns>Lead__c</columns>
+    <columns>Account__c</columns>
+    <columns>Gift_1_Send_Date__c</columns>
+    <columns>Gift_1_Send_Status__c</columns>
+    <columns>Gift_3_Send_Date__c</columns>
+    <columns>Gift_3_Send_Status__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Type__c</field>
+        <operation>equals</operation>
+        <value>Gift Box</value>
+    </filters>
+    <label>All Gift Boxes</label>
+</ListView>

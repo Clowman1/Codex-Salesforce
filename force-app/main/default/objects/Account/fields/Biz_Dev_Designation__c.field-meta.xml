@@ -21,14 +21,19 @@
                 <label>Biz Dev - Reach</label>
             </value>
             <value>
-                <fullName>Biz Dev - Cabrera</fullName>
-                <default>false</default>
-                <label>Biz Dev - Cabrera</label>
-            </value>
-            <value>
                 <fullName>Biz Dev - Waters</fullName>
                 <default>false</default>
                 <label>Biz Dev - Waters</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Delaney</fullName>
+                <default>false</default>
+                <label>Biz Dev - Delaney</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Bondarevsky</fullName>
+                <default>false</default>
+                <label>Biz Dev - Bondarevsky</label>
             </value>
             <value>
                 <fullName>Biz Dev - Fritz</fullName>
@@ -41,34 +46,9 @@
                 <label>Biz Dev - Olmsted</label>
             </value>
             <value>
-                <fullName>Biz Dev - Perrault</fullName>
-                <default>false</default>
-                <label>Biz Dev - Perrault</label>
-            </value>
-            <value>
-                <fullName>Biz Dev - Hornaday</fullName>
-                <default>false</default>
-                <label>Biz Dev - Hornaday</label>
-            </value>
-            <value>
-                <fullName>Biz Dev - Hsieh</fullName>
-                <default>false</default>
-                <label>Biz Dev - Hsieh</label>
-            </value>
-            <value>
-                <fullName>Biz Dev - Williams</fullName>
-                <default>false</default>
-                <label>Biz Dev - Williams</label>
-            </value>
-            <value>
                 <fullName>Biz Dev - Pugh</fullName>
                 <default>false</default>
                 <label>Biz Dev - Pugh</label>
-            </value>
-            <value>
-                <fullName>Biz Dev - Bondarevsky</fullName>
-                <default>false</default>
-                <label>Biz Dev - Bondarevsky</label>
             </value>
             <value>
                 <fullName>Biz Dev - Rebagliati</fullName>
@@ -76,10 +56,40 @@
                 <label>Biz Dev - Rebagliati</label>
             </value>
             <value>
+                <fullName>Biz Dev - Cabrera</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Biz Dev - Cabrera</label>
+            </value>
+            <value>
                 <fullName>Biz Dev - Carey</fullName>
                 <default>false</default>
                 <isActive>false</isActive>
                 <label>Biz Dev - Carey</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Hornaday</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Biz Dev - Hornaday</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Hsieh</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Biz Dev - Hsieh</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Perrault</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Biz Dev - Perrault</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Peterson</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Biz Dev - Peterson</label>
             </value>
             <value>
                 <fullName>Biz Dev - SERHANT ORL</fullName>
@@ -98,6 +108,12 @@
                 <default>false</default>
                 <isActive>false</isActive>
                 <label>Biz Dev - Wemert</label>
+            </value>
+            <value>
+                <fullName>Biz Dev - Williams</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Biz Dev - Williams</label>
             </value>
         </valueSetDefinition>
     </valueSet>
