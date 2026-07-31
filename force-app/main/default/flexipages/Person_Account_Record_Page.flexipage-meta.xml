@@ -1459,6 +1459,12 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>accountActivityAssistant</componentName>
+                <identifier>c_accountActivityAssistant</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
                     <value>Facet-6fed3f02-3086-43c9-afe6-f041ec706ab4</value>
