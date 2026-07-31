@@ -7,7 +7,8 @@ public without sharing class BackfillActiveLeadLastNotes implements Database.Bat
                 'New', 'Contacted/Call Back', 'Contact Attempt 1', 'Contact Attempt 2',
                 'Contact Attempt 3', 'Contact Attempt 4', 'Contact Attempt 5', 'Contact Attempt 6',
                 'Contact_Attempt_6', 'Working', 'Application', 'Application Link Out',
-                'Documents Requested', 'Documents Received for Review', 'Under Contract'
+                'Documents Requested', 'Documents Received for Review', 'Pre-Approval',
+                'Under Contract'
             )
         ]);
     }
