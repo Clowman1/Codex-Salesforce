@@ -3,8 +3,8 @@
         <div class="hero">
             <div>
                 <p class="eyebrow">Reach Home Loans</p>
-                <h2>Lead Activity Assistant</h2>
-                <p class="subcopy">Log lead calls, capture notes, message buyer agents, and schedule follow-up events in one place.</p>
+                <h2>{assistantTitle}</h2>
+                <p class="subcopy">{assistantSubcopy}</p>
             </div>
         </div>
 
@@ -34,7 +34,7 @@
                 <label class="field field-full">
                     <span>Internal Note</span>
                     <textarea value={internalNote} data-field="internalNote" data-clear-on-call-success onchange={handleInput}></textarea>
-                    <small class="hint">This saves to the Task and creates a Lead note in the Notes tab.</small>
+                    <small class="hint">{noteHint}</small>
                 </label>
                 <label class="field field-full">
                     <span>Assigned To</span>
@@ -48,7 +48,7 @@
                             <option value="">Loading assignees...</option>
                         </template>
                     </select>
-                    <small class="hint">Defaults to the Lead Owner. Select the Loan Partner when the event should be assigned there.</small>
+                    <small class="hint">{assigneeHint}</small>
                 </label>
                 <label class="field field-full">
                     <span>Event Subject</span>
@@ -91,14 +91,16 @@
                         </template>
                     </select>
                 </label>
-                <label class="field field-full">
-                    <span>External Message to Buyer's Agent</span>
-                    <textarea value={buyerAgentMessage} data-field="buyerAgentMessage" data-clear-on-call-success maxlength="255" oninput={handleInput} onchange={handleInput}></textarea>
-                </label>
-                <label class="field field-full">
-                    <span>External Message to Buyer's Agent More</span>
-                    <textarea value={buyerAgentMessageMore} data-field="buyerAgentMessageMore" data-clear-on-call-success maxlength="255" oninput={handleInput} onchange={handleInput}></textarea>
-                </label>
+                <template if:false={isAccountRecord}>
+                    <label class="field field-full">
+                        <span>External Message to Buyer's Agent</span>
+                        <textarea value={buyerAgentMessage} data-field="buyerAgentMessage" data-clear-on-call-success maxlength="255" oninput={handleInput} onchange={handleInput}></textarea>
+                    </label>
+                    <label class="field field-full">
+                        <span>External Message to Buyer's Agent More</span>
+                        <textarea value={buyerAgentMessageMore} data-field="buyerAgentMessageMore" data-clear-on-call-success maxlength="255" oninput={handleInput} onchange={handleInput}></textarea>
+                    </label>
+                </template>
             </div>
 
             <div class="actions">
@@ -127,7 +129,7 @@
                             <option value="">Loading assignees...</option>
                         </template>
                     </select>
-                    <small class="hint">Defaults to the Lead Owner. Select the Loan Partner when the event should be assigned there.</small>
+                    <small class="hint">{assigneeHint}</small>
                 </label>
                 <label class="field">
                     <span>Start Date</span>

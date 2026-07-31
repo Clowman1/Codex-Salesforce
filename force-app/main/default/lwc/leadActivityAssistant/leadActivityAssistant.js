@@ -1,12 +1,8 @@
-import { LightningElement, api, wire } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import logCall from '@salesforce/apex/LeadActivityAssistantController.logCall';
 import createEvent from '@salesforce/apex/LeadActivityAssistantController.createEvent';
 import getLeadContext from '@salesforce/apex/LeadActivityAssistantController.getLeadContext';
 import { RefreshEvent } from 'lightning/refresh';
-import { getFieldValue, getRecord } from 'lightning/uiRecordApi';
-import OWNER_ID_FIELD from '@salesforce/schema/Lead.OwnerId';
-import LOAN_PARTNER_FIELD from '@salesforce/schema/Lead.Loan_Partner__c';
-import REALTOR_BUYING_AGENT_FIELD from '@salesforce/schema/Lead.Realtor_Buying_Agent__c';
 
 export default class LeadActivityAssistant extends LightningElement {
     selectedTab = 'call';
@@ -35,6 +31,7 @@ export default class LeadActivityAssistant extends LightningElement {
     hasBuyerAgent = false;
     isConsumerLead = true;
     leadName = '';
+    objectApiName = 'Lead';
     leadContextSignature = '';
 
     _recordId;
@@ -53,29 +50,11 @@ export default class LeadActivityAssistant extends LightningElement {
         this.hasBuyerAgent = false;
         this.isConsumerLead = true;
         this.leadName = '';
+        this.objectApiName = 'Lead';
         this.callEventSubject = '';
         this.callEventSubjectEdited = false;
         if (value) {
             this.loadLeadContext();
-        }
-    }
-
-    @wire(getRecord, { recordId: '$recordId', fields: [OWNER_ID_FIELD, LOAN_PARTNER_FIELD, REALTOR_BUYING_AGENT_FIELD] })
-    wiredLeadRecord({ data }) {
-        if (!data) {
-            return;
-        }
-
-        const signature = [
-            getFieldValue(data, OWNER_ID_FIELD) || '',
-            getFieldValue(data, LOAN_PARTNER_FIELD) || '',
-            getFieldValue(data, REALTOR_BUYING_AGENT_FIELD) || ''
-        ].join('|');
-
-        this.hasBuyerAgent = Boolean(getFieldValue(data, REALTOR_BUYING_AGENT_FIELD));
-        if (signature !== this.leadContextSignature) {
-            this.leadContextSignature = signature;
-            this.loadLeadContext({ preserveSelection: true });
         }
     }
 
@@ -129,6 +108,32 @@ export default class LeadActivityAssistant extends LightningElement {
 
     get defaultCallEventSubject() {
         return this.leadName ? `Follow Up - ${this.leadName}` : 'Follow Up';
+    }
+
+    get isAccountRecord() {
+        return this.objectApiName === 'Account';
+    }
+
+    get assistantTitle() {
+        return this.isAccountRecord ? 'Account Activity Assistant' : 'Lead Activity Assistant';
+    }
+
+    get assistantSubcopy() {
+        return this.isAccountRecord
+            ? 'Log account calls, capture notes, and schedule follow-up events in one place.'
+            : 'Log lead calls, capture notes, message buyer agents, and schedule follow-up events in one place.';
+    }
+
+    get noteHint() {
+        return this.isAccountRecord
+            ? 'This saves to the Task and creates an Account note in the Notes tab.'
+            : 'This saves to the Task and creates a Lead note in the Notes tab.';
+    }
+
+    get assigneeHint() {
+        return this.isAccountRecord
+            ? 'Defaults to the Account Owner. Select another available account assignee when needed.'
+            : 'Defaults to the Lead Owner. Select the Loan Partner when the event should be assigned there.';
     }
 
     get eventStartDateTime() {
@@ -213,6 +218,7 @@ export default class LeadActivityAssistant extends LightningElement {
             this.hasBuyerAgent = Boolean(context?.hasBuyerAgent);
             this.isConsumerLead = context?.isConsumerLead !== false;
             this.leadName = context?.leadName || '';
+            this.objectApiName = context?.objectApiName || 'Lead';
             if (!this.callEventSubjectEdited) {
                 this.callEventSubject = this.defaultCallEventSubject;
             }

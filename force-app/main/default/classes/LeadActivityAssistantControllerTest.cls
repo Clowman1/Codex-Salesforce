@@ -20,6 +20,22 @@ private class LeadActivityAssistantControllerTest {
     }
 
     @IsTest
+    static void getLeadContextReturnsAccountContextForPersonAccount() {
+        Account accountRecord = createPersonAccount(UserInfo.getUserId(), 'Account Context');
+
+        Test.startTest();
+        LeadActivityAssistantController.LeadContext context = LeadActivityAssistantController.getLeadContext(accountRecord.Id);
+        Test.stopTest();
+
+        System.assertEquals('Account', context.objectApiName);
+        System.assertEquals('Account Context', context.leadName);
+        System.assertEquals(false, context.hasBuyerAgent);
+        System.assertEquals(false, context.isConsumerLead);
+        System.assertEquals(String.valueOf(UserInfo.getUserId()), context.defaultOwnerId);
+        System.assert(!context.assignees.isEmpty(), 'Expected at least one account event assignee option.');
+    }
+
+    @IsTest
     static void getLeadContextReturnsOwnerAndLoanPartnerAssigneesForBenjamin() {
         User benUser = createNamedTestUser('benjamin', 'Benjamin', 'Bondarevsky', 'benjamin@reachhomeloans.com');
         User ownerUser = createTestUser('leadown', 'leadowner@example.com');
@@ -142,6 +158,73 @@ private class LeadActivityAssistantControllerTest {
             }
         }
         System.assert(foundVisibleEnhancedNote, 'Expected the internal note to be visible in Enhanced Notes.');
+    }
+
+    @IsTest
+    static void logCallCreatesAccountTaskEventAndNote() {
+        Account accountRecord = createPersonAccount(UserInfo.getUserId(), 'Account Activity');
+
+        Test.startTest();
+        LeadActivityAssistantController.SaveResult result = LeadActivityAssistantController.logCall(
+            accountRecord.Id,
+            'Call',
+            'Completed',
+            'Account note for testing',
+            '2026-07-01T10:00',
+            null,
+            null,
+            UserInfo.getUserId(),
+            30,
+            true,
+            15,
+            'Follow Up - Account Activity'
+        );
+        Test.stopTest();
+
+        System.assertNotEquals(null, result.recordId);
+        Task taskRecord = [
+            SELECT WhatId, Subject, Description, Type, Status, Priority, TaskSubtype, InteractionType__c,
+                Direction__c, CallType, Follow_Up_Date__c
+            FROM Task
+            WHERE Id = :result.recordId
+        ];
+        System.assertEquals(accountRecord.Id, taskRecord.WhatId);
+        System.assert(taskRecord.Subject.startsWith('Call'), 'Expected the call subject to retain the entered value.');
+        System.assertEquals('Normal', taskRecord.Priority);
+        System.assertEquals('Call', taskRecord.Type);
+        System.assertEquals('Call', taskRecord.TaskSubtype);
+        System.assertEquals('Call', taskRecord.InteractionType__c);
+        System.assertEquals('Outbound', taskRecord.Direction__c);
+        System.assertEquals('Outbound', taskRecord.CallType);
+        System.assertNotEquals(null, taskRecord.Follow_Up_Date__c);
+        System.assertEquals('Account note for testing', taskRecord.Description);
+
+        Event followUpEvent = [
+            SELECT WhatId, Subject
+            FROM Event
+            WHERE WhatId = :accountRecord.Id
+            AND StartDateTime = :taskRecord.Follow_Up_Date__c
+            LIMIT 1
+        ];
+        System.assertEquals(accountRecord.Id, followUpEvent.WhatId);
+        System.assertEquals('Follow Up - Account Activity', followUpEvent.Subject);
+
+        Enhanced_Note__c enhancedNote = [
+            SELECT Account__c, Body__c, Type__c
+            FROM Enhanced_Note__c
+            WHERE Account__c = :accountRecord.Id
+            LIMIT 1
+        ];
+        System.assertEquals(accountRecord.Id, enhancedNote.Account__c);
+        System.assertEquals('Note', enhancedNote.Type__c);
+        System.assert(enhancedNote.Body__c.contains('Account note for testing'));
+
+        List<ContentDocumentLink> linkedNotes = [
+            SELECT Id
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :accountRecord.Id
+        ];
+        System.assert(!linkedNotes.isEmpty(), 'Expected the internal note to be linked to the Account Notes tab.');
     }
 
     @IsTest
@@ -414,6 +497,43 @@ private class LeadActivityAssistantControllerTest {
     }
 
     @IsTest
+    static void createEventCreatesAccountScheduledAppointment() {
+        Account accountRecord = createPersonAccount(UserInfo.getUserId(), 'Account Event');
+
+        Test.startTest();
+        LeadActivityAssistantController.SaveResult result = LeadActivityAssistantController.createEvent(
+            accountRecord.Id,
+            'Scheduled Appointment',
+            UserInfo.getUserId(),
+            '2026-07-01T10:00',
+            15,
+            true,
+            15,
+            'Meet with client'
+        );
+        Test.stopTest();
+
+        Event eventRecord = [
+            SELECT WhatId, Subject, StartDateTime, EndDateTime, IsReminderSet, ReminderDateTime
+            FROM Event
+            WHERE Id = :result.recordId
+        ];
+        System.assertEquals(accountRecord.Id, eventRecord.WhatId);
+        System.assertEquals('Scheduled Appointment', eventRecord.Subject);
+        Long durationMs = eventRecord.EndDateTime.getTime() - eventRecord.StartDateTime.getTime();
+        System.assertEquals(15, Integer.valueOf(durationMs / (1000 * 60)));
+        System.assertEquals(true, eventRecord.IsReminderSet);
+        Long reminderMs = eventRecord.StartDateTime.getTime() - eventRecord.ReminderDateTime.getTime();
+        System.assertEquals(15, Integer.valueOf(reminderMs / (1000 * 60)));
+        Account updatedAccount = [
+            SELECT Appointment_Date_Time__c
+            FROM Account
+            WHERE Id = :accountRecord.Id
+        ];
+        System.assertEquals(eventRecord.StartDateTime, updatedAccount.Appointment_Date_Time__c);
+    }
+
+    @IsTest
     static void createEventAssignsOnlyOwnerOrLoanPartner() {
         User ownerUser = createTestUser('evtowner', 'evtowner@example.com');
         User loanPartner = createTestUser('evtlp', 'evtlp@example.com');
@@ -529,6 +649,26 @@ private class LeadActivityAssistantControllerTest {
 
     private static User createTestUser(String aliasPrefix, String email) {
         return createNamedTestUser(aliasPrefix, aliasPrefix, 'User', email);
+    }
+
+    private static Account createPersonAccount(Id ownerId, String lastName) {
+        Account accountRecord = new Account(
+            RecordTypeId = getPersonAccountRecordTypeId(),
+            LastName = lastName,
+            OwnerId = ownerId
+        );
+        insert accountRecord;
+        return accountRecord;
+    }
+
+    private static Id getPersonAccountRecordTypeId() {
+        return [
+            SELECT Id
+            FROM RecordType
+            WHERE SObjectType = 'Account'
+            AND DeveloperName = 'PersonAccount'
+            LIMIT 1
+        ].Id;
     }
 
     private static Id firstBenjaminBondarevskyId() {

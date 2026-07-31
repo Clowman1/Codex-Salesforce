@@ -27,19 +27,24 @@ public with sharing class LeadActivityAssistantController {
         @AuraEnabled public Boolean hasBuyerAgent;
         @AuraEnabled public Boolean isConsumerLead;
         @AuraEnabled public String leadName;
+        @AuraEnabled public String objectApiName;
 
-        public LeadContext(String defaultOwnerId, List<AssigneeOption> assignees, Boolean hasBuyerAgent, Boolean isConsumerLead, String leadName) {
+        public LeadContext(String defaultOwnerId, List<AssigneeOption> assignees, Boolean hasBuyerAgent, Boolean isConsumerLead, String leadName, String objectApiName) {
             this.defaultOwnerId = defaultOwnerId;
             this.assignees = assignees;
             this.hasBuyerAgent = hasBuyerAgent;
             this.isConsumerLead = isConsumerLead;
             this.leadName = leadName;
+            this.objectApiName = objectApiName;
         }
     }
 
     @AuraEnabled
     public static LeadContext getLeadContext(Id leadId) {
-        validateLeadId(leadId);
+        validateActivityRecordId(leadId);
+        if (isAccountId(leadId)) {
+            return getAccountContext(leadId);
+        }
         Lead leadRecord = [
             SELECT Name, OwnerId, Owner.Name, Loan_Partner__c, Loan_Partner__r.Name, Realtor_Buying_Agent__c,
                 RecordType.DeveloperName, RecordType.Name
@@ -54,7 +59,28 @@ public with sharing class LeadActivityAssistantController {
         }
 
         String defaultAssigneeId = isUserId(leadRecord.OwnerId) ? String.valueOf(leadRecord.OwnerId) : assignees[0].value;
-        return new LeadContext(defaultAssigneeId, assignees, leadRecord.Realtor_Buying_Agent__c != null, isConsumerLead(leadRecord), leadRecord.Name);
+        return new LeadContext(defaultAssigneeId, assignees, leadRecord.Realtor_Buying_Agent__c != null, isConsumerLead(leadRecord), leadRecord.Name, 'Lead');
+    }
+
+    private static LeadContext getAccountContext(Id accountId) {
+        Account accountRecord = [
+            SELECT Name, IsPersonAccount, OwnerId, Owner.Name, Follow_Up_LO__c, Follow_Up_LO__r.Name,
+                Preferred_LO__c, Preferred_LO__r.Name
+            FROM Account
+            WHERE Id = :accountId
+            LIMIT 1
+        ];
+        if (!accountRecord.IsPersonAccount) {
+            throw new AuraHandledException('A Person Account record is required.');
+        }
+
+        List<AssigneeOption> assignees = standardAccountAssignees(accountRecord);
+        if (assignees.isEmpty()) {
+            assignees.add(new AssigneeOption('Me', UserInfo.getUserId()));
+        }
+
+        String defaultAssigneeId = isUserId(accountRecord.OwnerId) ? String.valueOf(accountRecord.OwnerId) : assignees[0].value;
+        return new LeadContext(defaultAssigneeId, assignees, false, false, accountRecord.Name, 'Account');
     }
 
     @AuraEnabled
@@ -72,23 +98,31 @@ public with sharing class LeadActivityAssistantController {
         Integer reminderMinutes,
         String eventSubject
     ) {
-        validateLeadId(leadId);
+        validateActivityRecordId(leadId);
         if (String.isBlank(subject)) {
             throw new AuraHandledException('Subject is required.');
         }
 
         String trimmedSubject = subject.trim();
         Datetime startsAt = parseDateTime(followUpDateTime);
-        Lead leadBeforeSave = [
-            SELECT Status
-            FROM Lead
-            WHERE Id = :leadId
-            LIMIT 1
-        ];
+        Boolean isLeadRecord = isLeadId(leadId);
+        Lead leadBeforeSave;
+        if (isLeadRecord) {
+            leadBeforeSave = [
+                SELECT Status
+                FROM Lead
+                WHERE Id = :leadId
+                LIMIT 1
+            ];
+        }
 
         Task taskRecord = new Task();
         Map<String, Schema.SObjectField> fields = Schema.SObjectType.Task.fields.getMap();
-        taskRecord.WhoId = leadId;
+        if (isLeadRecord) {
+            taskRecord.WhoId = leadId;
+        } else {
+            taskRecord.WhatId = leadId;
+        }
         taskRecord.Subject = taskSubject(trimmedSubject);
         taskRecord.Description = String.isBlank(internalNote) ? null : internalNote.trim();
         taskRecord.ActivityDate = Date.today();
@@ -97,14 +131,20 @@ public with sharing class LeadActivityAssistantController {
         taskRecord.Type = 'Call';
         taskRecord.TaskSubtype = 'Call';
         taskRecord.CallType = 'Outbound';
-        putIfCreateable(taskRecord, fields, 'Lead__c', leadId);
+        if (isLeadRecord) {
+            putIfCreateable(taskRecord, fields, 'Lead__c', leadId);
+        } else {
+            putIfCreateable(taskRecord, fields, 'Account__c', leadId);
+        }
         putIfCreateable(taskRecord, fields, 'Subject__c', restrictedTaskSubjectValue(trimmedSubject));
         putIfCreateable(taskRecord, fields, 'InteractionType__c', 'Call');
         putIfCreateable(taskRecord, fields, 'Direction__c', 'Outbound');
         putIfCreateable(taskRecord, fields, 'Create_Enhanced_Note__c', false);
         putIfCreateable(taskRecord, fields, 'Follow_Up_Date__c', startsAt);
-        putIfFieldExists(taskRecord, fields, 'External_Message_to_Buyer_s_Agent__c', normalizeBuyerAgentMessage(buyerAgentMessage));
-        putIfFieldExists(taskRecord, fields, 'External_Message_to_Buyer_s_Agent_Contin__c', normalizeBuyerAgentMessage(buyerAgentMessageMore));
+        if (isLeadRecord) {
+            putIfFieldExists(taskRecord, fields, 'External_Message_to_Buyer_s_Agent__c', normalizeBuyerAgentMessage(buyerAgentMessage));
+            putIfFieldExists(taskRecord, fields, 'External_Message_to_Buyer_s_Agent_Contin__c', normalizeBuyerAgentMessage(buyerAgentMessageMore));
+        }
 
         try {
             insert taskRecord;
@@ -112,7 +152,9 @@ public with sharing class LeadActivityAssistantController {
             throw new AuraHandledException(friendlyTaskError(ex));
         }
 
-        applyLeadStatusFallback(leadId, leadBeforeSave.Status, trimmedSubject);
+        if (isLeadRecord) {
+            applyLeadStatusFallback(leadId, leadBeforeSave.Status, trimmedSubject);
+        }
         if (startsAt != null) {
             alignFlowCreatedFollowUpEvent(
                 leadId,
@@ -125,7 +167,7 @@ public with sharing class LeadActivityAssistantController {
                 eventSubject
             );
         }
-        createLeadNote(leadId, trimmedSubject, internalNote);
+        createActivityNote(leadId, trimmedSubject, internalNote);
         return new SaveResult(taskRecord.Id, 'Call logged.');
     }
 
@@ -140,7 +182,7 @@ public with sharing class LeadActivityAssistantController {
         Integer reminderMinutes,
         String description
     ) {
-        validateLeadId(leadId);
+        validateActivityRecordId(leadId);
         if (String.isBlank(subject)) {
             throw new AuraHandledException('Event subject is required.');
         }
@@ -155,7 +197,11 @@ public with sharing class LeadActivityAssistantController {
         Id eventOwnerId = resolveEventOwnerId(leadId, ownerId);
         Event eventRecord = new Event();
         Map<String, Schema.SObjectField> fields = Schema.SObjectType.Event.fields.getMap();
-        eventRecord.WhoId = leadId;
+        if (isLeadId(leadId)) {
+            eventRecord.WhoId = leadId;
+        } else {
+            eventRecord.WhatId = leadId;
+        }
         eventRecord.OwnerId = eventOwnerId;
         eventRecord.Subject = subject.trim();
         eventRecord.StartDateTime = startsAt;
@@ -169,14 +215,22 @@ public with sharing class LeadActivityAssistantController {
         }
 
         insert eventRecord;
-        updateLeadAppointmentDateTime(leadId, startsAt);
+        updateAppointmentDateTime(leadId, startsAt);
         return new SaveResult(eventRecord.Id, 'Event scheduled.');
     }
 
-    private static void validateLeadId(Id leadId) {
-        if (leadId == null || String.valueOf(leadId).left(3) != Lead.SObjectType.getDescribe().getKeyPrefix()) {
-            throw new AuraHandledException('A Lead record is required.');
+    private static void validateActivityRecordId(Id recordId) {
+        if (recordId == null || (!isLeadId(recordId) && !isAccountId(recordId))) {
+            throw new AuraHandledException('A Lead or Person Account record is required.');
         }
+    }
+
+    private static Boolean isLeadId(Id recordId) {
+        return recordId != null && recordId.getSObjectType() == Lead.SObjectType;
+    }
+
+    private static Boolean isAccountId(Id recordId) {
+        return recordId != null && recordId.getSObjectType() == Account.SObjectType;
     }
 
     private static Boolean isUserId(Id recordId) {
@@ -214,7 +268,32 @@ public with sharing class LeadActivityAssistantController {
         return assignees;
     }
 
+    private static List<AssigneeOption> standardAccountAssignees(Account accountRecord) {
+        List<AssigneeOption> assignees = new List<AssigneeOption>();
+        Set<Id> assigneeIds = new Set<Id>();
+        if (isUserId(accountRecord.OwnerId)) {
+            assignees.add(new AssigneeOption('Account Owner: ' + accountRecord.Owner.Name, accountRecord.OwnerId));
+            assigneeIds.add(accountRecord.OwnerId);
+        }
+        if (isUserId(accountRecord.Follow_Up_LO__c) && !assigneeIds.contains(accountRecord.Follow_Up_LO__c)) {
+            assignees.add(new AssigneeOption('Follow Up LO: ' + accountRecord.Follow_Up_LO__r.Name, accountRecord.Follow_Up_LO__c));
+            assigneeIds.add(accountRecord.Follow_Up_LO__c);
+        }
+        if (isUserId(accountRecord.Preferred_LO__c) && !assigneeIds.contains(accountRecord.Preferred_LO__c)) {
+            assignees.add(new AssigneeOption('Preferred LO: ' + accountRecord.Preferred_LO__r.Name, accountRecord.Preferred_LO__c));
+            assigneeIds.add(accountRecord.Preferred_LO__c);
+        }
+        User benjaminBondarevsky = benjaminBondarevskyUser();
+        if (benjaminBondarevsky != null && !assigneeIds.contains(benjaminBondarevsky.Id)) {
+            assignees.add(new AssigneeOption(BENJAMIN_BONDAREVSKY_NAME, benjaminBondarevsky.Id));
+        }
+        return assignees;
+    }
+
     private static Id resolveEventOwnerId(Id leadId, Id requestedOwnerId) {
+        if (isAccountId(leadId)) {
+            return resolveAccountEventOwnerId(leadId, requestedOwnerId);
+        }
         Lead leadRecord = [
             SELECT OwnerId, Loan_Partner__c
             FROM Lead
@@ -238,6 +317,37 @@ public with sharing class LeadActivityAssistantController {
         }
         if (isUserId(leadRecord.OwnerId)) {
             return leadRecord.OwnerId;
+        }
+        return UserInfo.getUserId();
+    }
+
+    private static Id resolveAccountEventOwnerId(Id accountId, Id requestedOwnerId) {
+        Account accountRecord = [
+            SELECT OwnerId, Follow_Up_LO__c, Preferred_LO__c
+            FROM Account
+            WHERE Id = :accountId
+            LIMIT 1
+        ];
+
+        Set<Id> validOwnerIds = new Set<Id>();
+        if (isUserId(accountRecord.OwnerId)) {
+            validOwnerIds.add(accountRecord.OwnerId);
+        }
+        if (isUserId(accountRecord.Follow_Up_LO__c)) {
+            validOwnerIds.add(accountRecord.Follow_Up_LO__c);
+        }
+        if (isUserId(accountRecord.Preferred_LO__c)) {
+            validOwnerIds.add(accountRecord.Preferred_LO__c);
+        }
+        User benjaminBondarevsky = benjaminBondarevskyUser();
+        if (benjaminBondarevsky != null) {
+            validOwnerIds.add(benjaminBondarevsky.Id);
+        }
+        if (isUserId(requestedOwnerId) && validOwnerIds.contains(requestedOwnerId)) {
+            return requestedOwnerId;
+        }
+        if (isUserId(accountRecord.OwnerId)) {
+            return accountRecord.OwnerId;
         }
         return UserInfo.getUserId();
     }
@@ -372,14 +482,26 @@ public with sharing class LeadActivityAssistantController {
         String description,
         String subject
     ) {
-        List<Event> events = [
-            SELECT Id, OwnerId, Subject, StartDateTime, EndDateTime, IsReminderSet, ReminderDateTime, Description
-            FROM Event
-            WHERE WhoId = :leadId
-            AND StartDateTime = :startsAt
-            ORDER BY CreatedDate DESC
-            LIMIT 1
-        ];
+        List<Event> events;
+        if (isLeadId(leadId)) {
+            events = [
+                SELECT Id, OwnerId, Subject, StartDateTime, EndDateTime, IsReminderSet, ReminderDateTime, Description
+                FROM Event
+                WHERE WhoId = :leadId
+                AND StartDateTime = :startsAt
+                ORDER BY CreatedDate DESC
+                LIMIT 1
+            ];
+        } else {
+            events = [
+                SELECT Id, OwnerId, Subject, StartDateTime, EndDateTime, IsReminderSet, ReminderDateTime, Description
+                FROM Event
+                WHERE WhatId = :leadId
+                AND StartDateTime = :startsAt
+                ORDER BY CreatedDate DESC
+                LIMIT 1
+            ];
+        }
         if (events.isEmpty()) {
             createEvent(
                 leadId,
@@ -413,6 +535,15 @@ public with sharing class LeadActivityAssistantController {
     private static String followUpEventSubject(Id leadId, String subject) {
         if (!String.isBlank(subject)) {
             return subject.trim();
+        }
+        if (isAccountId(leadId)) {
+            Account accountRecord = [
+                SELECT Name
+                FROM Account
+                WHERE Id = :leadId
+                LIMIT 1
+            ];
+            return 'Follow Up - ' + accountRecord.Name;
         }
         Lead leadRecord = [
             SELECT Name
@@ -465,45 +596,63 @@ public with sharing class LeadActivityAssistantController {
         return Datetime.valueOf(normalized);
     }
 
-    private static void createLeadNote(Id leadId, String subject, String internalNote) {
+    private static void createActivityNote(Id recordId, String subject, String internalNote) {
         if (String.isBlank(internalNote)) {
             return;
         }
         String cleanedNote = internalNote.trim();
         String enhancedBody = '<p>' + cleanedNote.escapeHtml4() + '</p>';
-        if (!enhancedNoteAlreadyExists(leadId, cleanedNote, enhancedBody)) {
-            insert new Enhanced_Note__c(
-                Lead__c = leadId,
+        if (!enhancedNoteAlreadyExists(recordId, cleanedNote, enhancedBody)) {
+            Enhanced_Note__c enhancedNote = new Enhanced_Note__c(
                 Subject__c = taskSubject(subject),
                 Body__c = enhancedBody,
                 Type__c = 'Note',
                 Direction__c = 'Outbound'
             );
+            if (isLeadId(recordId)) {
+                enhancedNote.Lead__c = recordId;
+            } else {
+                enhancedNote.Account__c = recordId;
+            }
+            insert enhancedNote;
         }
 
-        ContentNote leadNote = new ContentNote(
-            Title = 'Lead Call Note - ' + DateTime.now().format('M/d/yyyy h:mm a'),
+        ContentNote noteRecord = new ContentNote(
+            Title = (isLeadId(recordId) ? 'Lead Call Note - ' : 'Account Call Note - ') + DateTime.now().format('M/d/yyyy h:mm a'),
             Content = Blob.valueOf(cleanedNote)
         );
-        insert leadNote;
+        insert noteRecord;
 
         insert new ContentDocumentLink(
-            ContentDocumentId = leadNote.Id,
-            LinkedEntityId = leadId,
+            ContentDocumentId = noteRecord.Id,
+            LinkedEntityId = recordId,
             ShareType = 'V',
             Visibility = 'AllUsers'
         );
     }
 
-    private static Boolean enhancedNoteAlreadyExists(Id leadId, String cleanedNote, String enhancedBody) {
-        for (Enhanced_Note__c existingNote : [
-            SELECT Id, Body__c
-            FROM Enhanced_Note__c
-            WHERE Lead__c = :leadId
-            AND CreatedDate = TODAY
-            ORDER BY CreatedDate DESC
-            LIMIT 20
-        ]) {
+    private static Boolean enhancedNoteAlreadyExists(Id recordId, String cleanedNote, String enhancedBody) {
+        List<Enhanced_Note__c> existingNotes;
+        if (isLeadId(recordId)) {
+            existingNotes = [
+                SELECT Id, Body__c
+                FROM Enhanced_Note__c
+                WHERE Lead__c = :recordId
+                AND CreatedDate = TODAY
+                ORDER BY CreatedDate DESC
+                LIMIT 20
+            ];
+        } else {
+            existingNotes = [
+                SELECT Id, Body__c
+                FROM Enhanced_Note__c
+                WHERE Account__c = :recordId
+                AND CreatedDate = TODAY
+                ORDER BY CreatedDate DESC
+                LIMIT 20
+            ];
+        }
+        for (Enhanced_Note__c existingNote : existingNotes) {
             String existingBody = String.valueOf(existingNote.Body__c);
             if (existingNote.Body__c == enhancedBody || (!String.isBlank(existingBody) && existingBody.contains(cleanedNote))) {
                 return true;
@@ -512,7 +661,11 @@ public with sharing class LeadActivityAssistantController {
         return false;
     }
 
-    private static void updateLeadAppointmentDateTime(Id leadId, Datetime startsAt) {
+    private static void updateAppointmentDateTime(Id recordId, Datetime startsAt) {
+        if (isAccountId(recordId)) {
+            updateAccountAppointmentDateTime(recordId, startsAt);
+            return;
+        }
         Map<String, Schema.SObjectField> fields = Schema.SObjectType.Lead.fields.getMap();
         if (!fields.containsKey('Appointment_Date_Time__c')) {
             return;
@@ -525,11 +678,32 @@ public with sharing class LeadActivityAssistantController {
         Lead leadRecord = [
             SELECT Appointment_Date_Time__c
             FROM Lead
-            WHERE Id = :leadId
+            WHERE Id = :recordId
             LIMIT 1
         ];
         if (leadRecord.Appointment_Date_Time__c == null || leadRecord.Appointment_Date_Time__c < startsAt) {
-            update new Lead(Id = leadId, Appointment_Date_Time__c = startsAt);
+            update new Lead(Id = recordId, Appointment_Date_Time__c = startsAt);
+        }
+    }
+
+    private static void updateAccountAppointmentDateTime(Id accountId, Datetime startsAt) {
+        Map<String, Schema.SObjectField> fields = Schema.SObjectType.Account.fields.getMap();
+        if (!fields.containsKey('Appointment_Date_Time__c')) {
+            return;
+        }
+        Schema.DescribeFieldResult describeResult = fields.get('Appointment_Date_Time__c').getDescribe();
+        if (!describeResult.isUpdateable()) {
+            return;
+        }
+
+        Account accountRecord = [
+            SELECT Appointment_Date_Time__c
+            FROM Account
+            WHERE Id = :accountId
+            LIMIT 1
+        ];
+        if (accountRecord.Appointment_Date_Time__c == null || accountRecord.Appointment_Date_Time__c < startsAt) {
+            update new Account(Id = accountId, Appointment_Date_Time__c = startsAt);
         }
     }
 
