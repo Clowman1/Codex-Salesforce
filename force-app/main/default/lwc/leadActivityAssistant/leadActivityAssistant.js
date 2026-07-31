@@ -19,6 +19,8 @@ export default class LeadActivityAssistant extends LightningElement {
     internalNote = '';
     buyerAgentMessage = '';
     buyerAgentMessageMore = '';
+    callEventSubject = '';
+    callEventSubjectEdited = false;
 
     eventSubject = 'Scheduled Appointment';
     eventStartDate = '';
@@ -32,6 +34,7 @@ export default class LeadActivityAssistant extends LightningElement {
     assigneeOptions = [];
     hasBuyerAgent = false;
     isConsumerLead = true;
+    leadName = '';
     leadContextSignature = '';
 
     _recordId;
@@ -49,6 +52,9 @@ export default class LeadActivityAssistant extends LightningElement {
         this.leadContextSignature = '';
         this.hasBuyerAgent = false;
         this.isConsumerLead = true;
+        this.leadName = '';
+        this.callEventSubject = '';
+        this.callEventSubjectEdited = false;
         if (value) {
             this.loadLeadContext();
         }
@@ -121,6 +127,10 @@ export default class LeadActivityAssistant extends LightningElement {
         return this.eventStartDateTime;
     }
 
+    get defaultCallEventSubject() {
+        return this.leadName ? `Follow Up - ${this.leadName}` : 'Follow Up';
+    }
+
     get eventStartDateTime() {
         return this.eventStartDate && this.eventStartTime ? `${this.eventStartDate}T${this.eventStartTime}` : '';
     }
@@ -186,6 +196,9 @@ export default class LeadActivityAssistant extends LightningElement {
             value = value.slice(0, this.buyerAgentMessageLimit);
             event.currentTarget.value = value;
         }
+        if (field === 'callEventSubject') {
+            this.callEventSubjectEdited = true;
+        }
         this[field] = value;
     }
 
@@ -199,6 +212,10 @@ export default class LeadActivityAssistant extends LightningElement {
             this.defaultEventOwnerId = context?.defaultOwnerId || '';
             this.hasBuyerAgent = Boolean(context?.hasBuyerAgent);
             this.isConsumerLead = context?.isConsumerLead !== false;
+            this.leadName = context?.leadName || '';
+            if (!this.callEventSubjectEdited) {
+                this.callEventSubject = this.defaultCallEventSubject;
+            }
             if (options.preserveSelection && previousOwnerId && assigneeValues.includes(previousOwnerId)) {
                 this.eventOwnerId = previousOwnerId;
             } else {
@@ -241,7 +258,8 @@ export default class LeadActivityAssistant extends LightningElement {
                 ownerId: this.eventOwnerId,
                 durationMinutes: Number(this.eventDuration),
                 reminderSet: this.eventReminderSet,
-                reminderMinutes: Number(this.eventReminder)
+                reminderMinutes: Number(this.eventReminder),
+                eventSubject: this.callEventSubject || this.defaultCallEventSubject
             });
             this.resetCallForm();
             this.successMessage = 'Call logged successfully.';
@@ -304,6 +322,8 @@ export default class LeadActivityAssistant extends LightningElement {
         this.eventDuration = '15';
         this.eventReminderSet = true;
         this.eventReminder = '15';
+        this.callEventSubject = this.defaultCallEventSubject;
+        this.callEventSubjectEdited = false;
         this.buyerAgentMessage = '';
         this.buyerAgentMessageMore = '';
     }
@@ -318,6 +338,7 @@ export default class LeadActivityAssistant extends LightningElement {
             eventDuration: this.eventDuration,
             eventReminderSet: this.eventReminderSetValue,
             eventReminder: this.eventReminder,
+            callEventSubject: this.callEventSubject,
             buyerAgentMessage: this.buyerAgentMessage,
             buyerAgentMessageMore: this.buyerAgentMessageMore
         };

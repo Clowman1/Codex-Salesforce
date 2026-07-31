@@ -50,6 +50,10 @@
                     </select>
                     <small class="hint">Defaults to the Lead Owner. Select the Loan Partner when the event should be assigned there.</small>
                 </label>
+                <label class="field field-full">
+                    <span>Event Subject</span>
+                    <input type="text" value={callEventSubject} data-field="callEventSubject" onchange={handleInput} />
+                </label>
                 <label class="field">
                     <span>Start Date</span>
                     <input type="date" value={eventStartDate} data-field="eventStartDate" onchange={handleInput} />

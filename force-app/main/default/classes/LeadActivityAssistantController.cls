@@ -26,12 +26,14 @@ public with sharing class LeadActivityAssistantController {
         @AuraEnabled public List<AssigneeOption> assignees;
         @AuraEnabled public Boolean hasBuyerAgent;
         @AuraEnabled public Boolean isConsumerLead;
+        @AuraEnabled public String leadName;
 
-        public LeadContext(String defaultOwnerId, List<AssigneeOption> assignees, Boolean hasBuyerAgent, Boolean isConsumerLead) {
+        public LeadContext(String defaultOwnerId, List<AssigneeOption> assignees, Boolean hasBuyerAgent, Boolean isConsumerLead, String leadName) {
             this.defaultOwnerId = defaultOwnerId;
             this.assignees = assignees;
             this.hasBuyerAgent = hasBuyerAgent;
             this.isConsumerLead = isConsumerLead;
+            this.leadName = leadName;
         }
     }
 
@@ -39,7 +41,7 @@ public with sharing class LeadActivityAssistantController {
     public static LeadContext getLeadContext(Id leadId) {
         validateLeadId(leadId);
         Lead leadRecord = [
-            SELECT OwnerId, Owner.Name, Loan_Partner__c, Loan_Partner__r.Name, Realtor_Buying_Agent__c,
+            SELECT Name, OwnerId, Owner.Name, Loan_Partner__c, Loan_Partner__r.Name, Realtor_Buying_Agent__c,
                 RecordType.DeveloperName, RecordType.Name
             FROM Lead
             WHERE Id = :leadId
@@ -52,7 +54,7 @@ public with sharing class LeadActivityAssistantController {
         }
 
         String defaultAssigneeId = isUserId(leadRecord.OwnerId) ? String.valueOf(leadRecord.OwnerId) : assignees[0].value;
-        return new LeadContext(defaultAssigneeId, assignees, leadRecord.Realtor_Buying_Agent__c != null, isConsumerLead(leadRecord));
+        return new LeadContext(defaultAssigneeId, assignees, leadRecord.Realtor_Buying_Agent__c != null, isConsumerLead(leadRecord), leadRecord.Name);
     }
 
     @AuraEnabled
@@ -67,7 +69,8 @@ public with sharing class LeadActivityAssistantController {
         Id ownerId,
         Integer durationMinutes,
         Boolean reminderSet,
-        Integer reminderMinutes
+        Integer reminderMinutes,
+        String eventSubject
     ) {
         validateLeadId(leadId);
         if (String.isBlank(subject)) {
@@ -118,7 +121,8 @@ public with sharing class LeadActivityAssistantController {
                 durationMinutes,
                 reminderSet,
                 reminderMinutes,
-                internalNote
+                internalNote,
+                eventSubject
             );
         }
         createLeadNote(leadId, trimmedSubject, internalNote);
@@ -365,10 +369,11 @@ public with sharing class LeadActivityAssistantController {
         Integer durationMinutes,
         Boolean reminderSet,
         Integer reminderMinutes,
-        String description
+        String description,
+        String subject
     ) {
         List<Event> events = [
-            SELECT Id, OwnerId, StartDateTime, EndDateTime, IsReminderSet, ReminderDateTime, Description
+            SELECT Id, OwnerId, Subject, StartDateTime, EndDateTime, IsReminderSet, ReminderDateTime, Description
             FROM Event
             WHERE WhoId = :leadId
             AND StartDateTime = :startsAt
@@ -378,7 +383,7 @@ public with sharing class LeadActivityAssistantController {
         if (events.isEmpty()) {
             createEvent(
                 leadId,
-                'Scheduled Appointment',
+                followUpEventSubject(leadId, subject),
                 ownerId,
                 String.valueOf(startsAt).replace(' ', 'T').left(16),
                 durationMinutes,
@@ -397,11 +402,25 @@ public with sharing class LeadActivityAssistantController {
         if (ownerId != null) {
             putIfUpdateable(eventRecord, fields, 'OwnerId', ownerId);
         }
+        putIfUpdateable(eventRecord, fields, 'Subject', followUpEventSubject(leadId, subject));
         putIfUpdateable(eventRecord, fields, 'EndDateTime', startsAt.addMinutes(duration));
         putIfUpdateable(eventRecord, fields, 'Description', normalizeText(description));
         putIfUpdateable(eventRecord, fields, 'IsReminderSet', shouldSetReminder);
         putIfUpdateable(eventRecord, fields, 'ReminderDateTime', shouldSetReminder ? startsAt.addMinutes(-reminder) : null);
         update eventRecord;
+    }
+
+    private static String followUpEventSubject(Id leadId, String subject) {
+        if (!String.isBlank(subject)) {
+            return subject.trim();
+        }
+        Lead leadRecord = [
+            SELECT Name
+            FROM Lead
+            WHERE Id = :leadId
+            LIMIT 1
+        ];
+        return 'Follow Up - ' + leadRecord.Name;
     }
 
     private static String friendlyTaskError(DmlException ex) {

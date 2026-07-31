@@ -92,7 +92,8 @@ private class LeadActivityAssistantControllerTest {
             UserInfo.getUserId(),
             30,
             true,
-            15
+            15,
+            'Custom Follow Up - Pilot Lead'
         );
         Test.stopTest();
 
@@ -115,6 +116,14 @@ private class LeadActivityAssistantControllerTest {
         System.assertEquals('Outbound', taskRecord.CallType);
         System.assertNotEquals(null, taskRecord.Follow_Up_Date__c);
         System.assertEquals('Internal note for testing', taskRecord.Description);
+        Event followUpEvent = [
+            SELECT Subject
+            FROM Event
+            WHERE WhoId = :leadRecord.Id
+            AND StartDateTime = :taskRecord.Follow_Up_Date__c
+            LIMIT 1
+        ];
+        System.assertEquals('Custom Follow Up - Pilot Lead', followUpEvent.Subject);
         List<ContentDocumentLink> linkedNotes = [
             SELECT Id
             FROM ContentDocumentLink
@@ -157,7 +166,8 @@ private class LeadActivityAssistantControllerTest {
             UserInfo.getUserId(),
             15,
             true,
-            15
+            15,
+            null
         );
         Test.stopTest();
 
@@ -191,7 +201,8 @@ private class LeadActivityAssistantControllerTest {
             UserInfo.getUserId(),
             15,
             true,
-            15
+            15,
+            null
         );
         Test.stopTest();
 
@@ -225,7 +236,8 @@ private class LeadActivityAssistantControllerTest {
             UserInfo.getUserId(),
             15,
             true,
-            15
+            15,
+            null
         );
         Test.stopTest();
 
@@ -259,7 +271,8 @@ private class LeadActivityAssistantControllerTest {
             UserInfo.getUserId(),
             15,
             true,
-            15
+            15,
+            null
         );
         Test.stopTest();
 
@@ -293,7 +306,8 @@ private class LeadActivityAssistantControllerTest {
             UserInfo.getUserId(),
             15,
             true,
-            15
+            15,
+            null
         );
         Test.stopTest();
 
@@ -336,7 +350,8 @@ private class LeadActivityAssistantControllerTest {
             UserInfo.getUserId(),
             15,
             true,
-            15
+            15,
+            null
         );
         Test.stopTest();
 
@@ -494,7 +509,8 @@ private class LeadActivityAssistantControllerTest {
             UserInfo.getUserId(),
             15,
             true,
-            15
+            15,
+            null
         );
         Test.stopTest();
 
