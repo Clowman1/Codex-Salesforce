@@ -13,6 +13,16 @@
     padding: 18px 20px;
 }
 
+.assistant-account .hero {
+    background:
+        radial-gradient(circle at top right, rgba(245, 167, 66, 0.22), transparent 34%),
+        linear-gradient(135deg, #10213e 0%, #1e3a63 100%);
+}
+
+.assistant-account .eyebrow::after {
+    content: ' • Person Account';
+}
+
 .eyebrow {
     color: #f5a742;
     font-size: 11px;
@@ -183,4 +193,22 @@ textarea {
     background: #e7f6ec;
     border: 1px solid #b8e2c4;
     color: #126b33;
+}
+
+@media (max-width: 720px) {
+    .hero {
+        padding: 15px 16px;
+    }
+
+    h2 {
+        font-size: 19px;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
 }

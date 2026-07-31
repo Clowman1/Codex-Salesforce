@@ -3,6 +3,19 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>accountActivityAssistant</componentName>
+                <identifier>c_accountActivityAssistant</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.IsPersonAccount}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentName>runtime_sales_activities:activityPanel</componentName>
                 <identifier>runtime_sales_activities_activityPanel</identifier>
             </componentInstance>

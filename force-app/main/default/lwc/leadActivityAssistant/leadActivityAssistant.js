@@ -118,9 +118,13 @@ export default class LeadActivityAssistant extends LightningElement {
         return this.isAccountRecord ? 'Account Activity Assistant' : 'Lead Activity Assistant';
     }
 
+    get assistantClass() {
+        return this.isAccountRecord ? 'assistant assistant-account' : 'assistant';
+    }
+
     get assistantSubcopy() {
         return this.isAccountRecord
-            ? 'Log account calls, capture notes, and schedule follow-up events in one place.'
+            ? 'Log calls, capture account notes, and schedule follow-up events without leaving the account.'
             : 'Log lead calls, capture notes, message buyer agents, and schedule follow-up events in one place.';
     }
 
