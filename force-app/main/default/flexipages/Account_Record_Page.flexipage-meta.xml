@@ -19,6 +19,19 @@
                 <identifier>force_highlightsPanel</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>accountRecordHero</componentName>
+                <identifier>c_accountRecordHero</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.IsPersonAccount}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
         <mode>Replace</mode>
         <name>header</name>
         <type>Region</type>
