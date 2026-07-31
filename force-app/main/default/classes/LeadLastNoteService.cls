@@ -24,6 +24,7 @@ public without sharing class LeadLastNoteService {
             FROM Enhanced_Note__c
             WHERE Lead__c IN :leadIds
             AND IsDeleted__c = false
+            AND Type__c = 'Note'
             ORDER BY Lead__c, CreatedDate DESC, Id DESC
         ]) {
             if (!latestByLeadId.containsKey(note.Lead__c)) {

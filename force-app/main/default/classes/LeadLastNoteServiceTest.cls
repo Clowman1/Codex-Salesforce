@@ -28,6 +28,18 @@ private class LeadLastNoteServiceTest {
         lead = [SELECT Last_Note__c FROM Lead WHERE Id = :lead.Id];
         System.assert(lead.Last_Note__c.contains('Newest enhanced note'));
 
+        Enhanced_Note__c newestCall = new Enhanced_Note__c(
+            Lead__c = lead.Id,
+            Subject__c = 'Newest call',
+            Body__c = '<p>Newest call should stay off Last Note</p>',
+            Type__c = 'Call'
+        );
+        insert newestCall;
+
+        lead = [SELECT Last_Note__c FROM Lead WHERE Id = :lead.Id];
+        System.assert(lead.Last_Note__c.contains('Newest enhanced note'));
+        System.assert(!lead.Last_Note__c.contains('Newest call should stay off Last Note'));
+
         newestNote.IsDeleted__c = true;
         update newestNote;
 
