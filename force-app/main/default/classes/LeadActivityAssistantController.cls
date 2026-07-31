@@ -79,8 +79,7 @@ public with sharing class LeadActivityAssistantController {
             assignees.add(new AssigneeOption('Me', UserInfo.getUserId()));
         }
 
-        String defaultAssigneeId = isUserId(accountRecord.OwnerId) ? String.valueOf(accountRecord.OwnerId) : assignees[0].value;
-        return new LeadContext(defaultAssigneeId, assignees, false, false, accountRecord.Name, 'Account');
+        return new LeadContext(String.valueOf(UserInfo.getUserId()), assignees, false, false, accountRecord.Name, 'Account');
     }
 
     @AuraEnabled
@@ -270,8 +269,9 @@ public with sharing class LeadActivityAssistantController {
 
     private static List<AssigneeOption> standardAccountAssignees(Account accountRecord) {
         List<AssigneeOption> assignees = new List<AssigneeOption>();
-        Set<Id> assigneeIds = new Set<Id>();
-        if (isUserId(accountRecord.OwnerId)) {
+        Set<Id> assigneeIds = new Set<Id>{ UserInfo.getUserId() };
+        assignees.add(new AssigneeOption('Me', UserInfo.getUserId()));
+        if (isUserId(accountRecord.OwnerId) && !assigneeIds.contains(accountRecord.OwnerId)) {
             assignees.add(new AssigneeOption('Account Owner: ' + accountRecord.Owner.Name, accountRecord.OwnerId));
             assigneeIds.add(accountRecord.OwnerId);
         }
@@ -330,6 +330,7 @@ public with sharing class LeadActivityAssistantController {
         ];
 
         Set<Id> validOwnerIds = new Set<Id>();
+        validOwnerIds.add(UserInfo.getUserId());
         if (isUserId(accountRecord.OwnerId)) {
             validOwnerIds.add(accountRecord.OwnerId);
         }
@@ -345,9 +346,6 @@ public with sharing class LeadActivityAssistantController {
         }
         if (isUserId(requestedOwnerId) && validOwnerIds.contains(requestedOwnerId)) {
             return requestedOwnerId;
-        }
-        if (isUserId(accountRecord.OwnerId)) {
-            return accountRecord.OwnerId;
         }
         return UserInfo.getUserId();
     }

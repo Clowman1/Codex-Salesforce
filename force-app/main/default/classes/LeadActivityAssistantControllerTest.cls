@@ -21,7 +21,8 @@ private class LeadActivityAssistantControllerTest {
 
     @IsTest
     static void getLeadContextReturnsAccountContextForPersonAccount() {
-        Account accountRecord = createPersonAccount(UserInfo.getUserId(), 'Account Context');
+        User accountOwner = createTestUser('acctctx', 'acctctx@example.com');
+        Account accountRecord = createPersonAccount(accountOwner.Id, 'Account Context');
 
         Test.startTest();
         LeadActivityAssistantController.LeadContext context = LeadActivityAssistantController.getLeadContext(accountRecord.Id);
@@ -32,7 +33,13 @@ private class LeadActivityAssistantControllerTest {
         System.assertEquals(false, context.hasBuyerAgent);
         System.assertEquals(false, context.isConsumerLead);
         System.assertEquals(String.valueOf(UserInfo.getUserId()), context.defaultOwnerId);
-        System.assert(!context.assignees.isEmpty(), 'Expected at least one account event assignee option.');
+        System.assertEquals('Me', context.assignees[0].label, 'Expected Account event assignment to default to the logging user.');
+        Set<String> assigneeIds = new Set<String>();
+        for (LeadActivityAssistantController.AssigneeOption option : context.assignees) {
+            assigneeIds.add(option.value);
+        }
+        System.assert(assigneeIds.contains(String.valueOf(UserInfo.getUserId())), 'Expected the logging user to be assignable.');
+        System.assert(assigneeIds.contains(String.valueOf(accountOwner.Id)), 'Expected the Account Owner to remain available as an optional assignee.');
     }
 
     @IsTest
@@ -537,13 +544,14 @@ private class LeadActivityAssistantControllerTest {
 
     @IsTest
     static void createEventCreatesAccountScheduledAppointment() {
-        Account accountRecord = createPersonAccount(UserInfo.getUserId(), 'Account Event');
+        User accountOwner = createTestUser('acctevt', 'acctevt@example.com');
+        Account accountRecord = createPersonAccount(accountOwner.Id, 'Account Event');
 
         Test.startTest();
         LeadActivityAssistantController.SaveResult result = LeadActivityAssistantController.createEvent(
             accountRecord.Id,
             'Scheduled Appointment',
-            UserInfo.getUserId(),
+            null,
             '2026-07-01T10:00',
             15,
             true,
@@ -553,11 +561,12 @@ private class LeadActivityAssistantControllerTest {
         Test.stopTest();
 
         Event eventRecord = [
-            SELECT WhatId, Subject, StartDateTime, EndDateTime, IsReminderSet, ReminderDateTime
+            SELECT WhatId, OwnerId, Subject, StartDateTime, EndDateTime, IsReminderSet, ReminderDateTime
             FROM Event
             WHERE Id = :result.recordId
         ];
         System.assertEquals(accountRecord.Id, eventRecord.WhatId);
+        System.assertEquals(UserInfo.getUserId(), eventRecord.OwnerId, 'Expected Account events to default to the logging user, not the Account Owner.');
         System.assertEquals('Scheduled Appointment', eventRecord.Subject);
         Long durationMs = eventRecord.EndDateTime.getTime() - eventRecord.StartDateTime.getTime();
         System.assertEquals(15, Integer.valueOf(durationMs / (1000 * 60)));
