@@ -35,6 +35,7 @@ const OBJECT_OPTIONS = [
 const DASHBOARD_REFRESH_INTERVAL_MS = 300000;
 const DASHBOARD_FOCUS_REFRESH_STALE_MS = 120000;
 const TAB_ORDER_STORAGE_PREFIX = 'reach-pcc-tab-order';
+const MASTER_GROUP_ORDER_STORAGE_PREFIX = 'reach-pcc-master-group-order';
 const ADAM_STEPHENS_USER_ID = '005f2000009BuuaAAC';
 
 export default class PipelineCommandCenter extends NavigationMixin(LightningElement) {
@@ -157,6 +158,8 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
     isRefreshingDashboard = false;
     lastDashboardRefreshAt = 0;
     draggedTabKey;
+    draggedMasterGroupKey;
+    draggedMasterGroupType;
     pastClientLoadingTabs = new Set();
     nickleyRealtorTabLoading = false;
     selectedBenMasterGroupKey = '';
@@ -693,6 +696,59 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
 
     handleTabDragEnd() {
         this.draggedTabKey = undefined;
+    }
+
+    handleMasterGroupDragStart(event) {
+        this.draggedMasterGroupKey = event.currentTarget.dataset.key;
+        this.draggedMasterGroupType = event.currentTarget.dataset.masterType;
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', this.draggedMasterGroupKey);
+    }
+
+    handleMasterGroupDragOver(event) {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+    }
+
+    handleMasterGroupDrop(event) {
+        event.preventDefault();
+        const droppedGroupKey = event.currentTarget.dataset.key;
+        const droppedGroupType = event.currentTarget.dataset.masterType;
+        const draggedGroupKey = this.draggedMasterGroupKey || event.dataTransfer.getData('text/plain');
+        const draggedGroupType = this.draggedMasterGroupType;
+        if (
+            !draggedGroupKey ||
+            !droppedGroupKey ||
+            draggedGroupKey === droppedGroupKey ||
+            !draggedGroupType ||
+            draggedGroupType !== droppedGroupType
+        ) {
+            this.clearDraggedMasterGroup();
+            return;
+        }
+
+        const groups = droppedGroupType === 'ben' ? [...this.benMasterGroups] : [...this.joeyMasterGroups];
+        const fromIndex = groups.findIndex((group) => group.key === draggedGroupKey);
+        const toIndex = groups.findIndex((group) => group.key === droppedGroupKey);
+        if (fromIndex < 0 || toIndex < 0) {
+            this.clearDraggedMasterGroup();
+            return;
+        }
+
+        const [movedGroup] = groups.splice(fromIndex, 1);
+        groups.splice(toIndex, 0, movedGroup);
+        this.saveMasterGroupOrder(droppedGroupType, groups);
+        this.pipelineTabs = this.decorateTabs(this.pipelineTabs);
+        this.clearDraggedMasterGroup();
+    }
+
+    handleMasterGroupDragEnd() {
+        this.clearDraggedMasterGroup();
+    }
+
+    clearDraggedMasterGroup() {
+        this.draggedMasterGroupKey = undefined;
+        this.draggedMasterGroupType = undefined;
     }
 
     handleWindowFocus() {
@@ -1469,6 +1525,44 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
         return `${TAB_ORDER_STORAGE_PREFIX}-${this.currentUserId || 'unknown'}`;
     }
 
+    applySavedMasterGroupOrder(masterType, groups) {
+        const savedOrder = this.savedMasterGroupOrder(masterType);
+        if (!savedOrder.length) {
+            return groups;
+        }
+        const groupsByKey = new Map(groups.map((group) => [group.key, group]));
+        const orderedGroups = savedOrder
+            .map((key) => groupsByKey.get(key))
+            .filter(Boolean);
+        const remainingGroups = groups.filter((group) => !savedOrder.includes(group.key));
+        return [...orderedGroups, ...remainingGroups];
+    }
+
+    savedMasterGroupOrder(masterType) {
+        try {
+            const rawValue = window.localStorage.getItem(this.masterGroupOrderStorageKey(masterType));
+            const parsedValue = rawValue ? JSON.parse(rawValue) : [];
+            return Array.isArray(parsedValue) ? parsedValue : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    saveMasterGroupOrder(masterType, groups) {
+        try {
+            window.localStorage.setItem(
+                this.masterGroupOrderStorageKey(masterType),
+                JSON.stringify((groups || []).map((group) => group.key))
+            );
+        } catch (error) {
+            // Local storage can be unavailable in restricted browser contexts.
+        }
+    }
+
+    masterGroupOrderStorageKey(masterType) {
+        return `${MASTER_GROUP_ORDER_STORAGE_PREFIX}-${masterType}-${this.currentUserId || 'unknown'}`;
+    }
+
     hasEaseLink(row) {
         return row?.lenderName === 'UWM' && !!row?.easeLink;
     }
@@ -1747,7 +1841,7 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
     }
 
     get benMasterGroups() {
-        return [
+        return this.applySavedMasterGroupOrder('ben', [
             this.buildBenMasterGroup(
                 'pastClients',
                 'Past Clients',
@@ -1772,7 +1866,7 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
                 'Webinar lead follow-up views.',
                 'pcc-ben-master-webinar'
             )
-        ];
+        ]);
     }
 
     buildBenMasterGroup(key, label, subtitle, paletteClass) {
@@ -1818,19 +1912,19 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
 
     get joeyMasterGroups() {
         if (this.usesMeganMasterGroups) {
-            return [
+            return this.applySavedMasterGroupOrder('joey', [
                 this.buildJoeyMasterGroup('myLeads', 'My Leads', 'pcc-joey-master-joe'),
                 this.buildJoeyMasterGroup('brandonLeads', 'Brandon\'s Leads', 'pcc-joey-master-zach'),
                 this.buildJoeyMasterGroup('zachLeads', 'Zach\'s Leads', 'pcc-joey-master-rhett'),
                 this.buildJoeyMasterGroup('preApprovalFollowUps', 'Pre-Approval Follow Ups', 'pcc-joey-master-berkeley')
-            ].filter((group) => group.hasTabs);
+            ].filter((group) => group.hasTabs));
         }
-        return [
+        return this.applySavedMasterGroupOrder('joey', [
             this.buildJoeyMasterGroup('joeOlmsted', 'Joe Olmsted', 'pcc-joey-master-joe'),
             this.buildJoeyMasterGroup('zachFritz', 'Zach Fritz', 'pcc-joey-master-zach'),
             this.buildJoeyMasterGroup('berkeleyPeterson', 'Berkeley Peterson', 'pcc-joey-master-berkeley'),
             this.buildJoeyMasterGroup('rhettDelaney', 'Rhett Delaney', 'pcc-joey-master-rhett')
-        ].filter((group) => group.hasTabs);
+        ].filter((group) => group.hasTabs));
     }
 
     buildJoeyMasterGroup(key, label, paletteClass) {

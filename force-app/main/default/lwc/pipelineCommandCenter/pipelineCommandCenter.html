@@ -74,6 +74,12 @@
                                     key={group.key}
                                     class={group.className}
                                     data-key={group.key}
+                                    data-master-type="ben"
+                                    draggable="true"
+                                    ondragstart={handleMasterGroupDragStart}
+                                    ondragover={handleMasterGroupDragOver}
+                                    ondrop={handleMasterGroupDrop}
+                                    ondragend={handleMasterGroupDragEnd}
                                     onclick={selectBenMasterGroup}
                                     type="button">
                                     <span>{group.label}</span>
@@ -89,6 +95,12 @@
                                     key={group.key}
                                     class={group.className}
                                     data-key={group.key}
+                                    data-master-type="joey"
+                                    draggable="true"
+                                    ondragstart={handleMasterGroupDragStart}
+                                    ondragover={handleMasterGroupDragOver}
+                                    ondrop={handleMasterGroupDrop}
+                                    ondragend={handleMasterGroupDragEnd}
                                     onclick={selectJoeyMasterGroup}
                                     type="button">
                                     <span>{group.label}</span>

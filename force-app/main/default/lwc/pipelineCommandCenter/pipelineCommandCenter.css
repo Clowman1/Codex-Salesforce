@@ -542,6 +542,10 @@ button.pcc-stat-card {
     transform: translateY(-1px);
 }
 
+.pcc-ben-master-tab:active {
+    cursor: grabbing;
+}
+
 .pcc-ben-master-past {
     background: #e8f2ff;
 }
