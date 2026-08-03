@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Email_To_New_Lead_Owner</name>
+        <label>Send Email To New Lead Owner</label>
+        <locationX>176</locationX>
+        <locationY>539</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <connector>
+            <targetReference>Mark_Email_Processed</targetReference>
+        </connector>
+        <faultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Mark_Email_Processed</targetReference>
+        </faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailAddressesArray</name>
+            <value>
+                <elementReference>recipientEmails</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderType</name>
+            <value>
+                <stringValue>OrgWideEmailAddress</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <stringValue>reachus@reachhomeloans.com</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>EmailSubject</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>EmailBody</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>sendRichBody</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
+        <nameSegment>emailSimple</nameSegment>
+    </actionCalls>
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Mark_Email_Processed</name>
+        <label>Mark Email Processed</label>
+        <locationX>176</locationX>
+        <locationY>647</locationY>
+        <assignmentItems>
+            <assignToReference>processingStatus</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Email processed</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Populate_Recipient_Email</name>
+        <label>Populate Recipient Email</label>
+        <locationX>176</locationX>
+        <locationY>431</locationY>
+        <assignmentItems>
+            <assignToReference>recipientEmails</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Get_New_Owner_User.Email</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Send_Email_To_New_Lead_Owner</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>New_Owner_User_Found</name>
+        <label>New Owner User Found</label>
+        <locationX>176</locationX>
+        <locationY>323</locationY>
+        <defaultConnector>
+            <targetReference>Mark_Email_Processed</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Active User Email</defaultConnectorLabel>
+        <rules>
+            <name>User_Found</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_New_Owner_User.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Populate_Recipient_Email</targetReference>
+            </connector>
+            <label>User Found</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>EmailSubject</name>
+        <dataType>String</dataType>
+        <expression>&quot;Salesforce Lead transferred to you - &quot; &amp; {!LeadDisplayName}</expression>
+    </formulas>
+    <formulas>
+        <name>LeadDisplayName</name>
+        <dataType>String</dataType>
+        <expression>IF(
+ISBLANK({!$Record.FirstName}),
+{!$Record.LastName},
+{!$Record.FirstName} &amp; &quot; &quot; &amp; {!$Record.LastName}
+)</expression>
+    </formulas>
+    <formulas>
+        <name>LeadRecordUrl</name>
+        <dataType>String</dataType>
+        <expression>&quot;https://reachhomeloans.lightning.force.com/lightning/r/Lead/&quot; &amp; {!$Record.Id} &amp; &quot;/view&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>TransferActorName</name>
+        <dataType>String</dataType>
+        <expression>{!$User.FirstName} &amp; &quot; &quot; &amp; {!$User.LastName}</expression>
+    </formulas>
+    <interviewLabel>Lead Owner Transfer Email Notification {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead Owner Transfer Email Notification</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_New_Owner_User</name>
+        <label>Get New Owner User</label>
+        <locationX>176</locationX>
+        <locationY>215</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>New_Owner_User_Found</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.OwnerId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Email</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>IsActive</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_New_Owner_User</targetReference>
+        </connector>
+        <filterFormula>AND(
+ISCHANGED({!$Record.OwnerId}),
+BEGINS({!$Record.OwnerId}, &quot;005&quot;),
+BEGINS({!$Record__Prior.OwnerId}, &quot;005&quot;),
+{!$Record.OwnerId} &lt;&gt; {!$Record__Prior.OwnerId}
+)</filterFormula>
+        <object>Lead</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <name>EmailBody</name>
+        <isViewedAsPlainText>false</isViewedAsPlainText>
+        <text>&lt;p&gt;A Salesforce Lead has been transferred to you by {!TransferActorName}.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;{!LeadRecordUrl}&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Open {!LeadDisplayName} in Salesforce&lt;/a&gt;&lt;/p&gt;</text>
+    </textTemplates>
+    <triggerOrder>1096</triggerOrder>
+    <variables>
+        <name>processingStatus</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>recipientEmails</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>
