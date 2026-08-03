@@ -211,6 +211,7 @@ public with sharing class PipelineCommandCenterController {
         'Biz Dev - Wemert',
         'Biz Dev - Hsieh'
     };
+    private static final String MANAGEMENT_LEAD_BIZ_DEV_VALUE = 'Biz Dev - Reach';
     private static final List<String> HOUSE_BIZ_DEV_VALUES = new List<String>{
         'Biz Dev - Reach',
         'Biz Dev - Bondarevsky',
@@ -2706,6 +2707,31 @@ public with sharing class PipelineCommandCenterController {
         return rows;
     }
 
+    private static List<PipelineRow> buildAssignedLeadsForBizDev(Set<Id> leadScopeUserIds, Integer rowLimit, Date minimumCreatedDate, String bizDevValue) {
+        List<PipelineRow> rows = new List<PipelineRow>();
+        if (String.isBlank(bizDevValue)) {
+            return rows;
+        }
+
+        for (Lead leadRecord : [
+            SELECT Id, Name, Status, CreatedDate, LastActivityDate, LeadSource, Phone, Email,
+                Appointment_Date_Time__c, Loan_Details__c, Loan_Amount__c, Loan_Purpose__c,
+                Realtor_Buying_Agent__r.Name, Owner.Name
+            FROM Lead
+            WHERE IsConverted = false
+            AND RecordType.DeveloperName IN :CONSUMER_LEAD_RECORD_TYPES
+            AND (OwnerId IN :leadScopeUserIds OR Loan_Partner__c IN :leadScopeUserIds)
+            AND Status IN :ACTIVE_LEAD_STATUSES
+            AND Biz_Dev__c = :bizDevValue
+            AND CreatedDate >= :minimumCreatedDate
+            ORDER BY LastModifiedDate DESC
+            LIMIT :rowLimit
+        ]) {
+            rows.add(new PipelineRow(leadRecord));
+        }
+        return rows;
+    }
+
     private static List<PipelineRow> buildLeadRowsByOwnerScope(
         Set<Id> ownerIds,
         Id ownerId,
@@ -2921,6 +2947,40 @@ public with sharing class PipelineCommandCenterController {
             AND RecordType.DeveloperName IN :CONSUMER_LEAD_RECORD_TYPES
             AND (OwnerId IN :leadScopeUserIds OR Loan_Partner__c IN :leadScopeUserIds)
             AND Status = 'New'
+            AND CreatedDate >= :minimumCreatedDate
+            ORDER BY CreatedDate DESC
+            LIMIT 500
+        ];
+        Set<Id> leadIdsWithFutureEvents = getLeadIdsWithFutureEvents(new Map<Id, Lead>(candidateLeads).keySet());
+
+        for (Lead leadRecord : candidateLeads) {
+            if (leadIdsWithFutureEvents.contains(leadRecord.Id)) {
+                continue;
+            }
+            rows.add(new PipelineRow(leadRecord));
+            if (rows.size() == rowLimit) {
+                break;
+            }
+        }
+        return rows;
+    }
+
+    private static List<PipelineRow> buildNewLeadAlertsForBizDev(Set<Id> leadScopeUserIds, Integer rowLimit, Date minimumCreatedDate, String bizDevValue) {
+        List<PipelineRow> rows = new List<PipelineRow>();
+        if (String.isBlank(bizDevValue)) {
+            return rows;
+        }
+
+        List<Lead> candidateLeads = [
+            SELECT Id, Name, Status, CreatedDate, LastActivityDate, LeadSource, Phone, Email,
+                Appointment_Date_Time__c, Loan_Details__c, Loan_Amount__c, Loan_Purpose__c,
+                Realtor_Buying_Agent__r.Name, Owner.Name
+            FROM Lead
+            WHERE IsConverted = false
+            AND RecordType.DeveloperName IN :CONSUMER_LEAD_RECORD_TYPES
+            AND (OwnerId IN :leadScopeUserIds OR Loan_Partner__c IN :leadScopeUserIds)
+            AND Status = 'New'
+            AND Biz_Dev__c = :bizDevValue
             AND CreatedDate >= :minimumCreatedDate
             ORDER BY CreatedDate DESC
             LIMIT 500
@@ -3266,28 +3326,28 @@ public with sharing class PipelineCommandCenterController {
                 'All LO Active Leads',
                 'Current-year active leads across all active Loan Officers in contact, application, document, and contract statuses.',
                 'Lead',
-                buildAssignedLeads(allLoanOfficerIds, managementLeadRowLimit, managementLeadCreatedCutoff)
+                buildAssignedLeadsForBizDev(allLoanOfficerIds, managementLeadRowLimit, managementLeadCreatedCutoff, MANAGEMENT_LEAD_BIZ_DEV_VALUE)
             ),
             new PipelineTab(
                 'allLoanOfficerNewLeadAlerts',
                 'New Leads Needing Contact',
                 'Current-year New status leads across all active Loan Officers.',
                 'Lead',
-                buildNewLeadAlerts(allLoanOfficerIds, managementLeadRowLimit, managementLeadCreatedCutoff)
+                buildNewLeadAlertsForBizDev(allLoanOfficerIds, managementLeadRowLimit, managementLeadCreatedCutoff, MANAGEMENT_LEAD_BIZ_DEV_VALUE)
             ),
             new PipelineTab(
                 'allLoanOfficerAttentionLeads',
                 'Leads Needing Attention',
                 'Purchase leads across all active Loan Officers matching the Lead Appointment Report attention criteria.',
                 'Lead',
-                buildLeadsNeedingAttention(allLoanOfficerIds, managementLeadRowLimit)
+                buildLeadsNeedingAttentionForBizDev(allLoanOfficerIds, managementLeadRowLimit, MANAGEMENT_LEAD_BIZ_DEV_VALUE)
             ),
             new PipelineTab(
                 'allLoanOfficerStagnantLeads',
                 'Stagnant Leads',
                 'Current-year open leads across all active Loan Officers with no activity in the last 7 days.',
                 'Lead',
-                buildStagnantLeads(allLoanOfficerIds, managementLeadRowLimit, managementLeadCreatedCutoff)
+                buildStagnantLeadsForBizDev(allLoanOfficerIds, managementLeadRowLimit, managementLeadCreatedCutoff, MANAGEMENT_LEAD_BIZ_DEV_VALUE)
             )
         };
     }
@@ -7180,6 +7240,54 @@ public with sharing class PipelineCommandCenterController {
         return rows;
     }
 
+    private static List<PipelineRow> buildStagnantLeadsForBizDev(Set<Id> leadScopeUserIds, Integer rowLimit, Date minimumCreatedDate, String bizDevValue) {
+        List<PipelineRow> rows = new List<PipelineRow>();
+        if (String.isBlank(bizDevValue)) {
+            return rows;
+        }
+
+        Date staleDate = Date.today().addDays(-7);
+        DateTime staleCreatedDateTime = System.now().addDays(-7);
+        for (Lead leadRecord : [
+            SELECT Id, Name, Status, CreatedDate, LastActivityDate, LeadSource, Phone, Email,
+                Appointment_Date_Time__c, Loan_Details__c, Loan_Amount__c, Loan_Purpose__c,
+                Realtor_Buying_Agent__r.Name, Owner.Name
+            FROM Lead
+            WHERE IsConverted = false
+            AND RecordType.DeveloperName IN :CONSUMER_LEAD_RECORD_TYPES
+            AND Status NOT IN (
+                'Closed',
+                'Closed - Converted',
+                'Converted',
+                'Dead',
+                'Duplicate',
+                'Lost',
+                'Withdrawn',
+                'Submitted For Disclosures',
+                'Submitted for Disclosures',
+                'Nurtured',
+                'Nurturing',
+                'Pre-Approved',
+                'Pre-Approval',
+                'Nurture-Preapproval',
+                'Nurture - Preapproval',
+                'Nurture-Pre-Approval',
+                '30 Day + Follow Up',
+                'Credit Repair'
+            )
+            AND (OwnerId IN :leadScopeUserIds OR Loan_Partner__c IN :leadScopeUserIds)
+            AND Biz_Dev__c = :bizDevValue
+            AND CreatedDate >= :minimumCreatedDate
+            AND CreatedDate <= :staleCreatedDateTime
+            AND (LastActivityDate = null OR LastActivityDate <= :staleDate)
+            ORDER BY LastActivityDate ASC NULLS FIRST, LastModifiedDate ASC
+            LIMIT :rowLimit
+        ]) {
+            rows.add(new PipelineRow(leadRecord, leadRecord.LastActivityDate, null));
+        }
+        return rows;
+    }
+
     private static List<PipelineRow> buildStagnantPreApprovals() {
         return buildStagnantPreApprovals(getScopedLeadUserIds());
     }
@@ -7280,6 +7388,62 @@ public with sharing class PipelineCommandCenterController {
             AND Status IN :ATTENTION_LEAD_STATUSES
             AND (Appointment_Date_Time__c = null OR Appointment_Date_Time__c < :startOfToday)
             AND Biz_Dev__c IN :ATTENTION_BIZ_DEV_VALUES
+            AND (OwnerId IN :leadScopeUserIds OR Loan_Partner__c IN :leadScopeUserIds)
+            ORDER BY Appointment_Date_Time__c ASC NULLS FIRST, LastModifiedDate ASC
+            LIMIT 100
+        ]) {
+            if (!shouldIncludeAttentionLead(leadRecord)) {
+                continue;
+            }
+            candidateLeads.add(leadRecord);
+            if (candidateLeads.size() == rowLimit) {
+                break;
+            }
+        }
+
+        Map<Id, Event> latestEventsByLeadId = getLatestEventsByLeadId(new Map<Id, Lead>(candidateLeads).keySet());
+        for (Lead leadRecord : candidateLeads) {
+            Event latestEvent = latestEventsByLeadId.get(leadRecord.Id);
+            Date latestEventDate = latestEvent == null ? null : latestEvent.ActivityDate;
+            DateTime latestEventDateTime = latestEvent == null
+                ? null
+                : latestEvent.ActivityDateTime == null ? latestEvent.StartDateTime : latestEvent.ActivityDateTime;
+            rows.add(new PipelineRow(
+                leadRecord,
+                latestEventDate,
+                latestEventDateTime,
+                latestEvent == null ? null : latestEvent.Subject
+            ));
+        }
+        return rows;
+    }
+
+    private static List<PipelineRow> buildLeadsNeedingAttentionForBizDev(Set<Id> leadScopeUserIds, Integer rowLimit, String bizDevValue) {
+        List<PipelineRow> rows = new List<PipelineRow>();
+        if (String.isBlank(bizDevValue)) {
+            return rows;
+        }
+
+        DateTime startOfToday = DateTime.newInstance(Date.today(), Time.newInstance(0, 0, 0, 0));
+        List<Lead> candidateLeads = new List<Lead>();
+        for (Lead leadRecord : [
+            SELECT Id,
+                Name,
+                Status,
+                CreatedDate,
+                Appointment_Date_Time__c,
+                Last_Call_Date__c,
+                Last_Call_Attempt_RingCentral__c,
+                Last_SMS_Attempt_RingCentral__c,
+                Loan_Amount__c,
+                Loan_Purpose__c,
+                Owner.Name
+            FROM Lead
+            WHERE IsConverted = false
+            AND RecordType.DeveloperName IN :CONSUMER_LEAD_RECORD_TYPES
+            AND Status IN :ATTENTION_LEAD_STATUSES
+            AND (Appointment_Date_Time__c = null OR Appointment_Date_Time__c < :startOfToday)
+            AND Biz_Dev__c = :bizDevValue
             AND (OwnerId IN :leadScopeUserIds OR Loan_Partner__c IN :leadScopeUserIds)
             ORDER BY Appointment_Date_Time__c ASC NULLS FIRST, LastModifiedDate ASC
             LIMIT 100
