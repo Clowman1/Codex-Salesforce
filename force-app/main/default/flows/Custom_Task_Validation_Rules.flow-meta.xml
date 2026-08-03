@@ -141,19 +141,7 @@
         <connector>
             <targetReference>Is_WhoId_a_Lead</targetReference>
         </connector>
-        <filterFormula>AND(
-ISBLANK({!$Record.External_Message_to_Buyer_s_Agent__c} ),
-OR(
-{!$Record.Subject} = &quot;Call - No Contact&quot;,
-{!$Record.Subject} = &quot;Call - Contacted/Call Back&quot;,
-{!$Record.Subject} = &quot;Call - Working&quot;,
-{!$Record.Subject} = &quot;Call - Application&quot;,
-{!$Record.Subject} = &quot;Call - Docs Requested&quot;,
-{!$Record.Subject} = &quot;Call - Docs Received&quot;,
-{!$Record.Subject} = &quot;Call - Nurturing&quot;,
-{!$Record.Subject} = &quot;Document follow up&quot;
-)
-)</filterFormula>
+        <filterFormula>false</filterFormula>
         <object>Task</object>
         <recordTriggerType>Create</recordTriggerType>
         <triggerType>RecordBeforeSave</triggerType>
