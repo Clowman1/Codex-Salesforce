@@ -75,6 +75,40 @@ h1 {
     padding: 7px 11px;
 }
 
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.hero-action {
+    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 999px;
+    box-shadow: 0 8px 18px rgba(5, 15, 33, 0.18);
+    color: #142342;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 900;
+    line-height: 1;
+    padding: 9px 15px;
+    transition: background 120ms ease, border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.hero-action:hover,
+.hero-action:focus {
+    background: #ffb24a;
+    border-color: #ff9824;
+    box-shadow: 0 10px 20px rgba(255, 145, 31, 0.25);
+    transform: translateY(-1px);
+}
+
+.hero-action:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.78);
+    outline-offset: 2px;
+}
+
 .info-panel {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.18);

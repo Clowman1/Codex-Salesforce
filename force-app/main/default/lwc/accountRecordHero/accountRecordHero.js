@@ -1,4 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import { getFieldValue, getRecord } from 'lightning/uiRecordApi';
 
 const NAME_FIELD = 'Account.Name';
@@ -17,7 +18,7 @@ const OPTIONAL_FIELDS = [
     'Account.Last_RC_SMS__c'
 ];
 
-export default class AccountRecordHero extends LightningElement {
+export default class AccountRecordHero extends NavigationMixin(LightningElement) {
     @api recordId;
     accountRecord;
     error;
@@ -71,6 +72,18 @@ export default class AccountRecordHero extends LightningElement {
 
     get lastSms() {
         return this.fieldValue('Account.Last_RC_SMS__c') || 'None logged';
+    }
+
+    handleCreateLead() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__quickAction',
+            attributes: {
+                apiName: 'Account.Create_Lead'
+            },
+            state: {
+                recordId: this.recordId
+            }
+        });
     }
 
     fieldValue(fieldName) {
