@@ -7568,7 +7568,22 @@ public with sharing class PipelineCommandCenterController {
         Id currentUserId = UserInfo.getUserId();
         Boolean assistantScopedView = currentUserUsesLoanOfficerAssistantPipeline();
         Map<Id, Lead> leadsById = new Map<Id, Lead>([
-            SELECT Id, Name, Status, CreatedDate, Loan_Amount__c, Loan_Purpose__c, Owner.Name
+            SELECT Id,
+                Name,
+                Status,
+                CreatedDate,
+                LastActivityDate,
+                Phone,
+                Email,
+                LeadSource,
+                Appointment_Date_Time__c,
+                Loan_Details__c,
+                Loan_Amount__c,
+                Loan_Purpose__c,
+                Biz_Dev__c,
+                Realtor_Buying_Agent__r.Name,
+                Loan_Partner__r.Name,
+                Owner.Name
             FROM Lead
             WHERE IsConverted = false
             AND (OwnerId IN :leadScopeUserIds OR Loan_Partner__c IN :leadScopeUserIds)
@@ -7599,7 +7614,22 @@ public with sharing class PipelineCommandCenterController {
         }
 
         for (Lead leadRecord : [
-            SELECT Id, Name, Status, CreatedDate, Loan_Amount__c, Loan_Purpose__c, Owner.Name
+            SELECT Id,
+                Name,
+                Status,
+                CreatedDate,
+                LastActivityDate,
+                Phone,
+                Email,
+                LeadSource,
+                Appointment_Date_Time__c,
+                Loan_Details__c,
+                Loan_Amount__c,
+                Loan_Purpose__c,
+                Biz_Dev__c,
+                Realtor_Buying_Agent__r.Name,
+                Loan_Partner__r.Name,
+                Owner.Name
             FROM Lead
             WHERE Id IN :leadIdsFromOwnedEvents
         ]) {
