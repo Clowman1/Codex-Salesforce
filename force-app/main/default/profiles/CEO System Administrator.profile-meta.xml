@@ -11,6 +11,10 @@
         <readable>true</readable>
     </fieldPermissions>
     <classAccesses>
+        <apexClass>AccountRecordHeroController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>LeadActivityAssistantController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
