@@ -289,6 +289,7 @@ public with sharing class PipelineCommandCenterController {
         Boolean rhettDelaney = currentUserIsRhettDelaney();
         DashboardData data = new DashboardData();
         data.currentUserId = UserInfo.getUserId();
+        data.columnPreferencesJson = getUserColumnPreferencesJson();
         data.headerTitle = ceoPipeline
             ? 'CEO Command Center'
             : (pastClientPipeline
@@ -584,6 +585,16 @@ public with sharing class PipelineCommandCenterController {
         return buttons;
     }
 
+    private static String getUserColumnPreferencesJson() {
+        List<Pipeline_Command_Center_Preference__c> preferences = [
+            SELECT Column_Preferences__c
+            FROM Pipeline_Command_Center_Preference__c
+            WHERE User__c = :UserInfo.getUserId()
+            LIMIT 1
+        ];
+        return preferences.isEmpty() ? null : preferences[0].Column_Preferences__c;
+    }
+
     @AuraEnabled
     public static List<QuickButton> saveUserQuickButtons(List<QuickButton> buttons) {
         if (buttons == null || buttons.size() != 3) {
@@ -613,6 +624,28 @@ public with sharing class PipelineCommandCenterController {
         upsert preference;
 
         return getUserQuickButtons();
+    }
+
+    @AuraEnabled
+    public static String saveUserColumnPreferences(String columnPreferencesJson) {
+        String cleanedPreferences = String.isBlank(columnPreferencesJson) ? null : columnPreferencesJson.trim();
+        if (cleanedPreferences != null && cleanedPreferences.length() > 32000) {
+            throw new AuraHandledException('Column preferences are too large to save.');
+        }
+
+        List<Pipeline_Command_Center_Preference__c> preferences = [
+            SELECT Id
+            FROM Pipeline_Command_Center_Preference__c
+            WHERE User__c = :UserInfo.getUserId()
+            LIMIT 1
+        ];
+        Pipeline_Command_Center_Preference__c preference = preferences.isEmpty()
+            ? new Pipeline_Command_Center_Preference__c(User__c = UserInfo.getUserId(), Name = 'Pipeline Command Center - ' + UserInfo.getUserId())
+            : preferences[0];
+
+        preference.Column_Preferences__c = cleanedPreferences;
+        upsert preference;
+        return preference.Column_Preferences__c;
     }
 
     @AuraEnabled
@@ -7655,6 +7688,7 @@ public with sharing class PipelineCommandCenterController {
         @AuraEnabled public String headerTitle { get; set; }
         @AuraEnabled public Id currentUserId { get; set; }
         @AuraEnabled public String headerSubtitle { get; set; }
+        @AuraEnabled public String columnPreferencesJson { get; set; }
         @AuraEnabled public Boolean isCeoDashboard { get; set; }
         @AuraEnabled public List<StatusCard> statusCards { get; set; }
         @AuraEnabled public List<PipelineRow> pipelineRows { get; set; }

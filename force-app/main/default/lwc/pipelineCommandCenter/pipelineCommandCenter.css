@@ -474,6 +474,14 @@ button.pcc-stat-card {
     margin-bottom: 12px;
 }
 
+.pcc-panel-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
 .pcc-panel-header p {
     color: #5f6f86;
     font-size: 13px;
@@ -487,6 +495,28 @@ button.pcc-stat-card {
     height: 32px;
     justify-content: center;
     width: 32px;
+}
+
+.pcc-button-secondary {
+    background: #eaf4ff;
+    border-color: #9fc7f1;
+    color: #17345d;
+}
+
+.pcc-edit-columns-button {
+    align-items: center;
+    display: inline-flex;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.pcc-edit-columns-button span {
+    background: #fff;
+    border-radius: 999px;
+    color: #244d8f;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 7px;
 }
 
 .pcc-table-wrap {
@@ -1593,6 +1623,10 @@ button.pcc-stat-card {
     max-width: 860px;
 }
 
+.pcc-column-modal {
+    max-width: 840px;
+}
+
 .pcc-modal-header,
 .pcc-modal-body,
 .pcc-modal-footer {
@@ -1601,6 +1635,23 @@ button.pcc-stat-card {
 
 .pcc-modal-header {
     border-bottom: 1px solid #d9e1ec;
+}
+
+.pcc-column-modal .pcc-modal-header {
+    align-items: center;
+    display: flex;
+    gap: 18px;
+    justify-content: space-between;
+}
+
+.pcc-column-count {
+    background: #eaf4ff;
+    border: 1px solid #b9d6f5;
+    border-radius: 999px;
+    color: #17345d;
+    font-size: 12px;
+    padding: 7px 11px;
+    white-space: nowrap;
 }
 
 .pcc-modal-header p {
@@ -1632,6 +1683,52 @@ button.pcc-stat-card {
     justify-content: center;
     margin-bottom: 2px;
     width: 30px;
+}
+
+.pcc-column-grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: 430px;
+    overflow: auto;
+}
+
+.pcc-column-choice {
+    align-items: center;
+    background: #f8fbff;
+    border: 1px solid #d9e7f6;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+    min-height: 42px;
+    padding: 10px 12px;
+}
+
+.pcc-column-choice-selected {
+    background: #edf6ff;
+    border-color: #86bee9;
+    box-shadow: inset 4px 0 0 #2f80c9;
+}
+
+.pcc-column-choice input {
+    accent-color: #244d8f;
+}
+
+.pcc-column-choice span {
+    color: #17233f;
+    font-weight: 800;
+}
+
+.pcc-column-choice em {
+    background: #fff3df;
+    border-radius: 999px;
+    color: #8a5009;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 800;
+    margin-left: auto;
+    padding: 3px 7px;
 }
 
 .pcc-modal-footer {

@@ -61,11 +61,19 @@
                             <h2>{activePipelineTitle}</h2>
                             <p>{activePipelineSubtitle}</p>
                         </div>
-                        <template if:true={showPanelOpenButton}>
-                            <button class="pcc-icon-button" data-object="Transaction__c" data-filter="Copy_of_Open_Pipeline_Processor" onclick={openListView} title="Open Processor Review Pipeline">
-                                <lightning-icon icon-name="utility:new_window" size="x-small"></lightning-icon>
-                            </button>
-                        </template>
+                        <div class="pcc-panel-actions">
+                            <template if:true={showEditColumnsButton}>
+                                <button class="pcc-button pcc-button-secondary pcc-edit-columns-button" onclick={openColumnEditor} type="button">
+                                    Edit Columns
+                                    <span>{selectedColumnCountText}</span>
+                                </button>
+                            </template>
+                            <template if:true={showPanelOpenButton}>
+                                <button class="pcc-icon-button" data-object="Transaction__c" data-filter="Copy_of_Open_Pipeline_Processor" onclick={openListView} title="Open Processor Review Pipeline">
+                                    <lightning-icon icon-name="utility:new_window" size="x-small"></lightning-icon>
+                                </button>
+                            </template>
+                        </div>
                     </div>
                     <template if:true={showBenMasterGroups}>
                         <div class="pcc-ben-master-tabs" role="tablist" aria-label="Ben work groups">
@@ -474,7 +482,7 @@
                             <table class={customTableClass}>
                                 <thead>
                                     <tr>
-                                        <template for:each={activeCustomColumns} for:item="column">
+                                        <template for:each={activeDisplayColumns} for:item="column">
                                             <th key={column.key}>
                                                 <button class={column.sortClass} data-field={column.sortField} onclick={handleSort} type="button">
                                                     <span>{column.displayLabel}</span>
@@ -496,7 +504,7 @@
                                 <tbody>
                                     <template for:each={activePipelineRows} for:item="row">
                                         <tr key={row.key} class={row.rowClass}>
-                                            <template for:each={row.customCells} for:item="cell">
+                                            <template for:each={row.visibleCustomCells} for:item="cell">
                                                 <td key={cell.key} title={cell.value}>
                                                     <template if:true={cell.isRecordLink}>
                                                         <a href="#" data-record-id={row.id} onclick={openRecord}>{cell.value}</a>
@@ -1019,6 +1027,47 @@
                     <footer class="pcc-modal-footer">
                         <button class="pcc-button" onclick={closeNewTitleAgent} disabled={isTitleAgentSaving}>Cancel</button>
                         <button class="pcc-button pcc-button-primary" type="button" onclick={createTitleAgent} disabled={isTitleAgentSaving}>Create Title Agent</button>
+                    </footer>
+                </div>
+            </section>
+        </template>
+
+        <template if:true={isColumnEditorOpen}>
+            <section class="pcc-modal-backdrop" role="dialog" aria-modal="true" aria-label="Edit command center columns">
+                <div class="pcc-modal pcc-column-modal">
+                    <header class="pcc-modal-header">
+                        <div>
+                            <h2>{columnEditorTitle}</h2>
+                            <p>{columnEditorSubtitle}</p>
+                        </div>
+                        <strong class="pcc-column-count">{columnEditorCountText}</strong>
+                    </header>
+                    <div class="pcc-modal-body">
+                        <template if:true={columnEditorError}>
+                            <div class="pcc-modal-error">{columnEditorError}</div>
+                        </template>
+                        <div class="pcc-column-grid">
+                            <template for:each={editableColumns} for:item="column">
+                                <label key={column.key} class={column.className}>
+                                    <input
+                                        type="checkbox"
+                                        checked={column.selected}
+                                        disabled={column.disabled}
+                                        data-key={column.key}
+                                        onchange={handleColumnToggle}
+                                    />
+                                    <span>{column.displayLabel}</span>
+                                    <template if:true={column.required}>
+                                        <em>Required</em>
+                                    </template>
+                                </label>
+                            </template>
+                        </div>
+                    </div>
+                    <footer class="pcc-modal-footer">
+                        <button class="pcc-button" onclick={resetColumnEditor} disabled={isSaving} type="button">Reset Default</button>
+                        <button class="pcc-button" onclick={closeColumnEditor} disabled={isSaving} type="button">Cancel</button>
+                        <button class="pcc-button pcc-button-primary" onclick={saveColumnEditor} disabled={isSaving} type="button">Save Columns</button>
                     </footer>
                 </div>
             </section>

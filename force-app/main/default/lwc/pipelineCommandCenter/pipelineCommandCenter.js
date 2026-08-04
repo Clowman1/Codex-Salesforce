@@ -24,6 +24,7 @@ import createRealtorPartner from '@salesforce/apex/PipelineCommandCenterControll
 import createConsumerLead from '@salesforce/apex/PipelineCommandCenterController.createConsumerLead';
 import createRealtorLead from '@salesforce/apex/PipelineCommandCenterController.createRealtorLead';
 import createTitleAgentAccount from '@salesforce/apex/PipelineCommandCenterController.createTitleAgentAccount';
+import saveUserColumnPreferences from '@salesforce/apex/PipelineCommandCenterController.saveUserColumnPreferences';
 
 const OBJECT_OPTIONS = [
     { label: 'Transactions', value: 'Transaction__c' },
@@ -37,6 +38,40 @@ const DASHBOARD_FOCUS_REFRESH_STALE_MS = 120000;
 const TAB_ORDER_STORAGE_PREFIX = 'reach-pcc-tab-order';
 const MASTER_GROUP_ORDER_STORAGE_PREFIX = 'reach-pcc-master-group-order';
 const ADAM_STEPHENS_USER_ID = '005f2000009BuuaAAC';
+const MAX_SELECTED_COLUMNS = 14;
+
+const COMMAND_CENTER_COLUMNS = [
+    { key: 'name', label: 'Name', objects: ['Lead', 'Transaction__c', 'Account'], required: true },
+    { key: 'status', label: 'Status', objects: ['Lead', 'Transaction__c'] },
+    { key: 'phone', label: 'Phone', objects: ['Lead', 'Transaction__c', 'Account'] },
+    { key: 'email', label: 'Email', objects: ['Lead', 'Transaction__c', 'Account'] },
+    { key: 'createdDate', label: 'Created Date', objects: ['Lead'] },
+    { key: 'lastActivityDate', label: 'Last Activity Date', objects: ['Lead'] },
+    { key: 'appointmentDateTime', label: 'Next Appointment Date', objects: ['Lead'] },
+    { key: 'leadSource', label: 'Lead Source', objects: ['Lead'] },
+    { key: 'realtorBuyingAgent', label: 'Realtor - Buying Agent', objects: ['Lead'] },
+    { key: 'loanDetails', label: 'Loan Details', objects: ['Lead'] },
+    { key: 'loanPurpose', label: 'Purpose', objects: ['Lead', 'Transaction__c', 'Account'] },
+    { key: 'loanAmount', label: 'Amount', objects: ['Lead', 'Transaction__c'] },
+    { key: 'closingDate', label: 'Closing Date', objects: ['Transaction__c', 'Account'] },
+    { key: 'fundingDate', label: 'Funding Date', objects: ['Transaction__c'] },
+    { key: 'processorName', label: 'Processor', objects: ['Transaction__c'] },
+    { key: 'detail', label: 'Processor Note', objects: ['Transaction__c'] },
+    { key: 'lastProcessorSms', label: 'Last Processor SMS', objects: ['Transaction__c'] },
+    { key: 'lastProcessorCall', label: 'Last Processor Call', objects: ['Transaction__c'] },
+    { key: 'lenderName', label: 'Lender', objects: ['Transaction__c'] },
+    { key: 'loanOfficerName', label: 'Loan Officer', objects: ['Transaction__c'] },
+    { key: 'ownerName', label: 'Owner', objects: ['Lead', 'Transaction__c'] },
+    { key: 'propertyAddress', label: 'Property Address', objects: ['Transaction__c'] },
+    { key: 'loanType', label: 'Loan Type', objects: ['Transaction__c', 'Account'] },
+    { key: 'rateLockExpDate', label: 'Rate Lock Exp Date', objects: ['Transaction__c'] },
+    { key: 'easeLink', label: 'EASE Link', objects: ['Transaction__c'] },
+    { key: 'lastContacted', label: 'Last Contacted', objects: ['Account'] },
+    { key: 'benLastCall', label: 'Ben Last Call', objects: ['Account'] },
+    { key: 'address', label: 'Mailing Address', objects: ['Account'] },
+    { key: 'birthday', label: 'Birthday', objects: ['Account'] },
+    { key: 'rating', label: 'Rating', objects: ['Account'] }
+];
 
 export default class PipelineCommandCenter extends NavigationMixin(LightningElement) {
     statusCards = [];
@@ -60,13 +95,17 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
     quickButtons = [];
     queueShortcuts = [];
     editableButtons = [];
+    columnPreferences = {};
+    editableColumns = [];
     listViewOptions = [];
     error;
     editorError;
     rowEditorError;
+    columnEditorError;
     isLoading = true;
     isEditorOpen = false;
     isRowEditorOpen = false;
+    isColumnEditorOpen = false;
     isProcessorNoteEditorOpen = false;
     isEventEditorOpen = false;
     isBrokerCheckConfirmOpen = false;
@@ -208,6 +247,7 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
             this.canCreateLead = data.canCreateLead === true;
             this.canAssignNewLeadOwner = data.canAssignNewLeadOwner === true;
             this.canCreateTitleAgent = data.canCreateTitleAgent === true;
+            this.columnPreferences = this.parseColumnPreferences(data.columnPreferencesJson);
             this.pipelineRows = (data.pipelineRows || []).map((row) => this.decoratePipelineRow(row));
             this.pipelineTabs = this.decorateTabs(this.applySavedTabOrder(data.pipelineTabs || []));
             if (!this.pipelineTabs.some((tab) => tab.key === this.activePipelineTabKey)) {
@@ -823,6 +863,107 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
         this.isEditorOpen = false;
         this.editableButtons = [];
         this.editorError = undefined;
+    }
+
+    openColumnEditor() {
+        if (!this.showEditColumnsButton) {
+            return;
+        }
+        this.columnEditorError = undefined;
+        this.editableColumns = this.columnEditorOptions;
+        this.isColumnEditorOpen = true;
+    }
+
+    closeColumnEditor() {
+        this.isColumnEditorOpen = false;
+        this.editableColumns = [];
+        this.columnEditorError = undefined;
+    }
+
+    handleColumnToggle(event) {
+        const columnKey = event.currentTarget.dataset.key;
+        const checked = event.target.checked;
+        this.columnEditorError = undefined;
+        this.editableColumns = this.editableColumns.map((column) => {
+            if (column.key !== columnKey) {
+                return column;
+            }
+            return {
+                ...column,
+                selected: checked || column.required,
+                className: checked || column.required ? 'pcc-column-choice pcc-column-choice-selected' : 'pcc-column-choice'
+            };
+        });
+        if (this.editableColumns.filter((column) => column.selected).length > MAX_SELECTED_COLUMNS) {
+            this.columnEditorError = `Choose up to ${MAX_SELECTED_COLUMNS} columns. Remove one before adding another.`;
+            this.editableColumns = this.editableColumns.map((column) => {
+                if (column.key === columnKey && !column.required) {
+                    return {
+                        ...column,
+                        selected: false,
+                        className: 'pcc-column-choice'
+                    };
+                }
+                return column;
+            });
+        }
+    }
+
+    async saveColumnEditor() {
+        const selectedKeys = this.editableColumns.filter((column) => column.selected).map((column) => column.key);
+        if (!selectedKeys.length) {
+            this.columnEditorError = 'Choose at least one column.';
+            return;
+        }
+        if (selectedKeys.length > MAX_SELECTED_COLUMNS) {
+            this.columnEditorError = `Choose up to ${MAX_SELECTED_COLUMNS} columns.`;
+            return;
+        }
+
+        this.isSaving = true;
+        this.columnEditorError = undefined;
+        const nextPreferences = {
+            ...this.columnPreferences,
+            [this.activePipelineTabKey]: selectedKeys
+        };
+        try {
+            const savedPreferences = await saveUserColumnPreferences({
+                columnPreferencesJson: JSON.stringify(nextPreferences)
+            });
+            this.columnPreferences = this.parseColumnPreferences(savedPreferences);
+            this.pipelineTabs = this.decorateTabs(this.pipelineTabs);
+            this.closeColumnEditor();
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Columns updated',
+                    message: 'Your Command Center columns were saved for this tab.',
+                    variant: 'success'
+                })
+            );
+        } catch (error) {
+            this.columnEditorError = this.extractError(error);
+        } finally {
+            this.isSaving = false;
+        }
+    }
+
+    async resetColumnEditor() {
+        const nextPreferences = { ...this.columnPreferences };
+        delete nextPreferences[this.activePipelineTabKey];
+        this.isSaving = true;
+        this.columnEditorError = undefined;
+        try {
+            const savedPreferences = await saveUserColumnPreferences({
+                columnPreferencesJson: JSON.stringify(nextPreferences)
+            });
+            this.columnPreferences = this.parseColumnPreferences(savedPreferences);
+            this.pipelineTabs = this.decorateTabs(this.pipelineTabs);
+            this.editableColumns = this.columnEditorOptions;
+        } catch (error) {
+            this.columnEditorError = this.extractError(error);
+        } finally {
+            this.isSaving = false;
+        }
     }
 
     openRowEditor(event) {
@@ -2112,7 +2253,8 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
         }
         return this.sortRows(this.activePipelineTab?.rows || this.pipelineRows).map((row) => ({
             ...row,
-            formattedOpenerDate: this.formattedOpenerDate(row)
+            formattedOpenerDate: this.formattedOpenerDate(row),
+            visibleCustomCells: this.activeDisplayColumns.map((column) => this.cellForColumn(row, column))
         }));
     }
 
@@ -2128,6 +2270,43 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
         return this.rawActiveCustomColumns;
     }
 
+    get activeDisplayColumns() {
+        return this.selectedColumnsForTab(this.activePipelineTab);
+    }
+
+    get showEditColumnsButton() {
+        return this.isGenericCustomColumnTab && !!this.availableColumnsForTab(this.activePipelineTab).length;
+    }
+
+    get selectedColumnCountText() {
+        return `${this.activeDisplayColumns.length} / ${MAX_SELECTED_COLUMNS} columns`;
+    }
+
+    get columnEditorTitle() {
+        return `Edit Columns - ${this.activePipelineTitle}`;
+    }
+
+    get columnEditorSubtitle() {
+        return `Choose up to ${MAX_SELECTED_COLUMNS} columns for this tab. Your choices are saved only for you.`;
+    }
+
+    get columnEditorCountText() {
+        return `${this.editableColumns.filter((column) => column.selected).length} / ${MAX_SELECTED_COLUMNS} selected`;
+    }
+
+    get columnEditorOptions() {
+        const selectedKeys = new Set(this.activeDisplayColumns.map((column) => column.key));
+        return this.availableColumnsForTab(this.activePipelineTab).map((column) => {
+            const selected = selectedKeys.has(column.key);
+            return {
+                ...column,
+                selected,
+                disabled: column.required,
+                className: selected ? 'pcc-column-choice pcc-column-choice-selected' : 'pcc-column-choice'
+            };
+        });
+    }
+
     get shouldShowPhoneInCustomTable() {
         return (
             !!this.rawActiveCustomColumns.length &&
@@ -2137,6 +2316,159 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
 
     get customPhoneColumnLabel() {
         return this.activePipelineObjectApiName === 'Transaction__c' ? 'Borrower Phone' : 'Phone';
+    }
+
+    parseColumnPreferences(preferencesJson) {
+        if (!preferencesJson) {
+            return {};
+        }
+        try {
+            const parsed = JSON.parse(preferencesJson);
+            return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+        } catch (error) {
+            return {};
+        }
+    }
+
+    selectedColumnsForTab(tab) {
+        if (!tab) {
+            return [];
+        }
+        const availableColumns = this.availableColumnsForTab(tab);
+        const availableByKey = new Map(availableColumns.map((column) => [column.key, column]));
+        const defaultKeys = (tab.customColumns || []).map((column) => column.key);
+        const requestedKeys = Array.isArray(this.columnPreferences?.[tab.key])
+            ? this.columnPreferences[tab.key]
+            : defaultKeys;
+        const requiredKeys = availableColumns.filter((column) => column.required).map((column) => column.key);
+        const selectedKeys = [...requiredKeys, ...requestedKeys]
+            .filter((key, index, keys) => key && keys.indexOf(key) === index && availableByKey.has(key))
+            .slice(0, MAX_SELECTED_COLUMNS);
+        return selectedKeys.map((key) => this.decorateColumnForDisplay(availableByKey.get(key)));
+    }
+
+    availableColumnsForTab(tab) {
+        if (!tab) {
+            return [];
+        }
+        const objectApiName = tab.objectApiName || this.pipelineObjectApiName;
+        const columnsByKey = new Map();
+        (tab.customColumns || []).forEach((column) => {
+            columnsByKey.set(column.key, {
+                key: column.key,
+                label: this.customColumnLabel(tab.key, column),
+                required: column.key === 'name'
+            });
+        });
+        COMMAND_CENTER_COLUMNS.filter((column) => column.objects.includes(objectApiName)).forEach((column) => {
+            if (!columnsByKey.has(column.key)) {
+                columnsByKey.set(column.key, column);
+            }
+        });
+        return Array.from(columnsByKey.values()).map((column) => this.decorateColumnForDisplay(column));
+    }
+
+    decorateColumnForDisplay(column) {
+        return {
+            ...column,
+            displayLabel: column.displayLabel || column.label,
+            sortField: `custom:${column.key}`,
+            sortClass: this.sortClass(`custom:${column.key}`),
+            sortIndicator: this.sortIndicator(`custom:${column.key}`)
+        };
+    }
+
+    cellForColumn(row, column) {
+        const customCell = (row.customCells || []).find((cell) => cell.rawKey === column.key || cell.key === column.key);
+        if (customCell) {
+            return {
+                ...customCell,
+                key: `${row.id}-${column.key}`
+            };
+        }
+        const cell = this.standardCellForColumn(row, column);
+        return {
+            ...cell,
+            key: `${row.id}-${column.key}`,
+            rawKey: column.key,
+            hasValue: !!cell.value,
+            isPhoneLink: cell.isPhoneLink === true,
+            phoneHref: cell.phoneHref || '',
+            isPreviewable: this.isPreviewableCustomCell(column.key, cell.value)
+        };
+    }
+
+    standardCellForColumn(row, column) {
+        const key = column.key;
+        let value = '';
+        let sortValue = '';
+        let isRecordLink = false;
+        let isExternalLink = false;
+        let isPhoneLink = false;
+        let phoneHref = '';
+        let url = '';
+
+        if (key === 'name') {
+            value = row.name || '';
+            sortValue = value;
+            isRecordLink = true;
+        } else if (key === 'status') {
+            value = row.statusLabel || row.status || '';
+            sortValue = value;
+        } else if (key === 'phone') {
+            value = row.phone || '';
+            sortValue = value;
+            phoneHref = this.phoneHref(value);
+            isPhoneLink = !!phoneHref;
+        } else if (key === 'email') {
+            value = row.email || '';
+            sortValue = value;
+        } else if (key === 'createdDate') {
+            value = row.formattedCreatedDateTime || '';
+            sortValue = row.createdDateTime || '';
+        } else if (key === 'lastActivityDate') {
+            value = row.formattedLastActivityDate || '';
+            sortValue = row.lastActivityDate || '';
+        } else if (key === 'appointmentDateTime') {
+            value = row.formattedAppointmentDateTime || '';
+            sortValue = row.appointmentDateTime || '';
+        } else if (key === 'closingDate') {
+            value = row.formattedDisplayDate || '';
+            sortValue = row.displayDate || row.displayDateTime || '';
+        } else if (key === 'fundingDate') {
+            value = row.formattedFundingDate || '';
+            sortValue = row.fundingDate || '';
+        } else if (key === 'lastProcessorSms') {
+            value = row.formattedLastProcessorSms || '';
+            sortValue = row.lastProcessorSms || '';
+        } else if (key === 'lastProcessorCall') {
+            value = row.formattedLastProcessorCall || '';
+            sortValue = row.lastProcessorCall || '';
+        } else if (key === 'loanAmount') {
+            value = row.formattedAmount || '';
+            sortValue = row.loanAmount === null || row.loanAmount === undefined ? '' : String(row.loanAmount);
+        } else if (key === 'easeLink') {
+            value = row.hasEaseLink ? 'EASE' : '';
+            sortValue = value;
+            url = row.easeLink || '';
+            isExternalLink = !!url;
+        } else if (key === 'detail') {
+            value = row.detail || '';
+            sortValue = value;
+        } else {
+            value = row[key] || '';
+            sortValue = value;
+        }
+
+        return {
+            value,
+            sortValue,
+            isRecordLink,
+            isExternalLink,
+            isPhoneLink,
+            phoneHref,
+            url
+        };
     }
 
     get standardPhoneColumnLabel() {
@@ -2540,7 +2872,10 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
         if (field && field.startsWith('custom:')) {
             const cellKey = field.replace('custom:', '');
             const cell = (row.customCells || []).find((candidate) => candidate.key.endsWith(`-${cellKey}`) || candidate.key === cellKey);
-            return cell ? cell.sortValue || cell.value || '' : '';
+            if (cell) {
+                return cell.sortValue || cell.value || '';
+            }
+            return this.standardCellForColumn(row, { key: cellKey }).sortValue || '';
         }
         if (field === 'displayDateTime') {
             return row.displayDateTime || (row.displayDate ? `${row.displayDate}T00:00:00.000Z` : '');
