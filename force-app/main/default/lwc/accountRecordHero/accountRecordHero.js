@@ -1,6 +1,8 @@
 import { LightningElement, api, wire } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import { getFieldValue, getRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import createPastClientLead from '@salesforce/apex/AccountRecordHeroController.createPastClientLead';
 
 const NAME_FIELD = 'Account.Name';
 const OPTIONAL_FIELDS = [
@@ -18,11 +20,13 @@ const OPTIONAL_FIELDS = [
     'Account.Last_RC_SMS__c'
 ];
 
-export default class AccountRecordHero extends LightningElement {
+export default class AccountRecordHero extends NavigationMixin(LightningElement) {
     @api recordId;
     accountRecord;
     error;
     showCreateLeadModal = false;
+    selectedLoanPurpose;
+    isCreatingLead = false;
 
     @wire(getRecord, { recordId: '$recordId', fields: [NAME_FIELD], optionalFields: OPTIONAL_FIELDS })
     wiredAccount({ data, error }) {
@@ -76,37 +80,89 @@ export default class AccountRecordHero extends LightningElement {
     }
 
     handleCreateLead() {
+        this.selectedLoanPurpose = null;
         this.showCreateLeadModal = true;
     }
 
-    get createLeadFlowInputs() {
+    get loanPurposeOptions() {
         return [
             {
-                name: 'recordId',
-                type: 'String',
-                value: this.recordId
+                label: 'Purchase',
+                value: 'Purchase'
+            },
+            {
+                label: 'Refinance',
+                value: 'Refinance'
             }
         ];
     }
 
-    handleCloseCreateLead() {
-        this.showCreateLeadModal = false;
+    get isCreateLeadDisabled() {
+        return this.isCreatingLead || !this.selectedLoanPurpose;
     }
 
-    handleCreateLeadFlowStatus(event) {
-        if (event.detail.status === 'FINISHED' || event.detail.status === 'FINISHED_SCREEN') {
+    handleCloseCreateLead() {
+        if (this.isCreatingLead) {
+            return;
+        }
+        this.showCreateLeadModal = false;
+        this.selectedLoanPurpose = null;
+    }
+
+    handleLoanPurposeChange(event) {
+        this.selectedLoanPurpose = event.detail.value;
+    }
+
+    async handleSubmitCreateLead() {
+        if (this.isCreateLeadDisabled) {
+            return;
+        }
+
+        this.isCreatingLead = true;
+        try {
+            const loanPurpose = this.selectedLoanPurpose;
+            const leadId = await createPastClientLead({
+                accountId: this.recordId,
+                loanPurpose
+            });
             this.showCreateLeadModal = false;
+            this.selectedLoanPurpose = null;
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Lead created',
-                    message: 'The past client lead was created with the selected loan purpose.',
+                    message: `The ${loanPurpose} Lead was created.`,
                     variant: 'success'
                 })
             );
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: {
+                    recordId: leadId,
+                    objectApiName: 'Lead',
+                    actionName: 'view'
+                }
+            });
+        } catch (error) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Lead was not created',
+                    message: this.reduceError(error),
+                    variant: 'error'
+                })
+            );
+        } finally {
+            this.isCreatingLead = false;
         }
     }
 
     fieldValue(fieldName) {
         return this.accountRecord ? getFieldValue(this.accountRecord, fieldName) : null;
+    }
+
+    reduceError(error) {
+        if (Array.isArray(error?.body)) {
+            return error.body.map((item) => item.message).join(', ');
+        }
+        return error?.body?.message || error?.message || 'Unknown error';
     }
 }

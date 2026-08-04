@@ -59,15 +59,30 @@
                         <lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"></lightning-icon>
                         <span class="slds-assistive-text">Close</span>
                     </button>
-                    <h2 id="create-lead-modal-heading" class="slds-text-heading_medium">Create Lead</h2>
+                    <h2 id="create-lead-modal-heading" class="slds-text-heading_medium">Create Lead from Person Account</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
-                    <lightning-flow
-                        flow-api-name="Past_Client_Create_New_Lead"
-                        flow-input-variables={createLeadFlowInputs}
-                        onstatuschange={handleCreateLeadFlowStatus}>
-                    </lightning-flow>
+                    <p class="slds-m-bottom_medium">
+                        Choose the loan purpose for the new Consumer Lead. This value will be saved on the Lead when it is created.
+                    </p>
+                    <lightning-radio-group
+                        name="loanPurpose"
+                        label="Loan Purpose"
+                        options={loanPurposeOptions}
+                        value={selectedLoanPurpose}
+                        onchange={handleLoanPurposeChange}
+                        type="radio"
+                        required>
+                    </lightning-radio-group>
                 </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" type="button" onclick={handleCloseCreateLead} disabled={isCreatingLead}>
+                        Cancel
+                    </button>
+                    <button class="slds-button slds-button_brand" type="button" onclick={handleSubmitCreateLead} disabled={isCreateLeadDisabled}>
+                        Create Lead
+                    </button>
+                </footer>
             </div>
         </section>
         <div class="slds-backdrop slds-backdrop_open"></div>
