@@ -7408,12 +7408,20 @@ public with sharing class PipelineCommandCenterController {
                 Name,
                 Status,
                 CreatedDate,
+                LastActivityDate,
+                Phone,
+                Email,
+                LeadSource,
                 Appointment_Date_Time__c,
+                Loan_Details__c,
                 Last_Call_Date__c,
                 Last_Call_Attempt_RingCentral__c,
                 Last_SMS_Attempt_RingCentral__c,
                 Loan_Amount__c,
                 Loan_Purpose__c,
+                Biz_Dev__c,
+                Realtor_Buying_Agent__r.Name,
+                Loan_Partner__r.Name,
                 Owner.Name
             FROM Lead
             WHERE IsConverted = false
@@ -7464,12 +7472,20 @@ public with sharing class PipelineCommandCenterController {
                 Name,
                 Status,
                 CreatedDate,
+                LastActivityDate,
+                Phone,
+                Email,
+                LeadSource,
                 Appointment_Date_Time__c,
+                Loan_Details__c,
                 Last_Call_Date__c,
                 Last_Call_Attempt_RingCentral__c,
                 Last_SMS_Attempt_RingCentral__c,
                 Loan_Amount__c,
                 Loan_Purpose__c,
+                Biz_Dev__c,
+                Realtor_Buying_Agent__r.Name,
+                Loan_Partner__r.Name,
                 Owner.Name
             FROM Lead
             WHERE IsConverted = false
