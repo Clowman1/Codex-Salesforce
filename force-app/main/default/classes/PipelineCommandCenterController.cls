@@ -1778,10 +1778,10 @@ public with sharing class PipelineCommandCenterController {
         Id currentUserId = UserInfo.getUserId();
         for (Transaction__c transactionRecord : [
             SELECT Id, Name, Status__c, Closing_Date__c, Loan_Amount_1st__c, Loan_Purpose__c, Processor_Note__c, Processor_Note_For_Display__c,
-                Last_Processor_RC_SMS__c, Last_Processor_RC_Call__c, Ease_Link__c, Borrower_Name__c,
+                Last_Processor_RC_SMS__c, Last_Processor_RC_Call__c, Ease_Link__c, Biz_Dev__c, Borrower_Name__c,
                 Property_Address__c, Property_City__c, Property_State__c,
                 Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc, Borrower_Name__r.PersonEmail,
-                Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Processor__r.Name, Owner.Name
+                Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Loan_Partner__r.Name, Processor__r.Name, Owner.Name
             FROM Transaction__c
             WHERE Status__c NOT IN :EXCLUDED_ACTIVE_PIPELINE_STATUSES
             AND Status__c NOT IN :CLOSING_TRANSACTION_STATUSES
@@ -1803,10 +1803,10 @@ public with sharing class PipelineCommandCenterController {
         List<PipelineRow> rows = new List<PipelineRow>();
         for (Transaction__c transactionRecord : [
             SELECT Id, Name, Status__c, Closing_Date__c, Loan_Amount_1st__c, Loan_Purpose__c, Processor_Note__c, Processor_Note_For_Display__c,
-                Last_Processor_RC_SMS__c, Last_Processor_RC_Call__c, Ease_Link__c, Borrower_Name__c,
+                Last_Processor_RC_SMS__c, Last_Processor_RC_Call__c, Ease_Link__c, Biz_Dev__c, Borrower_Name__c,
                 Property_Address__c, Property_City__c, Property_State__c,
                 Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc, Borrower_Name__r.PersonEmail,
-                Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Processor__r.Name, Owner.Name
+                Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Loan_Partner__r.Name, Processor__r.Name, Owner.Name
             FROM Transaction__c
             WHERE Status__c NOT IN :EXCLUDED_ACTIVE_PIPELINE_STATUSES
             AND Status__c NOT IN :CLOSING_TRANSACTION_STATUSES
@@ -1823,9 +1823,9 @@ public with sharing class PipelineCommandCenterController {
         Id currentUserId = UserInfo.getUserId();
         for (Transaction__c transactionRecord : [
             SELECT Id, Name, Status__c, Closing_Date__c, Funding_Date__c, Loan_Amount_1st__c, Loan_Purpose__c,
-                Processor_Note__c, Processor_Note_For_Display__c, Ease_Link__c, Borrower_Name__c,
+                Processor_Note__c, Processor_Note_For_Display__c, Ease_Link__c, Biz_Dev__c, Borrower_Name__c,
                 Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc, Borrower_Name__r.PersonEmail,
-                Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Processor__r.Name, Owner.Name
+                Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Loan_Partner__r.Name, Processor__r.Name, Owner.Name
             FROM Transaction__c
             WHERE Status__c NOT IN :EXCLUDED_ACTIVE_PIPELINE_STATUSES
             AND CreatedDate >= :MIN_TRANSACTION_CREATED_DATETIME
@@ -1848,9 +1848,9 @@ public with sharing class PipelineCommandCenterController {
         Date nextMonthStart = currentMonthStart.addMonths(1);
         for (Transaction__c transactionRecord : [
             SELECT Id, Name, Status__c, Closing_Date__c, Funding_Date__c, Loan_Amount_1st__c, Loan_Purpose__c,
-                Processor_Note__c, Processor_Note_For_Display__c, Ease_Link__c, Borrower_Name__c,
+                Processor_Note__c, Processor_Note_For_Display__c, Ease_Link__c, Biz_Dev__c, Borrower_Name__c,
                 Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc, Borrower_Name__r.PersonEmail,
-                Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Processor__r.Name, Owner.Name
+                Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Loan_Partner__r.Name, Processor__r.Name, Owner.Name
             FROM Transaction__c
             WHERE Status__c IN :LO_CLOSED_THIS_MONTH_STATUSES
             AND Funding_Date__c >= :currentMonthStart
@@ -1873,9 +1873,9 @@ public with sharing class PipelineCommandCenterController {
         for (Transaction__c transactionRecord : [
             SELECT Id, Name, Status__c, Closing_Date__c, Funding_Date__c, Disclosures_Out_Date__c, Disclosures_Received_Date__c,
                 Loan_Amount_1st__c, Loan_Purpose__c, Processor_Note__c, Processor_Note_For_Display__c,
-                Ease_Link__c, Borrower_Name__c, Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc,
+                Ease_Link__c, Biz_Dev__c, Borrower_Name__c, Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc,
                 Borrower_Name__r.PersonEmail, Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone,
-                Lender_lookup__r.Name, Loan_Officer__r.Name, Processor__r.Name, Owner.Name
+                Lender_lookup__r.Name, Loan_Officer__r.Name, Loan_Partner__r.Name, Processor__r.Name, Owner.Name
             FROM Transaction__c
             WHERE Status__c = 'Disclosures Out'
             AND Disclosures_Received_Date__c = NULL
@@ -1923,9 +1923,9 @@ public with sharing class PipelineCommandCenterController {
             ? 'Loan_Officer__c = :loanOfficerId AND Loan_Partner__c = :partnerId'
             : '(OwnerId IN :userIds OR Transaction_Owner__c IN :userIds OR Loan_Officer__c IN :userIds)';
         String baseSelect = 'SELECT Id, Name, Status__c, Closing_Date__c, Funding_Date__c, Disclosures_Out_Date__c, Disclosures_Received_Date__c, '
-            + 'Loan_Amount_1st__c, Loan_Purpose__c, Processor_Note__c, Processor_Note_For_Display__c, Ease_Link__c, Borrower_Name__c, '
+            + 'Loan_Amount_1st__c, Loan_Purpose__c, Processor_Note__c, Processor_Note_For_Display__c, Ease_Link__c, Biz_Dev__c, Borrower_Name__c, '
             + 'Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc, Borrower_Name__r.PersonEmail, '
-            + 'Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Processor__r.Name, Owner.Name '
+            + 'Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Loan_Partner__r.Name, Processor__r.Name, Owner.Name '
             + 'FROM Transaction__c WHERE ' + scopeClause + ' ';
         String queryString;
 
@@ -1985,8 +1985,8 @@ public with sharing class PipelineCommandCenterController {
         Id currentUserId = UserInfo.getUserId();
         for (Transaction__c transactionRecord : [
             SELECT Id, Name, Status__c, Closing_Date__c, Loan_Amount_1st__c, Loan_Purpose__c, Processor_Note__c, Processor_Note_For_Display__c,
-                Ease_Link__c, Borrower_Name__c, Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc,
-                Borrower_Name__r.PersonEmail, Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Processor__r.Name, Owner.Name
+                Ease_Link__c, Biz_Dev__c, Borrower_Name__c, Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc,
+                Borrower_Name__r.PersonEmail, Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Loan_Partner__r.Name, Processor__r.Name, Owner.Name
             FROM Transaction__c
             WHERE Status__c IN :CLOSING_TRANSACTION_STATUSES
             AND (OwnerId = :currentUserId
@@ -2007,8 +2007,8 @@ public with sharing class PipelineCommandCenterController {
         List<PipelineRow> rows = new List<PipelineRow>();
         for (Transaction__c transactionRecord : [
             SELECT Id, Name, Status__c, Closing_Date__c, Loan_Amount_1st__c, Loan_Purpose__c, Processor_Note__c, Processor_Note_For_Display__c,
-                Ease_Link__c, Borrower_Name__c, Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc,
-                Borrower_Name__r.PersonEmail, Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Processor__r.Name, Owner.Name
+                Ease_Link__c, Biz_Dev__c, Borrower_Name__c, Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc,
+                Borrower_Name__r.PersonEmail, Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Officer__r.Name, Loan_Partner__r.Name, Processor__r.Name, Owner.Name
             FROM Transaction__c
             WHERE Status__c IN :CLOSING_TRANSACTION_STATUSES
             AND CreatedDate >= :MIN_TRANSACTION_CREATED_DATETIME
@@ -2024,9 +2024,9 @@ public with sharing class PipelineCommandCenterController {
         for (Transaction__c transactionRecord : [
             SELECT Id, Name, Status__c, Closing_Date__c, Loan_Amount_1st__c, Loan_Purpose__c,
                 Rate_Lock_Status__c, Rate_Lock_Exp_Date__c, Processor_Note__c, Processor_Note_For_Display__c,
-                Ease_Link__c, Borrower_Name__c, Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc,
+                Ease_Link__c, Biz_Dev__c, Borrower_Name__c, Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc,
                 Borrower_Name__r.PersonEmail, Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone,
-                Lender_lookup__r.Name, Processor__r.Name, Owner.Name
+                Lender_lookup__r.Name, Loan_Partner__r.Name, Processor__r.Name, Owner.Name
             FROM Transaction__c
             WHERE Status__c NOT IN :EXCLUDED_ACTIVE_PIPELINE_STATUSES
             AND Lender_lookup__r.Name LIKE 'Gold Star%'
@@ -2644,9 +2644,9 @@ public with sharing class PipelineCommandCenterController {
         if (adminPipeline || currentUserUsesProcessingTeamLeadScope()) {
             for (Transaction__c transactionRecord : [
                 SELECT Id, Name, Status__c, Closing_Date__c, Loan_Commitment_Date__c, Loan_Amount_1st__c, Loan_Purpose__c,
-                    Processor_Note__c, Processor_Note_For_Display__c, Ease_Link__c, Borrower_Name__c,
+                    Processor_Note__c, Processor_Note_For_Display__c, Ease_Link__c, Biz_Dev__c, Borrower_Name__c,
                     Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc, Borrower_Name__r.PersonEmail,
-                    Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Processor__r.Name, Owner.Name
+                    Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Partner__r.Name, Processor__r.Name, Owner.Name
                 FROM Transaction__c
                 WHERE Status__c NOT IN :EXCLUDED_ACTIVE_PIPELINE_STATUSES
                 AND Status__c NOT IN :CLOSING_TRANSACTION_STATUSES
@@ -2666,9 +2666,9 @@ public with sharing class PipelineCommandCenterController {
             Id currentUserId = UserInfo.getUserId();
             for (Transaction__c transactionRecord : [
             SELECT Id, Name, Status__c, Closing_Date__c, Loan_Commitment_Date__c, Loan_Amount_1st__c, Loan_Purpose__c,
-                Processor_Note__c, Processor_Note_For_Display__c, Ease_Link__c, Borrower_Name__c,
+                Processor_Note__c, Processor_Note_For_Display__c, Ease_Link__c, Biz_Dev__c, Borrower_Name__c,
                 Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc, Borrower_Name__r.PersonEmail,
-                Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Processor__r.Name, Owner.Name
+                Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone, Lender_lookup__r.Name, Loan_Partner__r.Name, Processor__r.Name, Owner.Name
                 FROM Transaction__c
                 WHERE Status__c NOT IN :EXCLUDED_ACTIVE_PIPELINE_STATUSES
                 AND Status__c NOT IN :CLOSING_TRANSACTION_STATUSES
@@ -2725,7 +2725,7 @@ public with sharing class PipelineCommandCenterController {
         for (Lead leadRecord : [
             SELECT Id, Name, Status, CreatedDate, LastActivityDate, LeadSource, Phone, Email,
                 Appointment_Date_Time__c, Loan_Details__c, Loan_Amount__c, Loan_Purpose__c,
-                Realtor_Buying_Agent__r.Name, Owner.Name
+                Biz_Dev__c, Realtor_Buying_Agent__r.Name, Loan_Partner__r.Name, Owner.Name
             FROM Lead
             WHERE IsConverted = false
             AND RecordType.DeveloperName IN :CONSUMER_LEAD_RECORD_TYPES
@@ -2749,7 +2749,7 @@ public with sharing class PipelineCommandCenterController {
         for (Lead leadRecord : [
             SELECT Id, Name, Status, CreatedDate, LastActivityDate, LeadSource, Phone, Email,
                 Appointment_Date_Time__c, Loan_Details__c, Loan_Amount__c, Loan_Purpose__c,
-                Realtor_Buying_Agent__r.Name, Owner.Name
+                Biz_Dev__c, Realtor_Buying_Agent__r.Name, Loan_Partner__r.Name, Owner.Name
             FROM Lead
             WHERE IsConverted = false
             AND RecordType.DeveloperName IN :CONSUMER_LEAD_RECORD_TYPES
@@ -2792,7 +2792,7 @@ public with sharing class PipelineCommandCenterController {
             + 'Appointment_Date_Time__c, Loan_Details__c, Loan_Amount__c, Loan_Purpose__c, '
             + 'Pre_Approval_Date__c, Biz_Dev__c, '
             + 'Last_Call_Date__c, Last_Call_Attempt_RingCentral__c, Last_SMS_Attempt_RingCentral__c, '
-            + 'Realtor_Buying_Agent__r.Name, Owner.Name '
+            + 'Realtor_Buying_Agent__r.Name, Loan_Partner__r.Name, Owner.Name '
             + 'FROM Lead WHERE IsConverted = false '
             + 'AND RecordType.DeveloperName IN :CONSUMER_LEAD_RECORD_TYPES '
             + 'AND ' + scopeClause + ' ';
@@ -2974,7 +2974,7 @@ public with sharing class PipelineCommandCenterController {
         List<Lead> candidateLeads = [
             SELECT Id, Name, Status, CreatedDate, LastActivityDate, LeadSource, Phone, Email,
                 Appointment_Date_Time__c, Loan_Details__c, Loan_Amount__c, Loan_Purpose__c,
-                Realtor_Buying_Agent__r.Name, Owner.Name
+                Biz_Dev__c, Realtor_Buying_Agent__r.Name, Loan_Partner__r.Name, Owner.Name
             FROM Lead
             WHERE IsConverted = false
             AND RecordType.DeveloperName IN :CONSUMER_LEAD_RECORD_TYPES
@@ -3007,7 +3007,7 @@ public with sharing class PipelineCommandCenterController {
         List<Lead> candidateLeads = [
             SELECT Id, Name, Status, CreatedDate, LastActivityDate, LeadSource, Phone, Email,
                 Appointment_Date_Time__c, Loan_Details__c, Loan_Amount__c, Loan_Purpose__c,
-                Realtor_Buying_Agent__r.Name, Owner.Name
+                Biz_Dev__c, Realtor_Buying_Agent__r.Name, Loan_Partner__r.Name, Owner.Name
             FROM Lead
             WHERE IsConverted = false
             AND RecordType.DeveloperName IN :CONSUMER_LEAD_RECORD_TYPES
@@ -3391,9 +3391,9 @@ public with sharing class PipelineCommandCenterController {
         List<Transaction__c> candidateTransactions = [
             SELECT Id, Name, Status__c, Closing_Date__c, Submitted_to_Processing_Date__c,
                 Loan_Amount_1st__c, Loan_Purpose__c, Processor_Note__c, Processor_Note_For_Display__c,
-                Ease_Link__c, Borrower_Name__c, Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc,
+                Ease_Link__c, Biz_Dev__c, Borrower_Name__c, Borrower_Name__r.Corrected_Mobile__pc, Borrower_Name__r.Corrected_Phone__pc,
                 Borrower_Name__r.PersonEmail, Borrower_Name__r.PersonMobilePhone, Borrower_Name__r.Phone,
-                Lender_lookup__r.Name, Processor__r.Name, Owner.Name
+                Lender_lookup__r.Name, Loan_Partner__r.Name, Processor__r.Name, Owner.Name
             FROM Transaction__c
             WHERE Status__c = 'Processing'
             AND Submitted_to_Processing_Date__c != null
@@ -7237,7 +7237,7 @@ public with sharing class PipelineCommandCenterController {
         for (Lead leadRecord : [
             SELECT Id, Name, Status, CreatedDate, LastActivityDate, LeadSource, Phone, Email,
                 Appointment_Date_Time__c, Loan_Details__c, Loan_Amount__c, Loan_Purpose__c,
-                Realtor_Buying_Agent__r.Name, Owner.Name
+                Biz_Dev__c, Realtor_Buying_Agent__r.Name, Loan_Partner__r.Name, Owner.Name
             FROM Lead
             WHERE IsConverted = false
             AND RecordType.DeveloperName IN :CONSUMER_LEAD_RECORD_TYPES
@@ -7284,7 +7284,7 @@ public with sharing class PipelineCommandCenterController {
         for (Lead leadRecord : [
             SELECT Id, Name, Status, CreatedDate, LastActivityDate, LeadSource, Phone, Email,
                 Appointment_Date_Time__c, Loan_Details__c, Loan_Amount__c, Loan_Purpose__c,
-                Realtor_Buying_Agent__r.Name, Owner.Name
+                Biz_Dev__c, Realtor_Buying_Agent__r.Name, Loan_Partner__r.Name, Owner.Name
             FROM Lead
             WHERE IsConverted = false
             AND RecordType.DeveloperName IN :CONSUMER_LEAD_RECORD_TYPES
@@ -7332,7 +7332,7 @@ public with sharing class PipelineCommandCenterController {
             SELECT Id, Name, Status, CreatedDate, LastActivityDate, LeadSource, Phone, Email,
                 Appointment_Date_Time__c, Loan_Details__c, Loan_Amount__c, Loan_Purpose__c,
                 Last_Call_Attempt_RingCentral__c, Last_SMS_Attempt_RingCentral__c,
-                Realtor_Buying_Agent__r.Name, Owner.Name
+                Biz_Dev__c, Realtor_Buying_Agent__r.Name, Loan_Partner__r.Name, Owner.Name
             FROM Lead
             WHERE IsConverted = false
             AND Status = 'Pre-Approval'
@@ -7791,12 +7791,14 @@ public with sharing class PipelineCommandCenterController {
         @AuraEnabled public String closerNotes { get; set; }
         @AuraEnabled public String lenderName { get; set; }
         @AuraEnabled public String loanOfficerName { get; set; }
+        @AuraEnabled public String loanPartnerName { get; set; }
         @AuraEnabled public String processorName { get; set; }
         @AuraEnabled public String ownerName { get; set; }
         @AuraEnabled public Datetime lastProcessorSms { get; set; }
         @AuraEnabled public Datetime lastProcessorCall { get; set; }
         @AuraEnabled public String detail { get; set; }
         @AuraEnabled public String leadSource { get; set; }
+        @AuraEnabled public String bizDev { get; set; }
         @AuraEnabled public Id borrowerAccountId { get; set; }
         @AuraEnabled public String phone { get; set; }
         @AuraEnabled public String propertyAddress { get; set; }
@@ -7873,6 +7875,9 @@ public with sharing class PipelineCommandCenterController {
             }
             SObject loanOfficerRecord = safeRelationshipValue(transactionRecord, 'Loan_Officer__r');
             loanOfficerName = loanOfficerRecord == null ? null : (String) safeSObjectValue(loanOfficerRecord, 'Name');
+            SObject loanPartnerRecord = safeRelationshipValue(transactionRecord, 'Loan_Partner__r');
+            loanPartnerName = loanPartnerRecord == null ? null : (String) safeSObjectValue(loanPartnerRecord, 'Name');
+            bizDev = (String) safeSObjectValue(transactionRecord, 'Biz_Dev__c');
             SObject processorRecord = safeRelationshipValue(transactionRecord, 'Processor__r');
             processorName = processorRecord == null ? null : (String) safeSObjectValue(processorRecord, 'Name');
             SObject ownerRecord = safeRelationshipValue(transactionRecord, 'Owner');
@@ -7926,7 +7931,10 @@ public with sharing class PipelineCommandCenterController {
             loanPurpose = (String) safeSObjectValue(leadRecord, 'Loan_Purpose__c');
             ownerName = leadRecord.Owner == null ? null : leadRecord.Owner.Name;
             loanOfficerName = ownerName;
+            SObject loanPartnerRecord = safeRelationshipValue(leadRecord, 'Loan_Partner__r');
+            loanPartnerName = loanPartnerRecord == null ? null : (String) safeSObjectValue(loanPartnerRecord, 'Name');
             leadSource = (String) safeSObjectValue(leadRecord, 'LeadSource');
+            bizDev = (String) safeSObjectValue(leadRecord, 'Biz_Dev__c');
             phone = (String) safeSObjectValue(leadRecord, 'Phone');
             email = (String) safeSObjectValue(leadRecord, 'Email');
             appointmentDateTime = (Datetime) safeSObjectValue(leadRecord, 'Appointment_Date_Time__c');
