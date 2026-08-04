@@ -68,11 +68,6 @@
                                     <span>{selectedColumnCountText}</span>
                                 </button>
                             </template>
-                            <template if:true={showPanelOpenButton}>
-                                <button class="pcc-icon-button" data-object="Transaction__c" data-filter="Copy_of_Open_Pipeline_Processor" onclick={openListView} title="Open Processor Review Pipeline">
-                                    <lightning-icon icon-name="utility:new_window" size="x-small"></lightning-icon>
-                                </button>
-                            </template>
                         </div>
                     </div>
                     <template if:true={showBenMasterGroups}>
@@ -518,12 +513,17 @@
                                                                 <a class="pcc-phone-link" href={cell.phoneHref}>{cell.value}</a>
                                                             </template>
                                                             <template if:false={cell.isPhoneLink}>
-                                                                <div class="pcc-note-preview">
-                                                                    <span>{cell.value}</span>
-                                                                    <template if:true={cell.isPreviewable}>
-                                                                        <button class="pcc-inline-view" data-title="Full Cell Value" data-text={cell.value} onclick={openTextPreview} type="button">View</button>
-                                                                    </template>
-                                                                </div>
+                                                                <template if:true={cell.isStatus}>
+                                                                    <span class={cell.statusClass}>{cell.value}</span>
+                                                                </template>
+                                                                <template if:false={cell.isStatus}>
+                                                                    <div class="pcc-note-preview">
+                                                                        <span>{cell.value}</span>
+                                                                        <template if:true={cell.isPreviewable}>
+                                                                            <button class="pcc-inline-view" data-title="Full Cell Value" data-text={cell.value} onclick={openTextPreview} type="button">View</button>
+                                                                        </template>
+                                                                    </div>
+                                                                </template>
                                                             </template>
                                                         </template>
                                                     </template>

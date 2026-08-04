@@ -1750,10 +1750,6 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
         return this.canEditQuickButtons && !this.isCeoDashboard && !this.isPastClientDashboard;
     }
 
-    get showPanelOpenButton() {
-        return !this.isCeoDashboard;
-    }
-
     get showRhettRingCentralVerifier() {
         return false;
     }
@@ -2275,7 +2271,7 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
     }
 
     get showEditColumnsButton() {
-        return this.isGenericCustomColumnTab && !!this.availableColumnsForTab(this.activePipelineTab).length;
+        return this.isGenericCustomColumnTab;
     }
 
     get selectedColumnCountText() {
@@ -2336,7 +2332,7 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
         }
         const availableColumns = this.availableColumnsForTab(tab);
         const availableByKey = new Map(availableColumns.map((column) => [column.key, column]));
-        const defaultKeys = (tab.customColumns || []).map((column) => column.key);
+        const defaultKeys = this.defaultColumnKeysForTab(tab);
         const requestedKeys = Array.isArray(this.columnPreferences?.[tab.key])
             ? this.columnPreferences[tab.key]
             : defaultKeys;
@@ -2345,6 +2341,50 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
             .filter((key, index, keys) => key && keys.indexOf(key) === index && availableByKey.has(key))
             .slice(0, MAX_SELECTED_COLUMNS);
         return selectedKeys.map((key) => this.decorateColumnForDisplay(availableByKey.get(key)));
+    }
+
+    defaultColumnKeysForTab(tab) {
+        const customKeys = (tab?.customColumns || []).map((column) => column.key);
+        if (customKeys.length) {
+            return customKeys;
+        }
+        const tabKey = tab?.key || this.activePipelineTabKey;
+        const objectApiName = tab?.objectApiName || this.pipelineObjectApiName;
+        if (objectApiName === 'Lead') {
+            return [
+                'name',
+                'status',
+                'phone',
+                'email',
+                'leadSource',
+                'realtorBuyingAgent',
+                'lastActivityDate',
+                'appointmentDateTime',
+                'loanDetails'
+            ];
+        }
+        if (objectApiName === 'Transaction__c') {
+            const columns = [
+                'name',
+                ['assigned', 'myActivePipeline'].includes(tabKey) ? 'propertyAddress' : 'phone',
+                'status',
+                'closingDate',
+                'detail'
+            ];
+            if (['assigned', 'filesInClosing', 'approachingCommitments', 'newFilesNotSubmitted24', 'claFilesNotContacted24'].includes(tabKey)) {
+                columns.push('processorName');
+            }
+            if (['assigned', 'myActivePipeline', 'claFilesNotContacted24'].includes(tabKey)) {
+                columns.push('lastProcessorSms', 'lastProcessorCall');
+            }
+            columns.push('lenderName', 'loanPurpose');
+            if (!['assigned', 'filesInClosing'].includes(tabKey)) {
+                columns.push('ownerName');
+            }
+            columns.push('loanOfficerName', 'loanAmount', 'easeLink');
+            return columns;
+        }
+        return ['name', 'phone', 'email'];
     }
 
     availableColumnsForTab(tab) {
@@ -2392,6 +2432,8 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
             key: `${row.id}-${column.key}`,
             rawKey: column.key,
             hasValue: !!cell.value,
+            isStatus: column.key === 'status',
+            statusClass: column.key === 'status' ? row.statusClass : '',
             isPhoneLink: cell.isPhoneLink === true,
             phoneHref: cell.phoneHref || '',
             isPreviewable: this.isPreviewableCustomCell(column.key, cell.value)
@@ -2444,6 +2486,9 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
         } else if (key === 'lastProcessorCall') {
             value = row.formattedLastProcessorCall || '';
             sortValue = row.lastProcessorCall || '';
+        } else if (key === 'rateLockExpDate') {
+            value = this.formatDateTimeOrDate(null, row.rateLockExpDate);
+            sortValue = row.rateLockExpDate || '';
         } else if (key === 'loanAmount') {
             value = row.formattedAmount || '';
             sortValue = row.loanAmount === null || row.loanAmount === undefined ? '' : String(row.loanAmount);
@@ -2454,6 +2499,9 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
             isExternalLink = !!url;
         } else if (key === 'detail') {
             value = row.detail || '';
+            sortValue = value;
+        } else if (key === 'realtorBuyingAgent') {
+            value = row.realtorBuyingAgentName || '';
             sortValue = value;
         } else {
             value = row[key] || '';
@@ -2646,8 +2694,21 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
         return !!this.rawActiveCustomColumns.length;
     }
 
+    get usesEditableColumnTable() {
+        return (
+            !this.showBenEmptyGroup &&
+            !this.isOpenerWorkflowTab &&
+            !this.isCloserWorkflowTab &&
+            !this.isConversionMetricsTab &&
+            !this.isBrokerChecksOutstandingTab &&
+            !this.isAppraisalsOutstandingTab &&
+            this.activePipelineObjectApiName !== 'Metric' &&
+            !!this.availableColumnsForTab(this.activePipelineTab).length
+        );
+    }
+
     get isGenericCustomColumnTab() {
-        return this.isCustomColumnTab && !this.isBrokerChecksOutstandingTab && !this.isAppraisalsOutstandingTab;
+        return this.usesEditableColumnTable;
     }
 
     get isAppraisalsOutstandingTab() {
@@ -2693,7 +2754,7 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
     }
 
     get isExecutiveAssignedLeadsTab() {
-        if (this.isCustomColumnTab) {
+        if (this.isGenericCustomColumnTab) {
             return false;
         }
         return (
@@ -2716,7 +2777,7 @@ export default class PipelineCommandCenter extends NavigationMixin(LightningElem
             !this.isOpenerWorkflowTab &&
             !this.isCloserWorkflowTab &&
             !this.isConversionMetricsTab &&
-            !this.isCustomColumnTab &&
+            !this.isGenericCustomColumnTab &&
             !this.isExecutiveAssignedLeadsTab
         );
     }
