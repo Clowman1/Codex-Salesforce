@@ -1,6 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
-import { NavigationMixin } from 'lightning/navigation';
 import { getFieldValue, getRecord } from 'lightning/uiRecordApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 const NAME_FIELD = 'Account.Name';
 const OPTIONAL_FIELDS = [
@@ -18,10 +18,11 @@ const OPTIONAL_FIELDS = [
     'Account.Last_RC_SMS__c'
 ];
 
-export default class AccountRecordHero extends NavigationMixin(LightningElement) {
+export default class AccountRecordHero extends LightningElement {
     @api recordId;
     accountRecord;
     error;
+    showCreateLeadModal = false;
 
     @wire(getRecord, { recordId: '$recordId', fields: [NAME_FIELD], optionalFields: OPTIONAL_FIELDS })
     wiredAccount({ data, error }) {
@@ -75,15 +76,34 @@ export default class AccountRecordHero extends NavigationMixin(LightningElement)
     }
 
     handleCreateLead() {
-        this[NavigationMixin.Navigate]({
-            type: 'standard__quickAction',
-            attributes: {
-                apiName: 'Account.Create_Lead'
-            },
-            state: {
-                recordId: this.recordId
+        this.showCreateLeadModal = true;
+    }
+
+    get createLeadFlowInputs() {
+        return [
+            {
+                name: 'recordId',
+                type: 'String',
+                value: this.recordId
             }
-        });
+        ];
+    }
+
+    handleCloseCreateLead() {
+        this.showCreateLeadModal = false;
+    }
+
+    handleCreateLeadFlowStatus(event) {
+        if (event.detail.status === 'FINISHED' || event.detail.status === 'FINISHED_SCREEN') {
+            this.showCreateLeadModal = false;
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Lead created',
+                    message: 'The past client lead was created with the selected loan purpose.',
+                    variant: 'success'
+                })
+            );
+        }
     }
 
     fieldValue(fieldName) {
